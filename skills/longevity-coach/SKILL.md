@@ -34,9 +34,9 @@ longevity-analyst 会把一堆检测变成报告和方案，longevity-skills 会
 
 ## 后台在哪
 
-- **longevity-skills**（方法库）：`$LONGEVITY_SKILLS_HOME`，或这个技能旁边的 `longevity-skills` 文件夹（有 `catalog.json` 和 `intents.json`）。
-- **longevity-analyst**（分析师）：这个技能旁边的 `longevity-analyst-skill/skills/longevity-analyst/`（有 `SKILL.md` 和 `scripts/la.py`）。
-- 找不到就问用户一次，把路径写进档案的「后台」一栏。
+- **longevity-skills**（方法库，有 `catalog.json` 和 `intents.json`）：先看 `$LONGEVITY_SKILLS_HOME`。没有的话，这个技能目录通常是软链接，用 `realpath` 找到真实位置，在它上几层的旁边找 `longevity-skills` 文件夹。
+- **longevity-analyst**（分析师，有 `SKILL.md` 和 `scripts/la.py`）：通常作为技能装在 `~/.cursor/skills/longevity-analyst`；也可能在真实位置旁边的 `longevity-analyst-skill/skills/longevity-analyst/`。
+- 找不到就问用户一次。找到后把路径写进档案的「后台」一栏，下次直接用。
 
 用法见 [references/backstage.md](references/backstage.md)。
 
