@@ -5,6 +5,10 @@ relationship with one person: it remembers their goals and life in a plain markd
 findings into small commitments the person chooses, praises every concrete step, and says honestly whether a change
 is real or still within that person's normal variation. Pi speaks Chinese.
 
+Pi runs on its own in any agent that loads skills, or inside [LongPi](https://github.com/zwbao/dsh-plugin-longpi), the
+DeepSeek Harness plugin, where LongPi keeps the records, the health page and the reminders and Pi does the talking.
+The coaching method is the same in both; only where the member file lives and which tools run the analyses differ.
+
 Pi does not compute biomarkers itself. It works through two other skills, and the person only ever talks to Pi:
 
 - **[longevity-skills](https://github.com/zwbao/longevity-skills)** (required): published methods, the evidence
@@ -46,12 +50,13 @@ All files are under `skills/longevity-coach/`.
 
 | File | Content |
 |---|---|
-| `SKILL.md` | Entry point: who Pi is, the member file, how a conversation runs, the three ground rules |
+| `SKILL.md` | Entry point: who Pi is, which host it runs in, the member file, how a conversation runs, deep analysis, the three ground rules |
 | `persona.md`, `examples.md` | Pi's character, how it gives positive feedback, sample conversations |
 | `references/coaching.md` | First meeting, review, explaining results, personal experiments, welcoming someone back |
-| `references/backstage.md` | How Pi calls the analyst, the method library and the evidence store |
 | `references/product-thesis.md` | What traditional health products got right and wrong, and the design that follows |
-| `templates/member.md` | The member file template |
+| `templates/member.md` | What the member file holds |
+| `hosts/standalone.md` | Running on its own: the member file on disk, calling the analyst and the method library, `noise.py` |
+| `hosts/longpi.md` | Running inside LongPi: LongPi's memory and tools; deep analysis only through `run_deep_analysis` |
 | `scripts/noise.py` | Whether a change exceeds normal variation, and whether one person could see an intervention's effect |
 
 `noise.py` uses the reference change value from published within-person biological variation, the same calculation
@@ -67,9 +72,10 @@ python3 skills/longevity-coach/scripts/noise.py markers
 
 ```bash
 python3 tests/test_noise.py
+python3 tests/test_skill_files.py
 ```
 
-The tests need longevity-skills cloned beside this repository. With longevity-analyst-skill there too, they also
+The noise tests need longevity-skills cloned beside this repository. With longevity-analyst-skill there too, they also
 check that both compute the same reference change value.
 
 ## Boundaries
