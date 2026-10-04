@@ -4,7 +4,9 @@ from __future__ import annotations
 import contextlib
 import io
 import json
+import os
 import sys
+from datetime import date
 import unittest
 from pathlib import Path
 
@@ -15,6 +17,11 @@ import noise  # noqa: E402
 LIB = next((p / "longevity-skills" for p in ROOT.parents if (p / "longevity-skills" / "data").is_dir()), None)
 ANALYST = next((p / "longevity-analyst-skill" / "skills" / "longevity-analyst" for p in ROOT.parents
                 if (p / "longevity-analyst-skill").is_dir()), None)
+# Shared RCV cases, also run by longevity-analyst (twin compare) and LongPi (reference.ts).
+_rcv = [Path(os.environ["LONGEVITY_RCV_CASES"])] if os.environ.get("LONGEVITY_RCV_CASES") else []
+if ANALYST:
+    _rcv.append(ANALYST.parents[1] / "tests" / "fixtures" / "rcv_cases.json")
+RCV_CASES = next((p for p in _rcv if p.is_file()), None)
 
 
 def run(*argv: str) -> dict:
@@ -56,6 +63,21 @@ class NoiseTest(unittest.TestCase):
         self.assertEqual(run(*args, "--gap-days", "10")["verdict"], "too_close")
         self.assertEqual(run("change", "--marker", "SBP", "--before", "138", "--after", "131")["verdict"], "within_noise")
         self.assertEqual(run("change", "--marker", "握力", "--before", "38", "--after", "44")["verdict"], "no_noise_model")
+
+    @unittest.skipUnless(RCV_CASES, "rcv_cases.json not found (set LONGEVITY_RCV_CASES)")
+    def test_shared_rcv_cases(self) -> None:
+        for case in json.loads(RCV_CASES.read_text(encoding="utf-8"))["cases"]:
+            gap = (date.fromisoformat(case["cur_date"]) - date.fromisoformat(case["prev_date"])).days
+            argv = ["change", "--marker", case["marker"], "--gap-days", str(gap)]
+            d = run(*argv, "--before", *map(str, case["before"]), "--after", *map(str, case["after"]))
+            self.assertEqual(d["verdict"], case["expect"]["noise"], case["id"])
+            if "change_pct" in case and d["verdict"] != "too_close":
+                self.assertAlmostEqual(d["change_pct"], case["change_pct"], places=1, msg=case["id"])
+                self.assertEqual(d["band_pct"], case["band_pct"], case["id"])
+            if "noise_single" in case["expect"]:
+                one = run(*argv, "--before", str(case["before"][0]), "--after", str(case["after"][0]))
+                self.assertEqual(one["verdict"], case["expect"]["noise_single"], case["id"])
+                self.assertEqual(one["band_pct"], case["band_single_pct"], case["id"])
 
     def test_plan_salt_sbp(self) -> None:
         d = run("plan", "--marker", "收缩压", "--intervention", "减盐", "--baseline", "138", "--unit", "mmHg", "--repeats", "14")

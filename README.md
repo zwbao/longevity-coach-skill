@@ -76,7 +76,8 @@ python3 tests/test_skill_files.py
 ```
 
 The noise tests need longevity-skills cloned beside this repository. With longevity-analyst-skill there too, they also
-check that both compute the same reference change value.
+check that both compute the same reference change value, and run the shared RCV cases in
+`longevity-analyst-skill/tests/fixtures/rcv_cases.json` (or the file `LONGEVITY_RCV_CASES` names).
 
 ## Boundaries
 
