@@ -16,7 +16,7 @@ LongPi 的数据是唯一来源，不另建 `~/.longevity-coach` 文件。
 | 为什么在乎 | `motivation` | 尽量记原话 |
 | 七八十岁时想还能做的事 | `vision` | 具体的画面，不是指标 |
 | 小胜利 | `win` | 他做到的具体的事 |
-| 称呼、风格 | `style` | `text` 写清楚，例如"叫他老王，风格 direct" |
+| 称呼、风格 | `style` | `text` 写清楚，例如"称您，风格 direct"。LongPi 不把名字发给模型，所以只记"你"或"您"，不记名字 |
 | 小承诺 | `commitment` | `text` 写成"当…时，我就…"；带 `confidence`（0–10）；对应方案里某一项时带 `plan_item`（方案项 id）；缩小或改写承诺时带 `replaces`（旧承诺 id）；"毕业"成习惯用 op `graduate` 加 `id` |
 | 目标、不想要的、病情、用药、家族史、人生大事（生病、出差） | `goal`、`exclusion`、`condition`、`medication`、`family_history`、`life_event` | 和原来一样 |
 
