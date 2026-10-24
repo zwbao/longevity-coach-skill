@@ -1,0 +1,6684 @@
+{
+ "schema": "proactive-cases/1",
+ "note": "Shared proactive-care cases (PLAN WS-M.1/M.3/M.4). All data synthetic. Run by longevity-coach tests/test_proactive.py and by the LongPi website. Matching rules are in skills/longevity-coach/references/proactive.md («共享用例»).",
+ "rules": "skills/longevity-coach/data/proactive_rules.json",
+ "policy": "skills/longevity-coach/data/proactive_policy.json",
+ "cases": [
+  {
+   "id": "critical-bp-fires",
+   "about": "Home BP 185/100: urgent, sent at once even in quiet hours and without any consent; fixed first sentence.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": null
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [
+     {
+      "id": "m1",
+      "at": "2026-10-12T23:10:00+08:00",
+      "kind": "blood_pressure",
+      "unit": "mmHg",
+      "values": {
+       "sbp": 185,
+       "dbp": 100
+      }
+     }
+    ],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T23:20:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "critical_value"
+      ],
+      "messages": [
+       {
+        "trigger": "critical_value",
+        "status": "scheduled",
+        "send_after": "2026-10-12T23:20:00+08:00",
+        "body_zh": "建议你现在就拨打 120 或尽快就医。你刚记录的血压是 185/100 mmHg，已经达到中国高血压防治指南（2018 年修订版）里的危急水平。",
+        "push_text_zh": "Pi 有一件要紧的事，请尽快打开看看"
+       }
+      ],
+      "policy": {
+       "ask_consent": true
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "critical-bp-diastolic-fires",
+   "about": "Diastolic 125 alone is over 120.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [
+     {
+      "id": "m1",
+      "at": "2026-10-12T09:30:00+08:00",
+      "kind": "blood_pressure",
+      "unit": "mmHg",
+      "values": {
+       "sbp": 170,
+       "dbp": 125
+      }
+     }
+    ],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "critical_value"
+      ],
+      "messages": [
+       {
+        "trigger": "critical_value",
+        "status": "scheduled",
+        "send_after": "2026-10-12T10:00:00+08:00"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "critical-bp-below-no",
+   "about": "178/118 is below the 180/120 line: nothing.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [
+     {
+      "id": "m1",
+      "at": "2026-10-12T09:30:00+08:00",
+      "kind": "blood_pressure",
+      "unit": "mmHg",
+      "values": {
+       "sbp": 178,
+       "dbp": 118
+      }
+     }
+    ],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "critical-bp-exactly-180-no",
+   "about": "The guideline says over 180/120; exactly 180/120 does not fire.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [
+     {
+      "id": "m1",
+      "at": "2026-10-12T09:30:00+08:00",
+      "kind": "blood_pressure",
+      "unit": "mmHg",
+      "values": {
+       "sbp": 180,
+       "dbp": 120
+      }
+     }
+    ],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "critical-bp-stale-no",
+   "about": "A high reading from three days ago is not paged now.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [
+     {
+      "id": "m1",
+      "at": "2026-10-09T09:00:00+08:00",
+      "kind": "blood_pressure",
+      "unit": "mmHg",
+      "values": {
+       "sbp": 190,
+       "dbp": 100
+      }
+     }
+    ],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "critical-glucose-fires",
+   "about": "Glucose 2.8 mmol/L is under level 2 (3.0).",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [
+     {
+      "id": "g1",
+      "at": "2026-10-12T09:30:00+08:00",
+      "kind": "glucose",
+      "unit": "mmol/L",
+      "values": {
+       "glucose": 2.8
+      }
+     }
+    ],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "critical_value"
+      ],
+      "messages": [
+       {
+        "trigger": "critical_value",
+        "status": "scheduled",
+        "send_after": "2026-10-12T10:00:00+08:00"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "critical-glucose-mgdl-fires",
+   "about": "Glucose 50 mg/dL is under 54.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [
+     {
+      "id": "g1",
+      "at": "2026-10-12T09:30:00+08:00",
+      "kind": "glucose",
+      "unit": "mg/dL",
+      "values": {
+       "glucose": 50
+      }
+     }
+    ],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "critical_value"
+      ],
+      "messages": [
+       {
+        "trigger": "critical_value",
+        "status": "scheduled",
+        "send_after": "2026-10-12T10:00:00+08:00"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "critical-glucose-3-no",
+   "about": "Exactly 3.0 mmol/L is not under 3.0.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [
+     {
+      "id": "g1",
+      "at": "2026-10-12T09:30:00+08:00",
+      "kind": "glucose",
+      "unit": "mmol/L",
+      "values": {
+       "glucose": 3.0
+      }
+     }
+    ],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "critical-muted-still-fires",
+   "about": "Urgent cannot be muted or consented away.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": false,
+      "retest": false,
+      "data": false,
+      "clinical": false,
+      "care": false
+     },
+     "muted_triggers": [
+      "critical_value"
+     ]
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [
+     {
+      "id": "m1",
+      "at": "2026-10-12T09:30:00+08:00",
+      "kind": "blood_pressure",
+      "unit": "mmHg",
+      "values": {
+       "sbp": 200,
+       "dbp": 110
+      }
+     }
+    ],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "critical_value"
+      ],
+      "messages": [
+       {
+        "trigger": "critical_value",
+        "status": "scheduled",
+        "send_after": "2026-10-12T10:00:00+08:00"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "concordance-fires",
+   "about": "latent → concordant_adverse.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "concordance": [
+      {
+       "analyte": "urate",
+       "marker_zh": "尿酸",
+       "class": "concordant_adverse",
+       "transition": {
+        "from": "latent",
+        "to": "concordant_adverse",
+        "observed_at": "2025-09-02"
+       },
+       "label": {
+        "basis_kind": "measurement",
+        "label_zh": "测量"
+       }
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "concordance_transition"
+      ],
+      "messages": [
+       {
+        "trigger": "concordance_transition",
+        "status": "scheduled",
+        "send_after": "2026-10-12T10:00:00+08:00"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "concordance-other-no",
+   "about": "concordant_adverse → latent is not this trigger.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "concordance": [
+      {
+       "analyte": "urate",
+       "marker_zh": "尿酸",
+       "class": "latent",
+       "transition": {
+        "from": "concordant_adverse",
+        "to": "latent",
+        "observed_at": "2025-09-02"
+       },
+       "label": {
+        "basis_kind": "measurement",
+        "label_zh": "测量"
+       }
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "diagnosis-fires",
+   "about": "A new diagnostic rule hit.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "diagnoses": [
+      {
+       "id": "D1",
+       "rule": "ada-ifg",
+       "hit": true,
+       "conclusion_zh": "空腹血糖 5.6 mmol/L，符合空腹血糖受损",
+       "source_zh": "ADA 指南",
+       "label": {
+        "basis_kind": "guideline_criteria",
+        "label_zh": "指南标准"
+       }
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "diagnosis_hit"
+      ],
+      "messages": [
+       {
+        "trigger": "diagnosis_hit",
+        "status": "scheduled",
+        "send_after": "2026-10-12T10:00:00+08:00"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "diagnosis-once-no",
+   "about": "The same rule fired before: silent.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "diagnoses": [
+      {
+       "id": "D1",
+       "rule": "ada-ifg",
+       "hit": true,
+       "conclusion_zh": "空腹血糖 5.6 mmol/L，符合空腹血糖受损",
+       "source_zh": "ADA 指南",
+       "label": {
+        "basis_kind": "guideline_criteria",
+        "label_zh": "指南标准"
+       }
+      }
+     ]
+    },
+    "history": {
+     "fired": [
+      {
+       "dedup_key": "diagnosis_hit:ada-ifg",
+       "trigger": "diagnosis_hit",
+       "subject_key": "diagnosis_hit:rule=ada-ifg",
+       "event_id": "E-prior",
+       "at": "2026-09-30T10:00:00+08:00",
+       "via": "message"
+      }
+     ],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "diagnosis-not-hit-no",
+   "about": "hit:false does not fire.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "diagnoses": [
+      {
+       "id": "D1",
+       "rule": "ada-ifg",
+       "hit": false,
+       "conclusion_zh": "空腹血糖 5.6 mmol/L，符合空腹血糖受损",
+       "source_zh": "ADA 指南",
+       "label": {
+        "basis_kind": "guideline_criteria",
+        "label_zh": "指南标准"
+       }
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "medication-fires",
+   "about": "Simvastatin in use, CPIC not routine.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [
+     {
+      "name": "Simvastatin",
+      "recorded_at": "2026-10-10"
+     }
+    ],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "medications": [
+      {
+       "id": "RX1",
+       "drug": "simvastatin",
+       "drug_zh": "辛伐他汀",
+       "source_type": "cpic",
+       "routine": false,
+       "label": {
+        "basis_kind": "cpic",
+        "label_zh": "CPIC"
+       }
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "medication_gene_conflict"
+      ],
+      "messages": [
+       {
+        "trigger": "medication_gene_conflict",
+        "status": "scheduled",
+        "send_after": "2026-10-12T10:00:00+08:00"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "medication-routine-no",
+   "about": "CPIC says routine: nothing.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [
+     {
+      "name": "simvastatin"
+     }
+    ],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "medications": [
+      {
+       "id": "RX1",
+       "drug": "simvastatin",
+       "drug_zh": "辛伐他汀",
+       "source_type": "cpic",
+       "routine": true,
+       "label": {
+        "basis_kind": "cpic",
+        "label_zh": "CPIC"
+       }
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "medication-not-in-use-no",
+   "about": "Not a drug the member takes: nothing.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "medications": [
+      {
+       "id": "RX1",
+       "drug": "simvastatin",
+       "drug_zh": "辛伐他汀",
+       "source_type": "cpic",
+       "routine": false,
+       "label": {
+        "basis_kind": "cpic",
+        "label_zh": "CPIC"
+       }
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "retest-pre7-fires",
+   "about": "Due in 7 days.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "retests": [
+      {
+       "id": "R-glucose",
+       "marker": "空腹血糖",
+       "due_at": "2026-10-19T09:00:00+08:00",
+       "reason": "guideline",
+       "judgeable": true
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "retest_due"
+      ],
+      "messages": [
+       {
+        "trigger": "retest_due",
+        "status": "scheduled",
+        "send_after": "2026-10-12T10:00:00+08:00",
+        "title_zh": "下周复查空腹血糖"
+       }
+      ],
+      "events": [
+       "retest_due:R-glucose:2026-10-19T09:00:00+08:00:pre"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "retest-pre8-no",
+   "about": "Due in 8 days: not yet.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "retests": [
+      {
+       "id": "R-glucose",
+       "marker": "空腹血糖",
+       "due_at": "2026-10-20T09:00:00+08:00",
+       "reason": "guideline",
+       "judgeable": true
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "retest-due-day-fires",
+   "about": "Due today.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "retests": [
+      {
+       "id": "R-glucose",
+       "marker": "空腹血糖",
+       "due_at": "2026-10-12T18:00:00+08:00",
+       "reason": "guideline",
+       "judgeable": true
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "retest_due"
+      ],
+      "messages": [
+       {
+        "trigger": "retest_due",
+        "status": "scheduled",
+        "send_after": "2026-10-12T10:00:00+08:00",
+        "title_zh": "该复查空腹血糖了"
+       }
+      ],
+      "events": [
+       "retest_due:R-glucose:2026-10-12T18:00:00+08:00:due"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "retest-scheduled-no",
+   "about": "Member already booked it.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [
+     "R-glucose"
+    ],
+    "export": {
+     "retests": [
+      {
+       "id": "R-glucose",
+       "marker": "空腹血糖",
+       "due_at": "2026-10-12",
+       "reason": "guideline",
+       "judgeable": true
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "retest-long-overdue-no",
+   "about": "Overdue by 7 days or more: the reminder window has passed.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "retests": [
+      {
+       "id": "R-glucose",
+       "marker": "空腹血糖",
+       "due_at": "2026-10-05",
+       "reason": "guideline",
+       "judgeable": true
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "new-data-fires",
+   "about": "A new lab batch arrived.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [
+     {
+      "id": "B1",
+      "arrived_at": "2026-10-12T08:00:00+08:00",
+      "kind": "labs"
+     }
+    ],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "new_data_ready"
+      ],
+      "messages": [
+       {
+        "trigger": "new_data_ready",
+        "status": "scheduled",
+        "send_after": "2026-10-12T10:00:00+08:00"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "new-data-future-no",
+   "about": "A batch stamped later than now is ignored.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [
+     {
+      "id": "B1",
+      "arrived_at": "2026-10-13T08:00:00+08:00",
+      "kind": "labs"
+     }
+    ],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "change-fires-favorable",
+   "about": "Plan target fell beyond noise: celebrate.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [
+     {
+      "marker": "收缩压",
+      "plan_item": "I3",
+      "desired": "decrease"
+     }
+    ],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "trends": [
+      {
+       "marker": "收缩压",
+       "unit": "mmHg",
+       "points": [
+        {
+         "t": "2026-07-14",
+         "value": 138,
+         "k": 14
+        },
+        {
+         "t": "2026-09-14",
+         "value": 131,
+         "k": 14
+        }
+       ],
+       "pairs": [
+        {
+         "from": "2026-07-14",
+         "to": "2026-09-14",
+         "change_pct": -5.1,
+         "band_pct": [
+          -3.1,
+          3.1
+         ],
+         "verdict": "decrease_beyond_noise"
+        }
+       ],
+       "trend": {
+        "n": 2,
+        "verdict": "within_noise"
+       },
+       "summary_verdict": "decrease_beyond_noise",
+       "concurrent_exposures": [
+        {
+         "plan_item": "I3",
+         "label_zh": "工作日晚饭用限盐勺",
+         "cumulative_in_window": 21
+        }
+       ]
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "change_beyond_noise"
+      ],
+      "messages": [
+       {
+        "trigger": "change_beyond_noise",
+        "status": "scheduled",
+        "send_after": "2026-10-12T10:00:00+08:00",
+        "title_zh": "收缩压有了真实变化"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "change-within-no",
+   "about": "Within noise: no message.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [
+     {
+      "marker": "收缩压",
+      "plan_item": "I3",
+      "desired": "decrease"
+     }
+    ],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "trends": [
+      {
+       "marker": "收缩压",
+       "unit": "mmHg",
+       "points": [
+        {
+         "t": "2026-07-14",
+         "value": 138,
+         "k": 14
+        },
+        {
+         "t": "2026-09-14",
+         "value": 131,
+         "k": 14
+        }
+       ],
+       "pairs": [
+        {
+         "from": "2026-07-14",
+         "to": "2026-09-14",
+         "change_pct": -5.1,
+         "band_pct": [
+          -3.1,
+          3.1
+         ],
+         "verdict": "within_noise"
+        }
+       ],
+       "trend": {
+        "n": 2,
+        "verdict": "within_noise"
+       },
+       "summary_verdict": "within_noise",
+       "concurrent_exposures": [
+        {
+         "plan_item": "I3",
+         "label_zh": "工作日晚饭用限盐勺",
+         "cumulative_in_window": 21
+        }
+       ]
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "change-not-target-no",
+   "about": "Beyond noise but not a plan target.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "trends": [
+      {
+       "marker": "收缩压",
+       "unit": "mmHg",
+       "points": [
+        {
+         "t": "2026-07-14",
+         "value": 138,
+         "k": 14
+        },
+        {
+         "t": "2026-09-14",
+         "value": 131,
+         "k": 14
+        }
+       ],
+       "pairs": [
+        {
+         "from": "2026-07-14",
+         "to": "2026-09-14",
+         "change_pct": -5.1,
+         "band_pct": [
+          -3.1,
+          3.1
+         ],
+         "verdict": "decrease_beyond_noise"
+        }
+       ],
+       "trend": {
+        "n": 2,
+        "verdict": "within_noise"
+       },
+       "summary_verdict": "decrease_beyond_noise",
+       "concurrent_exposures": [
+        {
+         "plan_item": "I3",
+         "label_zh": "工作日晚饭用限盐勺",
+         "cumulative_in_window": 21
+        }
+       ]
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "trend-fires",
+   "about": "Slow rise beyond noise.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "trends": [
+      {
+       "marker": "空腹血糖",
+       "unit": "mmol/L",
+       "points": [
+        {
+         "t": "2023-09-01",
+         "value": 4.6
+        },
+        {
+         "t": "2024-09-03",
+         "value": 5.0
+        },
+        {
+         "t": "2025-09-02",
+         "value": 5.3
+        },
+        {
+         "t": "2026-09-01",
+         "value": 5.6
+        }
+       ],
+       "pairs": [
+        {
+         "from": "2025-09-02",
+         "to": "2026-09-01",
+         "change_pct": 5.7,
+         "band_pct": [
+          -14.6,
+          14.6
+         ],
+         "verdict": "within_noise"
+        }
+       ],
+       "trend": {
+        "n": 4,
+        "annual_change_pct": 6.4,
+        "verdict": "rising_beyond_noise"
+       },
+       "summary_verdict": "trend_beyond_noise"
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "trend_beyond_noise"
+      ],
+      "messages": [
+       {
+        "trigger": "trend_beyond_noise",
+        "status": "scheduled",
+        "send_after": "2026-10-12T10:00:00+08:00",
+        "title_zh": "空腹血糖：缓慢上升"
+       }
+      ],
+      "events": [
+       "trend_beyond_noise:空腹血糖:2026-09-01"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "trend-within-no",
+   "about": "Trend within noise.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "trends": [
+      {
+       "marker": "空腹血糖",
+       "unit": "mmol/L",
+       "points": [
+        {
+         "t": "2023-09-01",
+         "value": 4.6
+        },
+        {
+         "t": "2024-09-03",
+         "value": 5.0
+        },
+        {
+         "t": "2025-09-02",
+         "value": 5.3
+        },
+        {
+         "t": "2026-09-01",
+         "value": 5.6
+        }
+       ],
+       "pairs": [
+        {
+         "from": "2025-09-02",
+         "to": "2026-09-01",
+         "change_pct": 5.7,
+         "band_pct": [
+          -14.6,
+          14.6
+         ],
+         "verdict": "within_noise"
+        }
+       ],
+       "trend": {
+        "n": 4,
+        "annual_change_pct": 6.4,
+        "verdict": "within_noise"
+       },
+       "summary_verdict": "trend_beyond_noise"
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "prediction-fires",
+   "about": "A new statistical-model prediction.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "predictions": [
+      {
+       "schema": "la-prediction/1",
+       "id": "P1",
+       "plan_item": "I3",
+       "intervention_zh": "减盐",
+       "marker": "收缩压",
+       "p_detect_favorable": 0.76,
+       "label": {
+        "schema": "la-label/1",
+        "basis_kind": "statistical_model",
+        "label_zh": "统计模型估计",
+        "generated_at": "2026-10-12T09:00:00+08:00"
+       }
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "prediction_ready"
+      ],
+      "messages": [
+       {
+        "trigger": "prediction_ready",
+        "status": "scheduled",
+        "send_after": "2026-10-12T10:00:00+08:00"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "prediction-ai-range-fires",
+   "about": "An AI-judgement prediction is a range and says AI 判断.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "predictions": [
+      {
+       "schema": "la-prediction/1",
+       "id": "P1",
+       "plan_item": "I3",
+       "intervention_zh": "减盐",
+       "marker": "收缩压",
+       "p_detect_favorable": [
+        0.3,
+        0.6
+       ],
+       "label": {
+        "schema": "la-label/1",
+        "basis_kind": "ai_estimate",
+        "label_zh": "AI 判断",
+        "generated_at": "2026-10-12T09:00:00+08:00"
+       }
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "prediction_ready"
+      ],
+      "messages": [
+       {
+        "trigger": "prediction_ready",
+        "status": "scheduled",
+        "send_after": "2026-10-12T10:00:00+08:00",
+        "body_zh": "减盐对你的收缩压能不能测出效果，我估计概率在 30%–60% 之间（AI 判断）。"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "prediction-same-version-no",
+   "about": "Same prediction version already sent.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "predictions": [
+      {
+       "schema": "la-prediction/1",
+       "id": "P1",
+       "plan_item": "I3",
+       "intervention_zh": "减盐",
+       "marker": "收缩压",
+       "p_detect_favorable": 0.76,
+       "label": {
+        "schema": "la-label/1",
+        "basis_kind": "statistical_model",
+        "label_zh": "统计模型估计",
+        "generated_at": "2026-10-12T09:00:00+08:00"
+       }
+      }
+     ]
+    },
+    "history": {
+     "fired": [
+      {
+       "dedup_key": "prediction_ready:P1:2026-10-12T09:00:00+08:00",
+       "trigger": "prediction_ready",
+       "subject_key": "prediction_ready:prediction=P1",
+       "event_id": "E-prior",
+       "at": "2026-10-12T09:05:00+08:00",
+       "via": "message"
+      }
+     ],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "wearable-default-off-no",
+   "about": "wearable_shift is off by default.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": [],
+    "wearable": {
+     "resting_hr": {
+      "metric_zh": "静息心率",
+      "baseline": 60,
+      "band_pct": 8,
+      "days": [
+       {
+        "date": "2026-10-06",
+        "value": 62
+       },
+       {
+        "date": "2026-10-07",
+        "value": 63
+       },
+       {
+        "date": "2026-10-08",
+        "value": 61
+       },
+       {
+        "date": "2026-10-09",
+        "value": 70
+       },
+       {
+        "date": "2026-10-10",
+        "value": 71
+       },
+       {
+        "date": "2026-10-11",
+        "value": 72
+       },
+       {
+        "date": "2026-10-12",
+        "value": 73
+       }
+      ]
+     }
+    }
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "wearable-enabled-fires",
+   "about": "Enabled: 7-day mean 67.4 > 64.8 and 4 days in a row above.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     },
+     "enabled_triggers": {
+      "wearable_shift": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": [],
+    "wearable": {
+     "resting_hr": {
+      "metric_zh": "静息心率",
+      "baseline": 60,
+      "band_pct": 8,
+      "days": [
+       {
+        "date": "2026-10-06",
+        "value": 62
+       },
+       {
+        "date": "2026-10-07",
+        "value": 63
+       },
+       {
+        "date": "2026-10-08",
+        "value": 61
+       },
+       {
+        "date": "2026-10-09",
+        "value": 70
+       },
+       {
+        "date": "2026-10-10",
+        "value": 71
+       },
+       {
+        "date": "2026-10-11",
+        "value": 72
+       },
+       {
+        "date": "2026-10-12",
+        "value": 73
+       }
+      ]
+     }
+    }
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "wearable_shift"
+      ],
+      "messages": [
+       {
+        "trigger": "wearable_shift",
+        "status": "scheduled",
+        "send_after": "2026-10-12T10:00:00+08:00"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "wearable-enabled-short-run-no",
+   "about": "Mean outside but only 2 days in a row: no.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     },
+     "enabled_triggers": {
+      "wearable_shift": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": [],
+    "wearable": {
+     "resting_hr": {
+      "metric_zh": "静息心率",
+      "baseline": 60,
+      "band_pct": 8,
+      "days": [
+       {
+        "date": "2026-10-06",
+        "value": 70
+       },
+       {
+        "date": "2026-10-07",
+        "value": 71
+       },
+       {
+        "date": "2026-10-08",
+        "value": 72
+       },
+       {
+        "date": "2026-10-09",
+        "value": 73
+       },
+       {
+        "date": "2026-10-10",
+        "value": 60
+       },
+       {
+        "date": "2026-10-11",
+        "value": 70
+       },
+       {
+        "date": "2026-10-12",
+        "value": 71
+       }
+      ]
+     }
+    }
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "experiment-week6-fires",
+   "about": "Six weeks since the start: begin the post-test.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [
+     {
+      "id": "X1",
+      "plan_item": "I3",
+      "intervention_zh": "减盐",
+      "marker": "收缩压",
+      "started_at": "2026-08-31",
+      "min_weeks": 6,
+      "repeats_needed": 14,
+      "post_started_at": null,
+      "post_done": 0,
+      "prediction_ref": null
+     }
+    ],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "experiment_checkpoint"
+      ],
+      "messages": [
+       {
+        "trigger": "experiment_checkpoint",
+        "status": "scheduled",
+        "send_after": "2026-10-12T10:00:00+08:00",
+        "title_zh": "可以开始后测了"
+       }
+      ],
+      "events": [
+       "experiment_checkpoint:X1:post_start"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "experiment-week5-no",
+   "about": "Five weeks: not yet.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [
+     {
+      "id": "X1",
+      "plan_item": "I3",
+      "intervention_zh": "减盐",
+      "marker": "收缩压",
+      "started_at": "2026-09-02",
+      "min_weeks": 6,
+      "repeats_needed": 14,
+      "post_started_at": null,
+      "post_done": 0,
+      "prediction_ref": null
+     }
+    ],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "experiment-results-fires",
+   "about": "Post-test complete: come see the result.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [
+     {
+      "id": "X1",
+      "plan_item": "I3",
+      "intervention_zh": "减盐",
+      "marker": "收缩压",
+      "started_at": "2026-08-31",
+      "min_weeks": 6,
+      "repeats_needed": 14,
+      "post_started_at": "2026-09-28",
+      "post_done": 14,
+      "prediction_ref": null
+     }
+    ],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "experiment_checkpoint"
+      ],
+      "messages": [
+       {
+        "trigger": "experiment_checkpoint",
+        "status": "scheduled",
+        "send_after": "2026-10-12T10:00:00+08:00",
+        "title_zh": "可以看结果了"
+       }
+      ],
+      "events": [
+       "experiment_checkpoint:X1:results"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "experiment-site-no",
+   "about": "The website has no experiments/check-ins: coaching triggers do not run there.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "longpi_site",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [
+     {
+      "id": "X1",
+      "plan_item": "I3",
+      "intervention_zh": "减盐",
+      "marker": "收缩压",
+      "started_at": "2026-08-31",
+      "min_weeks": 6,
+      "repeats_needed": 14,
+      "post_started_at": null,
+      "post_done": 0,
+      "prediction_ref": null
+     }
+    ],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "return-welcome-fires-and-supersedes",
+   "about": "30 days away: welcome back only, no gap or review nudge.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-09-12",
+    "chat_cadence_days": 7,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [
+     {
+      "id": "C1",
+      "label_zh": "工作日晚饭用限盐勺",
+      "plan_item": "I3",
+      "status": "active",
+      "started_at": "2026-08-01",
+      "cumulative": 8,
+      "last_checkin_at": "2026-09-01"
+     }
+    ],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [
+       "return_welcome:2026-09-12"
+      ],
+      "messages": [
+       {
+        "trigger": "return_welcome",
+        "status": "scheduled",
+        "body_zh": "好久不见，想你了！你之前累计做到的 8 次都还在，一次也没有清零。想从哪儿接着来，我们慢慢聊。"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "return-29-days-no",
+   "about": "29 days: no welcome.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-09-13",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "checkin-gap-fires",
+   "about": "Active commitment, 14 days without a check-in.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [
+     {
+      "id": "C1",
+      "label_zh": "工作日晚饭用限盐勺",
+      "plan_item": "I3",
+      "status": "active",
+      "started_at": "2026-08-01",
+      "cumulative": 8,
+      "last_checkin_at": "2026-09-28"
+     }
+    ],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "checkin_gap"
+      ],
+      "messages": [
+       {
+        "trigger": "checkin_gap",
+        "status": "scheduled",
+        "send_after": "2026-10-12T10:00:00+08:00"
+       }
+      ],
+      "events": [
+       "checkin_gap:C1:2026-09-28"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "checkin-gap-13-no",
+   "about": "13 days: no.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [
+     {
+      "id": "C1",
+      "label_zh": "工作日晚饭用限盐勺",
+      "plan_item": "I3",
+      "status": "active",
+      "started_at": "2026-08-01",
+      "cumulative": 8,
+      "last_checkin_at": "2026-09-29"
+     }
+    ],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "checkin-gap-paused-no",
+   "about": "A paused commitment is not nagged.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [
+     {
+      "id": "C1",
+      "label_zh": "工作日晚饭用限盐勺",
+      "plan_item": "I3",
+      "status": "paused",
+      "started_at": "2026-08-01",
+      "cumulative": 8,
+      "last_checkin_at": "2026-09-01"
+     }
+    ],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "checkin-gap-site-no",
+   "about": "No check-ins on the website.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "longpi_site",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [
+     {
+      "id": "C1",
+      "label_zh": "工作日晚饭用限盐勺",
+      "plan_item": "I3",
+      "status": "active",
+      "started_at": "2026-08-01",
+      "cumulative": 8,
+      "last_checkin_at": "2026-09-01"
+     }
+    ],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "review-fires",
+   "about": "Agreed cadence 7 days reached.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-05",
+    "chat_cadence_days": 7,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [
+     {
+      "id": "C1",
+      "label_zh": "工作日晚饭用限盐勺",
+      "plan_item": "I3",
+      "status": "active",
+      "started_at": "2026-08-01",
+      "cumulative": 8,
+      "last_checkin_at": "2026-10-10"
+     }
+    ],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "commitment_review"
+      ],
+      "messages": [
+       {
+        "trigger": "commitment_review",
+        "status": "scheduled",
+        "send_after": "2026-10-12T10:00:00+08:00"
+       }
+      ],
+      "events": [
+       "commitment_review:2026-10-05"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "review-6-days-no",
+   "about": "6 days of a 7-day cadence.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-06",
+    "chat_cadence_days": 7,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [
+     {
+      "id": "C1",
+      "label_zh": "工作日晚饭用限盐勺",
+      "plan_item": "I3",
+      "status": "active",
+      "started_at": "2026-08-01",
+      "cumulative": 8,
+      "last_checkin_at": "2026-10-10"
+     }
+    ],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "milestone-fires",
+   "about": "Cumulative 20.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [
+     {
+      "id": "C1",
+      "label_zh": "工作日晚饭用限盐勺",
+      "plan_item": "I3",
+      "status": "active",
+      "started_at": "2026-08-01",
+      "cumulative": 20,
+      "last_checkin_at": "2026-10-10"
+     }
+    ],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "milestone"
+      ],
+      "messages": [
+       {
+        "trigger": "milestone",
+        "status": "scheduled",
+        "send_after": "2026-10-12T10:00:00+08:00",
+        "title_zh": "第 20 次！",
+        "body_zh": "工作日晚饭用限盐勺，你已经做到第 20 次了。离带孙子爬泰山又近了一步。",
+        "celebration_zh": "记上了，累计第 21 次！"
+       }
+      ],
+      "events": [
+       "milestone:C1:20"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "milestone-already-no",
+   "about": "21 after 20 was celebrated: nothing new.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [
+     {
+      "id": "C1",
+      "label_zh": "工作日晚饭用限盐勺",
+      "plan_item": "I3",
+      "status": "active",
+      "started_at": "2026-08-01",
+      "cumulative": 21,
+      "last_checkin_at": "2026-10-10"
+     }
+    ],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [
+      {
+       "dedup_key": "milestone:C1:20",
+       "trigger": "milestone",
+       "subject_key": "milestone:commitment=C1",
+       "event_id": "E-prior",
+       "at": "2026-10-01T10:00:00+08:00",
+       "via": "message"
+      }
+     ],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "milestone-between-no",
+   "about": "4 is not a milestone and 1 was celebrated.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [
+     {
+      "id": "C1",
+      "label_zh": "工作日晚饭用限盐勺",
+      "plan_item": "I3",
+      "status": "active",
+      "started_at": "2026-08-01",
+      "cumulative": 4,
+      "last_checkin_at": "2026-10-10"
+     }
+    ],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [
+      {
+       "dedup_key": "milestone:C1:1",
+       "trigger": "milestone",
+       "subject_key": "milestone:commitment=C1",
+       "event_id": "E-prior",
+       "at": "2026-09-01T10:00:00+08:00",
+       "via": "message"
+      }
+     ],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "life-event-fires",
+   "about": "Two days after the wedding.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [
+     {
+      "id": "L1",
+      "date": "2026-10-10",
+      "label_zh": "女儿的婚礼"
+     }
+    ],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "life_event_followup"
+      ],
+      "messages": [
+       {
+        "trigger": "life_event_followup",
+        "status": "scheduled",
+        "send_after": "2026-10-12T10:00:00+08:00",
+        "body_zh": "女儿的婚礼过去了，一切都还顺利吗？想聊聊的话，我一直在。"
+       }
+      ],
+      "events": [
+       "life_event_followup:L1"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "life-event-same-day-no",
+   "about": "Not on the day itself.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [
+     {
+      "id": "L1",
+      "date": "2026-10-12",
+      "label_zh": "女儿的婚礼"
+     }
+    ],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "life-event-4-days-no",
+   "about": "Four days later the window has closed.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [
+     {
+      "id": "L1",
+      "date": "2026-10-08",
+      "label_zh": "女儿的婚礼"
+     }
+    ],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "policy-cap-day",
+   "about": "One non-urgent message already went out today: the new one is suppressed (cap) and goes to the agenda.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "retests": [
+      {
+       "id": "R-glucose",
+       "marker": "空腹血糖",
+       "due_at": "2026-10-19T09:00:00+08:00",
+       "reason": "guideline",
+       "judgeable": true
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "actions": [],
+     "messages": [
+      {
+       "id": "M-a",
+       "event": "E-prior",
+       "trigger": "milestone",
+       "category": "coaching",
+       "status": "sent",
+       "send_after": "2026-10-12T08:30:00+08:00",
+       "sent_at": "2026-10-12T08:30:00+08:00",
+       "expires_at": "2026-10-12T08:30:00+08:00",
+       "dedup_key": "milestone:M-a",
+       "subject": {}
+      }
+     ]
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "retest_due"
+      ],
+      "messages": [
+       {
+        "trigger": "retest_due",
+        "status": "suppressed",
+        "suppressed_reason": "cap"
+       }
+      ],
+      "agenda": [
+       "retest_due"
+      ],
+      "suppressed": [
+       {
+        "trigger": "retest_due",
+        "reason": "cap"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "policy-cap-week",
+   "about": "Three in the last seven days: cap.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "retests": [
+      {
+       "id": "R-glucose",
+       "marker": "空腹血糖",
+       "due_at": "2026-10-19T09:00:00+08:00",
+       "reason": "guideline",
+       "judgeable": true
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "actions": [],
+     "messages": [
+      {
+       "id": "M-a",
+       "event": "E-prior",
+       "trigger": "milestone",
+       "category": "coaching",
+       "status": "read",
+       "send_after": "2026-10-06T10:00:00+08:00",
+       "sent_at": "2026-10-06T10:00:00+08:00",
+       "expires_at": "2026-10-06T10:00:00+08:00",
+       "dedup_key": "milestone:M-a",
+       "subject": {},
+       "opened_at": "2026-10-06T11:00:00+08:00"
+      },
+      {
+       "id": "M-b",
+       "event": "E-prior",
+       "trigger": "retest_due",
+       "category": "retest",
+       "status": "acted",
+       "send_after": "2026-10-08T10:00:00+08:00",
+       "sent_at": "2026-10-08T10:00:00+08:00",
+       "expires_at": "2026-10-08T10:00:00+08:00",
+       "dedup_key": "retest_due:M-b",
+       "subject": {},
+       "opened_at": "2026-10-08T11:00:00+08:00"
+      },
+      {
+       "id": "M-c",
+       "event": "E-prior",
+       "trigger": "new_data_ready",
+       "category": "data",
+       "status": "read",
+       "send_after": "2026-10-10T10:00:00+08:00",
+       "sent_at": "2026-10-10T10:00:00+08:00",
+       "expires_at": "2026-10-10T10:00:00+08:00",
+       "dedup_key": "new_data_ready:M-c",
+       "subject": {},
+       "opened_at": "2026-10-10T11:00:00+08:00"
+      }
+     ]
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "messages": [
+       {
+        "trigger": "retest_due",
+        "status": "suppressed",
+        "suppressed_reason": "cap"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "policy-cap-urgent-exempt",
+   "about": "Caps do not apply to urgent.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [
+     {
+      "id": "m1",
+      "at": "2026-10-12T09:30:00+08:00",
+      "kind": "blood_pressure",
+      "unit": "mmHg",
+      "values": {
+       "sbp": 190,
+       "dbp": 100
+      }
+     }
+    ],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "actions": [],
+     "messages": [
+      {
+       "id": "M-a",
+       "event": "E-prior",
+       "trigger": "milestone",
+       "category": "coaching",
+       "status": "sent",
+       "send_after": "2026-10-12T08:30:00+08:00",
+       "sent_at": "2026-10-12T08:30:00+08:00",
+       "expires_at": "2026-10-12T08:30:00+08:00",
+       "dedup_key": "milestone:M-a",
+       "subject": {}
+      }
+     ]
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "critical_value"
+      ],
+      "messages": [
+       {
+        "trigger": "critical_value",
+        "status": "scheduled",
+        "send_after": "2026-10-12T10:00:00+08:00"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "policy-quiet-night",
+   "about": "23:00 event waits until 08:00 next morning.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "retests": [
+      {
+       "id": "R-glucose",
+       "marker": "空腹血糖",
+       "due_at": "2026-10-19T09:00:00+08:00",
+       "reason": "guideline",
+       "judgeable": true
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T23:00:00+08:00",
+     "expect": {
+      "messages": [
+       {
+        "trigger": "retest_due",
+        "status": "scheduled",
+        "send_after": "2026-10-13T08:00:00+08:00",
+        "deferred_reason": "quiet_hours",
+        "expires_at": "2026-10-20T08:00:00+08:00"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "policy-quiet-early",
+   "about": "06:30 waits until 08:00 the same day.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "retests": [
+      {
+       "id": "R-glucose",
+       "marker": "空腹血糖",
+       "due_at": "2026-10-19T09:00:00+08:00",
+       "reason": "guideline",
+       "judgeable": true
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T06:30:00+08:00",
+     "expect": {
+      "messages": [
+       {
+        "trigger": "retest_due",
+        "status": "scheduled",
+        "send_after": "2026-10-12T08:00:00+08:00"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "policy-quiet-custom",
+   "about": "Member set quiet hours 21:00–07:00; 21:30 waits to 07:00.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     },
+     "quiet_hours": {
+      "start": "21:00",
+      "end": "07:00"
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "retests": [
+      {
+       "id": "R-glucose",
+       "marker": "空腹血糖",
+       "due_at": "2026-10-19T09:00:00+08:00",
+       "reason": "guideline",
+       "judgeable": true
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T21:30:00+08:00",
+     "expect": {
+      "messages": [
+       {
+        "trigger": "retest_due",
+        "send_after": "2026-10-13T07:00:00+08:00"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "policy-merge",
+   "about": "Clinical, data, coaching and care on one day: only the clinical one is sent; the rest wait in the agenda, by priority.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [
+     {
+      "id": "C1",
+      "label_zh": "工作日晚饭用限盐勺",
+      "plan_item": "I3",
+      "status": "active",
+      "started_at": "2026-08-01",
+      "cumulative": 20,
+      "last_checkin_at": "2026-10-10"
+     }
+    ],
+    "experiments": [],
+    "life_events": [
+     {
+      "id": "L1",
+      "date": "2026-10-10",
+      "label_zh": "女儿的婚礼"
+     }
+    ],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "diagnoses": [
+      {
+       "id": "D1",
+       "rule": "ada-ifg",
+       "hit": true,
+       "conclusion_zh": "空腹血糖 5.6 mmol/L，符合空腹血糖受损",
+       "source_zh": "ADA 指南",
+       "label": {
+        "basis_kind": "guideline_criteria",
+        "label_zh": "指南标准"
+       }
+      }
+     ],
+     "predictions": [
+      {
+       "schema": "la-prediction/1",
+       "id": "P1",
+       "plan_item": "I3",
+       "intervention_zh": "减盐",
+       "marker": "收缩压",
+       "p_detect_favorable": 0.76,
+       "label": {
+        "schema": "la-label/1",
+        "basis_kind": "statistical_model",
+        "label_zh": "统计模型估计",
+        "generated_at": "2026-10-12T09:00:00+08:00"
+       }
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "diagnosis_hit",
+       "prediction_ready",
+       "milestone",
+       "life_event_followup"
+      ],
+      "messages": [
+       {
+        "trigger": "diagnosis_hit",
+        "status": "scheduled"
+       }
+      ],
+      "agenda": [
+       "diagnosis_hit",
+       "prediction_ready",
+       "milestone",
+       "life_event_followup"
+      ],
+      "suppressed": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "policy-cooldown",
+   "about": "The pre-due retest reminder went out 3 days ago; on the due day the same retest is still cooling down.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "retests": [
+      {
+       "id": "R-glucose",
+       "marker": "空腹血糖",
+       "due_at": "2026-10-12T18:00:00+08:00",
+       "reason": "guideline",
+       "judgeable": true
+      }
+     ]
+    },
+    "history": {
+     "fired": [
+      {
+       "dedup_key": "retest_due:R-glucose:2026-10-12T18:00:00+08:00:pre",
+       "trigger": "retest_due",
+       "subject_key": "retest_due:retest=R-glucose",
+       "event_id": "E-prior",
+       "at": "2026-10-09T10:00:00+08:00",
+       "via": "message"
+      }
+     ],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "messages": [],
+      "suppressed": [
+       {
+        "trigger": "retest_due",
+        "reason": "cooldown"
+       }
+      ]
+     }
+    },
+    {
+     "op": "scan",
+     "now": "2026-10-16T10:00:00+08:00",
+     "expect": {
+      "messages": [
+       {
+        "trigger": "retest_due",
+        "status": "scheduled"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "policy-mute",
+   "about": "Milestones muted: suppressed, not in the agenda, nothing recorded.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     },
+     "muted_triggers": [
+      "milestone"
+     ]
+    },
+    "commitments": [
+     {
+      "id": "C1",
+      "label_zh": "工作日晚饭用限盐勺",
+      "plan_item": "I3",
+      "status": "active",
+      "started_at": "2026-08-01",
+      "cumulative": 20,
+      "last_checkin_at": "2026-10-10"
+     }
+    ],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "messages": [],
+      "agenda": [],
+      "suppressed": [
+       {
+        "trigger": "milestone",
+        "reason": "muted"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "policy-no-consent",
+   "about": "Never asked: no messages, Pi should ask once; the item still reaches the agenda.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {},
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "retests": [
+      {
+       "id": "R-glucose",
+       "marker": "空腹血糖",
+       "due_at": "2026-10-19T09:00:00+08:00",
+       "reason": "guideline",
+       "judgeable": true
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "messages": [
+       {
+        "trigger": "retest_due",
+        "status": "suppressed",
+        "suppressed_reason": "no_consent"
+       }
+      ],
+      "agenda": [
+       "retest_due"
+      ],
+      "suppressed": [
+       {
+        "trigger": "retest_due",
+        "reason": "no_consent"
+       }
+      ],
+      "policy": {
+       "ask_consent": true
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "policy-category-off",
+   "about": "Data category switched off, retest on: the retest is sent, the data item is not.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": false,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "retests": [
+      {
+       "id": "R-glucose",
+       "marker": "空腹血糖",
+       "due_at": "2026-10-19T09:00:00+08:00",
+       "reason": "guideline",
+       "judgeable": true
+      }
+     ],
+     "predictions": [
+      {
+       "schema": "la-prediction/1",
+       "id": "P1",
+       "plan_item": "I3",
+       "intervention_zh": "减盐",
+       "marker": "收缩压",
+       "p_detect_favorable": 0.76,
+       "label": {
+        "schema": "la-label/1",
+        "basis_kind": "statistical_model",
+        "label_zh": "统计模型估计",
+        "generated_at": "2026-10-12T09:00:00+08:00"
+       }
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "messages": [
+       {
+        "trigger": "retest_due",
+        "status": "scheduled"
+       },
+       {
+        "trigger": "prediction_ready",
+        "status": "suppressed",
+        "suppressed_reason": "no_consent"
+       }
+      ],
+      "suppressed": [
+       {
+        "trigger": "prediction_ready",
+        "reason": "no_consent"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "policy-downshift",
+   "about": "Three proactive messages in a row never opened: at most one a week, and Pi asks lightly next time.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "retests": [
+      {
+       "id": "R-glucose",
+       "marker": "空腹血糖",
+       "due_at": "2026-10-19T09:00:00+08:00",
+       "reason": "guideline",
+       "judgeable": true
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "actions": [],
+     "messages": [
+      {
+       "id": "M-a",
+       "event": "E-prior",
+       "trigger": "milestone",
+       "category": "coaching",
+       "status": "sent",
+       "send_after": "2026-09-20T10:00:00+08:00",
+       "sent_at": "2026-09-20T10:00:00+08:00",
+       "expires_at": "2026-09-20T10:00:00+08:00",
+       "dedup_key": "milestone:M-a",
+       "subject": {}
+      },
+      {
+       "id": "M-b",
+       "event": "E-prior",
+       "trigger": "retest_due",
+       "category": "retest",
+       "status": "expired",
+       "send_after": "2026-09-28T10:00:00+08:00",
+       "sent_at": "2026-09-28T10:00:00+08:00",
+       "expires_at": "2026-09-28T10:00:00+08:00",
+       "dedup_key": "retest_due:M-b",
+       "subject": {}
+      },
+      {
+       "id": "M-c",
+       "event": "E-prior",
+       "trigger": "new_data_ready",
+       "category": "data",
+       "status": "sent",
+       "send_after": "2026-10-09T10:00:00+08:00",
+       "sent_at": "2026-10-09T10:00:00+08:00",
+       "expires_at": "2026-10-09T10:00:00+08:00",
+       "dedup_key": "new_data_ready:M-c",
+       "subject": {}
+      }
+     ]
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "messages": [
+       {
+        "trigger": "retest_due",
+        "status": "suppressed",
+        "suppressed_reason": "cap"
+       }
+      ],
+      "policy": {
+       "downshifted": true,
+       "ask_about_frequency": true
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "policy-downshift-not-when-opened",
+   "about": "The latest of the three was opened: no downshift; one sent this week is under 3.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "retests": [
+      {
+       "id": "R-glucose",
+       "marker": "空腹血糖",
+       "due_at": "2026-10-19T09:00:00+08:00",
+       "reason": "guideline",
+       "judgeable": true
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "actions": [],
+     "messages": [
+      {
+       "id": "M-a",
+       "event": "E-prior",
+       "trigger": "milestone",
+       "category": "coaching",
+       "status": "sent",
+       "send_after": "2026-09-20T10:00:00+08:00",
+       "sent_at": "2026-09-20T10:00:00+08:00",
+       "expires_at": "2026-09-20T10:00:00+08:00",
+       "dedup_key": "milestone:M-a",
+       "subject": {}
+      },
+      {
+       "id": "M-b",
+       "event": "E-prior",
+       "trigger": "retest_due",
+       "category": "retest",
+       "status": "expired",
+       "send_after": "2026-09-28T10:00:00+08:00",
+       "sent_at": "2026-09-28T10:00:00+08:00",
+       "expires_at": "2026-09-28T10:00:00+08:00",
+       "dedup_key": "retest_due:M-b",
+       "subject": {}
+      },
+      {
+       "id": "M-c",
+       "event": "E-prior",
+       "trigger": "new_data_ready",
+       "category": "data",
+       "status": "read",
+       "send_after": "2026-10-09T10:00:00+08:00",
+       "sent_at": "2026-10-09T10:00:00+08:00",
+       "expires_at": "2026-10-09T10:00:00+08:00",
+       "dedup_key": "new_data_ready:M-c",
+       "subject": {},
+       "opened_at": "2026-10-09T12:00:00+08:00"
+      }
+     ]
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "messages": [
+       {
+        "trigger": "retest_due",
+        "status": "scheduled"
+       }
+      ],
+      "policy": {
+       "downshifted": false
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "case-C",
+   "about": "Appendix C: week-6 checkpoint of salt reduction, the 20th check-in and the glucose retest due all land at 23:00 on 2026-08-31. Only the retest (highest priority) is sent, deferred to 08:00; the checkpoint and milestone go to the agenda. Next morning nothing new; on the due day the retest fires again after its 7-day cooldown.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-casec",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-08-28",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [
+     {
+      "id": "C1",
+      "label_zh": "工作日晚饭用限盐勺",
+      "plan_item": "I3",
+      "status": "active",
+      "started_at": "2026-07-20",
+      "cumulative": 20,
+      "last_checkin_at": "2026-08-31"
+     }
+    ],
+    "experiments": [
+     {
+      "id": "X1",
+      "plan_item": "I3",
+      "intervention_zh": "减盐",
+      "marker": "收缩压",
+      "started_at": "2026-07-20",
+      "min_weeks": 6,
+      "repeats_needed": 14,
+      "post_started_at": null,
+      "post_done": 0,
+      "prediction_ref": "P1"
+     }
+    ],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "retests": [
+      {
+       "id": "R-glucose",
+       "marker": "空腹血糖",
+       "due_at": "2026-09-07T09:00:00+08:00",
+       "reason": "guideline",
+       "judgeable": true
+      }
+     ],
+     "predictions": [
+      {
+       "schema": "la-prediction/1",
+       "id": "P1",
+       "plan_item": "I3",
+       "intervention_zh": "减盐",
+       "marker": "收缩压",
+       "p_detect_favorable": 0.49,
+       "label": {
+        "schema": "la-label/1",
+        "basis_kind": "statistical_model",
+        "label_zh": "统计模型估计",
+        "generated_at": "2026-07-19T10:00:00+08:00"
+       }
+      }
+     ]
+    },
+    "history": {
+     "fired": [
+      {
+       "dedup_key": "prediction_ready:P1:2026-07-19T10:00:00+08:00",
+       "trigger": "prediction_ready",
+       "subject_key": "prediction_ready:prediction=P1",
+       "event_id": "E-prior",
+       "at": "2026-07-19T10:00:00+08:00",
+       "via": "message"
+      }
+     ],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-08-31T23:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "retest_due",
+       "experiment_checkpoint",
+       "milestone"
+      ],
+      "messages": [
+       {
+        "trigger": "retest_due",
+        "status": "scheduled",
+        "send_after": "2026-09-01T08:00:00+08:00",
+        "deferred_reason": "quiet_hours",
+        "id": "M-20260901-210f1f64"
+       }
+      ],
+      "agenda": [
+       "retest_due",
+       "experiment_checkpoint",
+       "milestone"
+      ]
+     }
+    },
+    {
+     "op": "scan",
+     "now": "2026-09-01T09:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": [],
+      "agenda": [
+       "retest_due",
+       "experiment_checkpoint",
+       "milestone"
+      ]
+     },
+     "opening": true
+    },
+    {
+     "op": "scan",
+     "now": "2026-09-01T09:30:00+08:00",
+     "expect": {
+      "events": [],
+      "agenda": []
+     }
+    },
+    {
+     "op": "scan",
+     "now": "2026-09-07T10:00:00+08:00",
+     "expect": {
+      "events": [
+       "retest_due:R-glucose:2026-09-07T09:00:00+08:00:due"
+      ],
+      "messages": [
+       {
+        "trigger": "retest_due",
+        "status": "scheduled",
+        "title_zh": "该复查空腹血糖了"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "ack-checkin",
+   "about": "Check-in from the milestone message: 20 → 21, a celebration line; the same action again changes nothing.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [
+     {
+      "id": "C1",
+      "label_zh": "工作日晚饭用限盐勺",
+      "plan_item": "I3",
+      "status": "active",
+      "started_at": "2026-08-01",
+      "cumulative": 20,
+      "last_checkin_at": "2026-10-10"
+     }
+    ],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "messages": [
+       {
+        "trigger": "milestone"
+       }
+      ]
+     }
+    },
+    {
+     "op": "ack",
+     "now": "2026-10-12T10:05:00+08:00",
+     "action": {
+      "schema": "pi-action/1",
+      "message": "$messages[0].id",
+      "action": "a1",
+      "type": "checkin",
+      "at": "2026-10-12T10:05:00+08:00",
+      "params": {},
+      "idempotency_key": "$messages[0].id:a1"
+     },
+     "expect": {
+      "result": {
+       "ok": true,
+       "duplicate": false,
+       "cumulative": 21,
+       "celebration_zh": "记上了，累计第 21 次！",
+       "message_status": "acted"
+      },
+      "state": {
+       "commitments.0.cumulative": 21,
+       "commitments.0.last_checkin_at": "2026-10-12T10:05:00+08:00"
+      }
+     }
+    },
+    {
+     "op": "ack",
+     "now": "2026-10-12T10:06:00+08:00",
+     "action": {
+      "schema": "pi-action/1",
+      "message": "$messages[0].id",
+      "action": "a1",
+      "type": "checkin",
+      "at": "2026-10-12T10:05:00+08:00",
+      "params": {},
+      "idempotency_key": "$messages[0].id:a1"
+     },
+     "expect": {
+      "result": {
+       "duplicate": true,
+       "cumulative": 21
+      },
+      "state": {
+       "commitments.0.cumulative": 21,
+       "history.actions.length": 1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "ack-checkin-milestone",
+   "about": "A check-in that reaches 20 celebrates the milestone at once; the next scan does not celebrate it again.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [
+     {
+      "id": "C1",
+      "label_zh": "工作日晚饭用限盐勺",
+      "plan_item": "I3",
+      "status": "active",
+      "started_at": "2026-08-01",
+      "cumulative": 19,
+      "last_checkin_at": "2026-09-20"
+     }
+    ],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [
+      {
+       "dedup_key": "milestone:C1:10",
+       "trigger": "milestone",
+       "subject_key": "milestone:commitment=C1",
+       "event_id": "E-prior",
+       "at": "2026-09-10T10:00:00+08:00",
+       "via": "message"
+      }
+     ],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "messages": [
+       {
+        "trigger": "checkin_gap"
+       }
+      ]
+     }
+    },
+    {
+     "op": "ack",
+     "now": "2026-10-12T10:05:00+08:00",
+     "action": {
+      "schema": "pi-action/1",
+      "message": "$messages[0].id",
+      "action": "x",
+      "type": "checkin",
+      "at": "2026-10-12T10:05:00+08:00",
+      "params": {
+       "commitment": "C1"
+      },
+      "idempotency_key": "k-1"
+     },
+     "expect": {
+      "result": {
+       "cumulative": 20,
+       "celebration_zh": "第 20 次！离带孙子爬泰山又近了一步。"
+      }
+     }
+    },
+    {
+     "op": "scan",
+     "now": "2026-10-13T10:00:00+08:00",
+     "expect": {
+      "events": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "ack-snooze",
+   "about": "Snooze 1 day: nothing the same day, the message comes back the next day.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "retests": [
+      {
+       "id": "R-glucose",
+       "marker": "空腹血糖",
+       "due_at": "2026-10-19T09:00:00+08:00",
+       "reason": "guideline",
+       "judgeable": true
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "messages": [
+       {
+        "trigger": "retest_due",
+        "status": "scheduled"
+       }
+      ]
+     }
+    },
+    {
+     "op": "ack",
+     "now": "2026-10-12T10:10:00+08:00",
+     "action": {
+      "schema": "pi-action/1",
+      "message": "$messages[0].id",
+      "action": "a2",
+      "type": "snooze",
+      "at": "2026-10-12T10:10:00+08:00",
+      "params": {
+       "days": 1
+      },
+      "idempotency_key": "$messages[0].id:a2"
+     },
+     "expect": {
+      "result": {
+       "until": "2026-10-13T10:10:00+08:00"
+      },
+      "state": {
+       "snoozes.length": 1
+      }
+     }
+    },
+    {
+     "op": "scan",
+     "now": "2026-10-13T09:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": []
+     }
+    },
+    {
+     "op": "scan",
+     "now": "2026-10-13T10:30:00+08:00",
+     "expect": {
+      "messages": [
+       {
+        "trigger": "retest_due",
+        "status": "scheduled",
+        "send_after": "2026-10-13T10:30:00+08:00"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "ack-snooze-bad-days",
+   "about": "Snooze must be 1, 3 or 7 days.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "retests": [
+      {
+       "id": "R-glucose",
+       "marker": "空腹血糖",
+       "due_at": "2026-10-19T09:00:00+08:00",
+       "reason": "guideline",
+       "judgeable": true
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {}
+    },
+    {
+     "op": "ack",
+     "now": "2026-10-12T10:00:00+08:00",
+     "action": {
+      "schema": "pi-action/1",
+      "message": "$messages[0].id",
+      "action": "a2",
+      "type": "snooze",
+      "at": "2026-10-12T10:00:00+08:00",
+      "params": {
+       "days": 2
+      },
+      "idempotency_key": "k"
+     },
+     "expect": {
+      "error": true
+     }
+    }
+   ]
+  },
+  {
+   "id": "ack-mute",
+   "about": "这类不再提醒 takes effect at once.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [
+     {
+      "id": "C1",
+      "label_zh": "工作日晚饭用限盐勺",
+      "plan_item": "I3",
+      "status": "active",
+      "started_at": "2026-08-01",
+      "cumulative": 20,
+      "last_checkin_at": "2026-10-10"
+     }
+    ],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "messages": [
+       {
+        "trigger": "milestone"
+       }
+      ]
+     }
+    },
+    {
+     "op": "ack",
+     "now": "2026-10-12T10:00:00+08:00",
+     "action": {
+      "schema": "pi-action/1",
+      "message": "$messages[0].id",
+      "action": "m",
+      "type": "mute_trigger",
+      "at": "2026-10-12T10:00:00+08:00",
+      "params": {},
+      "idempotency_key": "k"
+     },
+     "expect": {
+      "result": {
+       "muted_trigger": "milestone"
+      },
+      "state": {
+       "preferences.muted_triggers": [
+        "milestone"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "ack-mute-urgent-refused",
+   "about": "critical_value cannot be muted.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [
+     {
+      "id": "m1",
+      "at": "2026-10-12T09:30:00+08:00",
+      "kind": "blood_pressure",
+      "unit": "mmHg",
+      "values": {
+       "sbp": 190,
+       "dbp": 100
+      }
+     }
+    ],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {}
+    },
+    {
+     "op": "ack",
+     "now": "2026-10-12T10:00:00+08:00",
+     "action": {
+      "schema": "pi-action/1",
+      "message": "$messages[0].id",
+      "action": "m",
+      "type": "mute_trigger",
+      "at": "2026-10-12T10:00:00+08:00",
+      "params": {},
+      "idempotency_key": "k"
+     },
+     "expect": {
+      "error": true
+     }
+    }
+   ]
+  },
+  {
+   "id": "ack-schedule-retest",
+   "about": "已预约: the due-day reminder is skipped.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "retests": [
+      {
+       "id": "R-glucose",
+       "marker": "空腹血糖",
+       "due_at": "2026-10-19T09:00:00+08:00",
+       "reason": "guideline",
+       "judgeable": true
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {}
+    },
+    {
+     "op": "ack",
+     "now": "2026-10-12T10:00:00+08:00",
+     "action": {
+      "schema": "pi-action/1",
+      "message": "$messages[0].id",
+      "action": "a1",
+      "type": "schedule_retest",
+      "at": "2026-10-12T10:00:00+08:00",
+      "params": {},
+      "idempotency_key": "k"
+     },
+     "expect": {
+      "state": {
+       "retests_scheduled": [
+        "R-glucose"
+       ]
+      }
+     }
+    },
+    {
+     "op": "scan",
+     "now": "2026-10-19T10:00:00+08:00",
+     "expect": {
+      "events": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "ack-start-experiment",
+   "about": "开始后测 records the start; the checkpoint does not come back.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [
+     {
+      "id": "X1",
+      "plan_item": "I3",
+      "intervention_zh": "减盐",
+      "marker": "收缩压",
+      "started_at": "2026-08-31",
+      "min_weeks": 6,
+      "repeats_needed": 14,
+      "post_started_at": null,
+      "post_done": 0,
+      "prediction_ref": null
+     }
+    ],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {}
+    },
+    {
+     "op": "ack",
+     "now": "2026-10-12T10:00:00+08:00",
+     "action": {
+      "schema": "pi-action/1",
+      "message": "$messages[0].id",
+      "action": "a1",
+      "type": "start_experiment_phase",
+      "at": "2026-10-12T10:00:00+08:00",
+      "params": {},
+      "idempotency_key": "k"
+     },
+     "expect": {
+      "state": {
+       "experiments.0.post_started_at": "2026-10-12T10:00:00+08:00"
+      }
+     }
+    },
+    {
+     "op": "scan",
+     "now": "2026-10-15T10:00:00+08:00",
+     "expect": {
+      "events": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "ack-read-ends-downshift",
+   "about": "Opening a message (read) counts as opened, which ends the downshift.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "retests": [
+      {
+       "id": "R-glucose",
+       "marker": "空腹血糖",
+       "due_at": "2026-10-19T09:00:00+08:00",
+       "reason": "guideline",
+       "judgeable": true
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "actions": [],
+     "messages": [
+      {
+       "id": "M-a",
+       "event": "E-prior",
+       "trigger": "milestone",
+       "category": "coaching",
+       "status": "sent",
+       "send_after": "2026-09-20T10:00:00+08:00",
+       "sent_at": "2026-09-20T10:00:00+08:00",
+       "expires_at": "2026-09-20T10:00:00+08:00",
+       "dedup_key": "milestone:M-a",
+       "subject": {}
+      },
+      {
+       "id": "M-b",
+       "event": "E-prior",
+       "trigger": "retest_due",
+       "category": "retest",
+       "status": "expired",
+       "send_after": "2026-09-28T10:00:00+08:00",
+       "sent_at": "2026-09-28T10:00:00+08:00",
+       "expires_at": "2026-09-28T10:00:00+08:00",
+       "dedup_key": "retest_due:M-b",
+       "subject": {}
+      },
+      {
+       "id": "M-c",
+       "event": "E-prior",
+       "trigger": "new_data_ready",
+       "category": "data",
+       "status": "sent",
+       "send_after": "2026-10-09T10:00:00+08:00",
+       "sent_at": "2026-10-09T10:00:00+08:00",
+       "expires_at": "2026-10-09T10:00:00+08:00",
+       "dedup_key": "new_data_ready:M-c",
+       "subject": {}
+      }
+     ]
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "ack",
+     "now": "2026-10-12T10:00:00+08:00",
+     "action": {
+      "schema": "pi-action/1",
+      "message": "M-c",
+      "action": "read",
+      "type": "read",
+      "at": "2026-10-12T10:00:00+08:00",
+      "params": {},
+      "idempotency_key": "M-c:read"
+     },
+     "expect": {
+      "result": {
+       "message_status": "read"
+      }
+     }
+    },
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "policy": {
+       "downshifted": false
+      },
+      "messages": [
+       {
+        "trigger": "retest_due",
+        "status": "scheduled"
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "lint_cases": [
+  {
+   "id": "lint-draft-ok",
+   "about": "The default draft passes.",
+   "event": {
+    "schema": "pi-event/1",
+    "id": "E-20261012-063ef02e",
+    "member": "pi-synth",
+    "trigger": "experiment_checkpoint",
+    "category": "coaching",
+    "priority": 40,
+    "occurred_at": "2026-10-12T10:00:00+08:00",
+    "subject": {
+     "experiment": "X1"
+    },
+    "payload": {
+     "experiment": "X1",
+     "plan_item": "I3",
+     "intervention_zh": "减盐",
+     "marker": "收缩压",
+     "repeats_needed": 14,
+     "phase": "post_start",
+     "weeks_done": 6,
+     "prediction_ref": "P1",
+     "p_pct": 49,
+     "p_detect_favorable": 0.49,
+     "label_zh": "统计模型估计"
+    },
+    "refs": [
+     {
+      "type": "prediction",
+      "id": "P1"
+     }
+    ],
+    "dedup_key": "experiment_checkpoint:X1:post_start"
+   },
+   "message": {
+    "schema": "pi-message/1",
+    "id": "M-20261012-063ef02e",
+    "member": "pi-synth",
+    "event": "E-20261012-063ef02e",
+    "trigger": "experiment_checkpoint",
+    "category": "coaching",
+    "priority": 40,
+    "title_zh": "可以开始后测了",
+    "body_zh": "减盐已经坚持 6 周了。接下来量 14 天收缩压，每天一次，就能看出这次改变对你有没有用。按你的情况，能测出效果的概率约 49%（统计模型估计）。",
+    "push_text_zh": "Pi 有一件事想和你说",
+    "numbers": [
+     {
+      "ref": "P1.p_detect_favorable",
+      "value": 0.49,
+      "label": "统计模型估计"
+     }
+    ],
+    "actions": [
+     {
+      "id": "a1",
+      "label_zh": "开始后测",
+      "type": "start_experiment_phase"
+     },
+     {
+      "id": "a2",
+      "label_zh": "晚点提醒我",
+      "type": "snooze",
+      "params": {
+       "days": 1
+      }
+     }
+    ],
+    "deep_link": "longpi://experiment/X1",
+    "status": "scheduled",
+    "send_after": "2026-10-12T10:00:00+08:00",
+    "expires_at": "2026-10-15T10:00:00+08:00"
+   },
+   "expect": {
+    "ok": true,
+    "codes": []
+   }
+  },
+  {
+   "id": "lint-number-not-in-payload",
+   "about": "7 weeks is not in the payload (6).",
+   "event": {
+    "schema": "pi-event/1",
+    "id": "E-20261012-063ef02e",
+    "member": "pi-synth",
+    "trigger": "experiment_checkpoint",
+    "category": "coaching",
+    "priority": 40,
+    "occurred_at": "2026-10-12T10:00:00+08:00",
+    "subject": {
+     "experiment": "X1"
+    },
+    "payload": {
+     "experiment": "X1",
+     "plan_item": "I3",
+     "intervention_zh": "减盐",
+     "marker": "收缩压",
+     "repeats_needed": 14,
+     "phase": "post_start",
+     "weeks_done": 6,
+     "prediction_ref": "P1",
+     "p_pct": 49,
+     "p_detect_favorable": 0.49,
+     "label_zh": "统计模型估计"
+    },
+    "refs": [
+     {
+      "type": "prediction",
+      "id": "P1"
+     }
+    ],
+    "dedup_key": "experiment_checkpoint:X1:post_start"
+   },
+   "message": {
+    "schema": "pi-message/1",
+    "id": "M-20261012-063ef02e",
+    "member": "pi-synth",
+    "event": "E-20261012-063ef02e",
+    "trigger": "experiment_checkpoint",
+    "category": "coaching",
+    "priority": 40,
+    "title_zh": "可以开始后测了",
+    "body_zh": "减盐已经坚持 7 周了。接下来量 14 天收缩压，每天一次，就能看出这次改变对你有没有用。按你的情况，能测出效果的概率约 49%（统计模型估计）。",
+    "push_text_zh": "Pi 有一件事想和你说",
+    "numbers": [
+     {
+      "ref": "P1.p_detect_favorable",
+      "value": 0.49,
+      "label": "统计模型估计"
+     }
+    ],
+    "actions": [
+     {
+      "id": "a1",
+      "label_zh": "开始后测",
+      "type": "start_experiment_phase"
+     },
+     {
+      "id": "a2",
+      "label_zh": "晚点提醒我",
+      "type": "snooze",
+      "params": {
+       "days": 1
+      }
+     }
+    ],
+    "deep_link": "longpi://experiment/X1",
+    "status": "scheduled",
+    "send_after": "2026-10-12T10:00:00+08:00",
+    "expires_at": "2026-10-15T10:00:00+08:00"
+   },
+   "expect": {
+    "ok": false,
+    "codes": [
+     "number_without_source"
+    ]
+   }
+  },
+  {
+   "id": "lint-prob-without-label",
+   "about": "A probability without its label.",
+   "event": {
+    "schema": "pi-event/1",
+    "id": "E-20261012-063ef02e",
+    "member": "pi-synth",
+    "trigger": "experiment_checkpoint",
+    "category": "coaching",
+    "priority": 40,
+    "occurred_at": "2026-10-12T10:00:00+08:00",
+    "subject": {
+     "experiment": "X1"
+    },
+    "payload": {
+     "experiment": "X1",
+     "plan_item": "I3",
+     "intervention_zh": "减盐",
+     "marker": "收缩压",
+     "repeats_needed": 14,
+     "phase": "post_start",
+     "weeks_done": 6,
+     "prediction_ref": "P1",
+     "p_pct": 49,
+     "p_detect_favorable": 0.49,
+     "label_zh": "统计模型估计"
+    },
+    "refs": [
+     {
+      "type": "prediction",
+      "id": "P1"
+     }
+    ],
+    "dedup_key": "experiment_checkpoint:X1:post_start"
+   },
+   "message": {
+    "schema": "pi-message/1",
+    "id": "M-20261012-063ef02e",
+    "member": "pi-synth",
+    "event": "E-20261012-063ef02e",
+    "trigger": "experiment_checkpoint",
+    "category": "coaching",
+    "priority": 40,
+    "title_zh": "可以开始后测了",
+    "body_zh": "减盐已经坚持 6 周了。接下来量 14 天收缩压，每天一次，就能看出这次改变对你有没有用。按你的情况，能测出效果的概率约 49%。",
+    "push_text_zh": "Pi 有一件事想和你说",
+    "numbers": [
+     {
+      "ref": "P1.p_detect_favorable",
+      "value": 0.49,
+      "label": "统计模型估计"
+     }
+    ],
+    "actions": [
+     {
+      "id": "a1",
+      "label_zh": "开始后测",
+      "type": "start_experiment_phase"
+     },
+     {
+      "id": "a2",
+      "label_zh": "晚点提醒我",
+      "type": "snooze",
+      "params": {
+       "days": 1
+      }
+     }
+    ],
+    "deep_link": "longpi://experiment/X1",
+    "status": "scheduled",
+    "send_after": "2026-10-12T10:00:00+08:00",
+    "expires_at": "2026-10-15T10:00:00+08:00"
+   },
+   "expect": {
+    "ok": false,
+    "codes": [
+     "label_not_in_body",
+     "missing_label"
+    ]
+   }
+  },
+  {
+   "id": "lint-forbidden",
+   "about": "Guilt wording.",
+   "event": {
+    "schema": "pi-event/1",
+    "id": "E-20261012-063ef02e",
+    "member": "pi-synth",
+    "trigger": "experiment_checkpoint",
+    "category": "coaching",
+    "priority": 40,
+    "occurred_at": "2026-10-12T10:00:00+08:00",
+    "subject": {
+     "experiment": "X1"
+    },
+    "payload": {
+     "experiment": "X1",
+     "plan_item": "I3",
+     "intervention_zh": "减盐",
+     "marker": "收缩压",
+     "repeats_needed": 14,
+     "phase": "post_start",
+     "weeks_done": 6,
+     "prediction_ref": "P1",
+     "p_pct": 49,
+     "p_detect_favorable": 0.49,
+     "label_zh": "统计模型估计"
+    },
+    "refs": [
+     {
+      "type": "prediction",
+      "id": "P1"
+     }
+    ],
+    "dedup_key": "experiment_checkpoint:X1:post_start"
+   },
+   "message": {
+    "schema": "pi-message/1",
+    "id": "M-20261012-063ef02e",
+    "member": "pi-synth",
+    "event": "E-20261012-063ef02e",
+    "trigger": "experiment_checkpoint",
+    "category": "coaching",
+    "priority": 40,
+    "title_zh": "可以开始后测了",
+    "body_zh": "你又没做到，再不开始后测就晚了。",
+    "push_text_zh": "Pi 有一件事想和你说",
+    "numbers": [
+     {
+      "ref": "P1.p_detect_favorable",
+      "value": 0.49,
+      "label": "统计模型估计"
+     }
+    ],
+    "actions": [
+     {
+      "id": "a1",
+      "label_zh": "开始后测",
+      "type": "start_experiment_phase"
+     },
+     {
+      "id": "a2",
+      "label_zh": "晚点提醒我",
+      "type": "snooze",
+      "params": {
+       "days": 1
+      }
+     }
+    ],
+    "deep_link": "longpi://experiment/X1",
+    "status": "scheduled",
+    "send_after": "2026-10-12T10:00:00+08:00",
+    "expires_at": "2026-10-15T10:00:00+08:00"
+   },
+   "expect": {
+    "ok": false,
+    "codes": [
+     "forbidden_word",
+     "forbidden_word",
+     "forbidden_word",
+     "forbidden_word",
+     "label_not_in_body",
+     "missing_label"
+    ]
+   }
+  },
+  {
+   "id": "lint-too-many-buttons",
+   "about": "Four buttons.",
+   "event": {
+    "schema": "pi-event/1",
+    "id": "E-20261012-063ef02e",
+    "member": "pi-synth",
+    "trigger": "experiment_checkpoint",
+    "category": "coaching",
+    "priority": 40,
+    "occurred_at": "2026-10-12T10:00:00+08:00",
+    "subject": {
+     "experiment": "X1"
+    },
+    "payload": {
+     "experiment": "X1",
+     "plan_item": "I3",
+     "intervention_zh": "减盐",
+     "marker": "收缩压",
+     "repeats_needed": 14,
+     "phase": "post_start",
+     "weeks_done": 6,
+     "prediction_ref": "P1",
+     "p_pct": 49,
+     "p_detect_favorable": 0.49,
+     "label_zh": "统计模型估计"
+    },
+    "refs": [
+     {
+      "type": "prediction",
+      "id": "P1"
+     }
+    ],
+    "dedup_key": "experiment_checkpoint:X1:post_start"
+   },
+   "message": {
+    "schema": "pi-message/1",
+    "id": "M-20261012-063ef02e",
+    "member": "pi-synth",
+    "event": "E-20261012-063ef02e",
+    "trigger": "experiment_checkpoint",
+    "category": "coaching",
+    "priority": 40,
+    "title_zh": "可以开始后测了",
+    "body_zh": "减盐已经坚持 6 周了。接下来量 14 天收缩压，每天一次，就能看出这次改变对你有没有用。按你的情况，能测出效果的概率约 49%（统计模型估计）。",
+    "push_text_zh": "Pi 有一件事想和你说",
+    "numbers": [
+     {
+      "ref": "P1.p_detect_favorable",
+      "value": 0.49,
+      "label": "统计模型估计"
+     }
+    ],
+    "actions": [
+     {
+      "id": "a1",
+      "label_zh": "开始后测",
+      "type": "start_experiment_phase"
+     },
+     {
+      "id": "a2",
+      "label_zh": "晚点提醒我",
+      "type": "snooze",
+      "params": {
+       "days": 1
+      }
+     },
+     {
+      "id": "a3",
+      "label_zh": "去聊聊",
+      "type": "open_chat"
+     },
+     {
+      "id": "a4",
+      "label_zh": "先不了",
+      "type": "dismiss"
+     }
+    ],
+    "deep_link": "longpi://experiment/X1",
+    "status": "scheduled",
+    "send_after": "2026-10-12T10:00:00+08:00",
+    "expires_at": "2026-10-15T10:00:00+08:00"
+   },
+   "expect": {
+    "ok": false,
+    "codes": [
+     "too_many_actions"
+    ]
+   }
+  },
+  {
+   "id": "lint-title-long",
+   "about": "Title over 20 characters.",
+   "event": {
+    "schema": "pi-event/1",
+    "id": "E-20261012-063ef02e",
+    "member": "pi-synth",
+    "trigger": "experiment_checkpoint",
+    "category": "coaching",
+    "priority": 40,
+    "occurred_at": "2026-10-12T10:00:00+08:00",
+    "subject": {
+     "experiment": "X1"
+    },
+    "payload": {
+     "experiment": "X1",
+     "plan_item": "I3",
+     "intervention_zh": "减盐",
+     "marker": "收缩压",
+     "repeats_needed": 14,
+     "phase": "post_start",
+     "weeks_done": 6,
+     "prediction_ref": "P1",
+     "p_pct": 49,
+     "p_detect_favorable": 0.49,
+     "label_zh": "统计模型估计"
+    },
+    "refs": [
+     {
+      "type": "prediction",
+      "id": "P1"
+     }
+    ],
+    "dedup_key": "experiment_checkpoint:X1:post_start"
+   },
+   "message": {
+    "schema": "pi-message/1",
+    "id": "M-20261012-063ef02e",
+    "member": "pi-synth",
+    "event": "E-20261012-063ef02e",
+    "trigger": "experiment_checkpoint",
+    "category": "coaching",
+    "priority": 40,
+    "title_zh": "可以开始后测了，接下来两周每天早上量一次血压吧",
+    "body_zh": "减盐已经坚持 6 周了。接下来量 14 天收缩压，每天一次，就能看出这次改变对你有没有用。按你的情况，能测出效果的概率约 49%（统计模型估计）。",
+    "push_text_zh": "Pi 有一件事想和你说",
+    "numbers": [
+     {
+      "ref": "P1.p_detect_favorable",
+      "value": 0.49,
+      "label": "统计模型估计"
+     }
+    ],
+    "actions": [
+     {
+      "id": "a1",
+      "label_zh": "开始后测",
+      "type": "start_experiment_phase"
+     },
+     {
+      "id": "a2",
+      "label_zh": "晚点提醒我",
+      "type": "snooze",
+      "params": {
+       "days": 1
+      }
+     }
+    ],
+    "deep_link": "longpi://experiment/X1",
+    "status": "scheduled",
+    "send_after": "2026-10-12T10:00:00+08:00",
+    "expires_at": "2026-10-15T10:00:00+08:00"
+   },
+   "expect": {
+    "ok": false,
+    "codes": [
+     "title_length"
+    ]
+   }
+  },
+  {
+   "id": "lint-push-health-data",
+   "about": "Push text shows a number.",
+   "event": {
+    "schema": "pi-event/1",
+    "id": "E-20261012-063ef02e",
+    "member": "pi-synth",
+    "trigger": "experiment_checkpoint",
+    "category": "coaching",
+    "priority": 40,
+    "occurred_at": "2026-10-12T10:00:00+08:00",
+    "subject": {
+     "experiment": "X1"
+    },
+    "payload": {
+     "experiment": "X1",
+     "plan_item": "I3",
+     "intervention_zh": "减盐",
+     "marker": "收缩压",
+     "repeats_needed": 14,
+     "phase": "post_start",
+     "weeks_done": 6,
+     "prediction_ref": "P1",
+     "p_pct": 49,
+     "p_detect_favorable": 0.49,
+     "label_zh": "统计模型估计"
+    },
+    "refs": [
+     {
+      "type": "prediction",
+      "id": "P1"
+     }
+    ],
+    "dedup_key": "experiment_checkpoint:X1:post_start"
+   },
+   "message": {
+    "schema": "pi-message/1",
+    "id": "M-20261012-063ef02e",
+    "member": "pi-synth",
+    "event": "E-20261012-063ef02e",
+    "trigger": "experiment_checkpoint",
+    "category": "coaching",
+    "priority": 40,
+    "title_zh": "可以开始后测了",
+    "body_zh": "减盐已经坚持 6 周了。接下来量 14 天收缩压，每天一次，就能看出这次改变对你有没有用。按你的情况，能测出效果的概率约 49%（统计模型估计）。",
+    "push_text_zh": "收缩压后测提醒 6 周",
+    "numbers": [
+     {
+      "ref": "P1.p_detect_favorable",
+      "value": 0.49,
+      "label": "统计模型估计"
+     }
+    ],
+    "actions": [
+     {
+      "id": "a1",
+      "label_zh": "开始后测",
+      "type": "start_experiment_phase"
+     },
+     {
+      "id": "a2",
+      "label_zh": "晚点提醒我",
+      "type": "snooze",
+      "params": {
+       "days": 1
+      }
+     }
+    ],
+    "deep_link": "longpi://experiment/X1",
+    "status": "scheduled",
+    "send_after": "2026-10-12T10:00:00+08:00",
+    "expires_at": "2026-10-15T10:00:00+08:00"
+   },
+   "expect": {
+    "ok": false,
+    "codes": [
+     "push_text",
+     "push_has_health_data"
+    ]
+   }
+  },
+  {
+   "id": "lint-clinical-ok",
+   "about": "Diagnosis draft passes.",
+   "event": {
+    "schema": "pi-event/1",
+    "id": "E-20261012-709fa532",
+    "member": "pi-synth",
+    "trigger": "diagnosis_hit",
+    "category": "clinical",
+    "priority": 80,
+    "occurred_at": "2026-10-12T10:00:00+08:00",
+    "subject": {
+     "rule": "ada-ifg"
+    },
+    "payload": {
+     "diagnosis": "D1",
+     "rule": "ada-ifg",
+     "conclusion_zh": "空腹血糖 5.6 mmol/L，符合空腹血糖受损",
+     "source_zh": "ADA 指南",
+     "label_zh": "指南标准",
+     "basis_kind": "guideline_criteria"
+    },
+    "refs": [
+     {
+      "type": "diagnosis",
+      "id": "D1"
+     }
+    ],
+    "dedup_key": "diagnosis_hit:ada-ifg"
+   },
+   "message": {
+    "schema": "pi-message/1",
+    "id": "M-20261012-709fa532",
+    "member": "pi-synth",
+    "event": "E-20261012-709fa532",
+    "trigger": "diagnosis_hit",
+    "category": "clinical",
+    "priority": 80,
+    "title_zh": "有一项结论值得给医生看",
+    "body_zh": "空腹血糖 5.6 mmol/L，符合空腹血糖受损（ADA 指南，指南标准）。这需要医生来确认，我可以帮你把要问的整理好。",
+    "push_text_zh": "Pi 有一件事想和你说",
+    "numbers": [],
+    "actions": [
+     {
+      "id": "a1",
+      "label_zh": "整理问医生的单子",
+      "type": "prepare_doctor_brief"
+     },
+     {
+      "id": "a2",
+      "label_zh": "去聊聊",
+      "type": "open_chat"
+     }
+    ],
+    "deep_link": "longpi://cards/diagnosis",
+    "status": "scheduled",
+    "send_after": "2026-10-12T10:00:00+08:00",
+    "expires_at": "2026-10-26T10:00:00+08:00"
+   },
+   "expect": {
+    "ok": true,
+    "codes": []
+   }
+  },
+  {
+   "id": "lint-clinical-no-label",
+   "about": "Clinical without source label and without the doctor-brief button.",
+   "event": {
+    "schema": "pi-event/1",
+    "id": "E-20261012-709fa532",
+    "member": "pi-synth",
+    "trigger": "diagnosis_hit",
+    "category": "clinical",
+    "priority": 80,
+    "occurred_at": "2026-10-12T10:00:00+08:00",
+    "subject": {
+     "rule": "ada-ifg"
+    },
+    "payload": {
+     "diagnosis": "D1",
+     "rule": "ada-ifg",
+     "conclusion_zh": "空腹血糖 5.6 mmol/L，符合空腹血糖受损",
+     "source_zh": "ADA 指南",
+     "label_zh": "指南标准",
+     "basis_kind": "guideline_criteria"
+    },
+    "refs": [
+     {
+      "type": "diagnosis",
+      "id": "D1"
+     }
+    ],
+    "dedup_key": "diagnosis_hit:ada-ifg"
+   },
+   "message": {
+    "schema": "pi-message/1",
+    "id": "M-20261012-709fa532",
+    "member": "pi-synth",
+    "event": "E-20261012-709fa532",
+    "trigger": "diagnosis_hit",
+    "category": "clinical",
+    "priority": 80,
+    "title_zh": "有一项结论值得给医生看",
+    "body_zh": "你的空腹血糖 5.6 mmol/L，符合空腹血糖受损。",
+    "push_text_zh": "Pi 有一件事想和你说",
+    "numbers": [],
+    "actions": [
+     {
+      "id": "a1",
+      "label_zh": "去聊聊",
+      "type": "open_chat"
+     }
+    ],
+    "deep_link": "longpi://cards/diagnosis",
+    "status": "scheduled",
+    "send_after": "2026-10-12T10:00:00+08:00",
+    "expires_at": "2026-10-26T10:00:00+08:00"
+   },
+   "expect": {
+    "ok": false,
+    "codes": [
+     "missing_label",
+     "missing_doctor_brief"
+    ]
+   }
+  },
+  {
+   "id": "lint-urgent-ok",
+   "about": "Urgent template passes.",
+   "event": {
+    "schema": "pi-event/1",
+    "id": "E-20261012-850780a2",
+    "member": "pi-synth",
+    "trigger": "critical_value",
+    "category": "urgent",
+    "priority": 100,
+    "occurred_at": "2026-10-12T09:30:00+08:00",
+    "subject": {
+     "measurement": "m1",
+     "rule": "bp_hypertensive_emergency"
+    },
+    "payload": {
+     "rule": "bp_hypertensive_emergency",
+     "kind": "blood_pressure",
+     "kind_zh": "血压",
+     "values": {
+      "sbp": 185,
+      "dbp": 100
+     },
+     "unit": "mmHg",
+     "value_text": "185/100 mmHg",
+     "source_short_zh": "中国高血压防治指南（2018 年修订版）",
+     "measurement": "m1"
+    },
+    "refs": [
+     {
+      "type": "rule",
+      "id": "bp_hypertensive_emergency"
+     },
+     {
+      "type": "measurement",
+      "id": "m1"
+     }
+    ],
+    "dedup_key": "critical_value:m1:bp_hypertensive_emergency"
+   },
+   "message": {
+    "schema": "pi-message/1",
+    "id": "M-20261012-850780a2",
+    "member": "pi-synth",
+    "event": "E-20261012-850780a2",
+    "trigger": "critical_value",
+    "category": "urgent",
+    "priority": 100,
+    "title_zh": "请马上处理",
+    "body_zh": "建议你现在就拨打 120 或尽快就医。你刚记录的血压是 185/100 mmHg，已经达到中国高血压防治指南（2018 年修订版）里的危急水平。",
+    "push_text_zh": "Pi 有一件要紧的事，请尽快打开看看",
+    "numbers": [],
+    "actions": [
+     {
+      "id": "a1",
+      "label_zh": "拨打 120",
+      "type": "call_emergency"
+     },
+     {
+      "id": "a2",
+      "label_zh": "去聊聊",
+      "type": "open_chat"
+     }
+    ],
+    "deep_link": "longpi://chat",
+    "status": "scheduled",
+    "send_after": "2026-10-12T10:00:00+08:00",
+    "expires_at": "2026-10-13T10:00:00+08:00"
+   },
+   "expect": {
+    "ok": true,
+    "codes": []
+   }
+  },
+  {
+   "id": "lint-urgent-rewritten",
+   "about": "Urgent rewritten by the model.",
+   "event": {
+    "schema": "pi-event/1",
+    "id": "E-20261012-850780a2",
+    "member": "pi-synth",
+    "trigger": "critical_value",
+    "category": "urgent",
+    "priority": 100,
+    "occurred_at": "2026-10-12T09:30:00+08:00",
+    "subject": {
+     "measurement": "m1",
+     "rule": "bp_hypertensive_emergency"
+    },
+    "payload": {
+     "rule": "bp_hypertensive_emergency",
+     "kind": "blood_pressure",
+     "kind_zh": "血压",
+     "values": {
+      "sbp": 185,
+      "dbp": 100
+     },
+     "unit": "mmHg",
+     "value_text": "185/100 mmHg",
+     "source_short_zh": "中国高血压防治指南（2018 年修订版）",
+     "measurement": "m1"
+    },
+    "refs": [
+     {
+      "type": "rule",
+      "id": "bp_hypertensive_emergency"
+     },
+     {
+      "type": "measurement",
+      "id": "m1"
+     }
+    ],
+    "dedup_key": "critical_value:m1:bp_hypertensive_emergency"
+   },
+   "message": {
+    "schema": "pi-message/1",
+    "id": "M-20261012-850780a2",
+    "member": "pi-synth",
+    "event": "E-20261012-850780a2",
+    "trigger": "critical_value",
+    "category": "urgent",
+    "priority": 100,
+    "title_zh": "请马上处理",
+    "body_zh": "血压有点高，建议你现在就拨打 120 或尽快就医。",
+    "push_text_zh": "Pi 有一件要紧的事，请尽快打开看看",
+    "numbers": [],
+    "actions": [
+     {
+      "id": "a1",
+      "label_zh": "拨打 120",
+      "type": "call_emergency"
+     },
+     {
+      "id": "a2",
+      "label_zh": "去聊聊",
+      "type": "open_chat"
+     }
+    ],
+    "deep_link": "longpi://chat",
+    "status": "scheduled",
+    "send_after": "2026-10-12T10:00:00+08:00",
+    "expires_at": "2026-10-13T10:00:00+08:00"
+   },
+   "expect": {
+    "ok": false,
+    "codes": [
+     "urgent_first_sentence",
+     "urgent_rewritten"
+    ]
+   }
+  },
+  {
+   "id": "lint-data-ok",
+   "about": "Change draft passes.",
+   "event": {
+    "schema": "pi-event/1",
+    "id": "E-20261012-12bbe542",
+    "member": "pi-synth",
+    "trigger": "change_beyond_noise",
+    "category": "data",
+    "priority": 50,
+    "occurred_at": "2026-10-12T10:00:00+08:00",
+    "subject": {
+     "marker": "收缩压"
+    },
+    "payload": {
+     "marker": "收缩压",
+     "change_pct": -5.1,
+     "change_pct_abs": 5.1,
+     "band_pct": [
+      -3.1,
+      3.1
+     ],
+     "verdict": "decrease_beyond_noise",
+     "direction": "decrease",
+     "direction_zh": "下降",
+     "favorable": true,
+     "plan_item": "I3",
+     "from": "2026-07-14",
+     "to": "2026-09-14",
+     "concurrent_exposures": [
+      {
+       "plan_item": "I3",
+       "label_zh": "工作日晚饭用限盐勺",
+       "cumulative_in_window": 21
+      }
+     ]
+    },
+    "refs": [
+     {
+      "type": "series",
+      "id": "收缩压"
+     }
+    ],
+    "dedup_key": "change_beyond_noise:收缩压:2026-07-14:2026-09-14"
+   },
+   "message": {
+    "schema": "pi-message/1",
+    "id": "M-20261012-12bbe542",
+    "member": "pi-synth",
+    "event": "E-20261012-12bbe542",
+    "trigger": "change_beyond_noise",
+    "category": "data",
+    "priority": 50,
+    "title_zh": "收缩压有了真实变化",
+    "body_zh": "这次收缩压下降了 5.1%，超出了你个人正常波动。方向正是我们想要的，你一直在坚持，值得好好庆祝！",
+    "push_text_zh": "Pi 有一件事想和你说",
+    "numbers": [],
+    "actions": [
+     {
+      "id": "a1",
+      "label_zh": "去聊聊",
+      "type": "open_chat"
+     },
+     {
+      "id": "a2",
+      "label_zh": "看详情",
+      "type": "open_card"
+     }
+    ],
+    "deep_link": "longpi://cards/change",
+    "status": "scheduled",
+    "send_after": "2026-10-12T10:00:00+08:00",
+    "expires_at": "2026-10-19T10:00:00+08:00"
+   },
+   "expect": {
+    "ok": true,
+    "codes": []
+   }
+  },
+  {
+   "id": "lint-data-noise-first",
+   "about": "Data message whose first sentence does not say beyond noise.",
+   "event": {
+    "schema": "pi-event/1",
+    "id": "E-20261012-12bbe542",
+    "member": "pi-synth",
+    "trigger": "change_beyond_noise",
+    "category": "data",
+    "priority": 50,
+    "occurred_at": "2026-10-12T10:00:00+08:00",
+    "subject": {
+     "marker": "收缩压"
+    },
+    "payload": {
+     "marker": "收缩压",
+     "change_pct": -5.1,
+     "change_pct_abs": 5.1,
+     "band_pct": [
+      -3.1,
+      3.1
+     ],
+     "verdict": "decrease_beyond_noise",
+     "direction": "decrease",
+     "direction_zh": "下降",
+     "favorable": true,
+     "plan_item": "I3",
+     "from": "2026-07-14",
+     "to": "2026-09-14",
+     "concurrent_exposures": [
+      {
+       "plan_item": "I3",
+       "label_zh": "工作日晚饭用限盐勺",
+       "cumulative_in_window": 21
+      }
+     ]
+    },
+    "refs": [
+     {
+      "type": "series",
+      "id": "收缩压"
+     }
+    ],
+    "dedup_key": "change_beyond_noise:收缩压:2026-07-14:2026-09-14"
+   },
+   "message": {
+    "schema": "pi-message/1",
+    "id": "M-20261012-12bbe542",
+    "member": "pi-synth",
+    "event": "E-20261012-12bbe542",
+    "trigger": "change_beyond_noise",
+    "category": "data",
+    "priority": 50,
+    "title_zh": "收缩压有了真实变化",
+    "body_zh": "收缩压降了 5.1%！这超出了你个人正常波动。",
+    "push_text_zh": "Pi 有一件事想和你说",
+    "numbers": [],
+    "actions": [
+     {
+      "id": "a1",
+      "label_zh": "去聊聊",
+      "type": "open_chat"
+     },
+     {
+      "id": "a2",
+      "label_zh": "看详情",
+      "type": "open_card"
+     }
+    ],
+    "deep_link": "longpi://cards/change",
+    "status": "scheduled",
+    "send_after": "2026-10-12T10:00:00+08:00",
+    "expires_at": "2026-10-19T10:00:00+08:00"
+   },
+   "expect": {
+    "ok": false,
+    "codes": [
+     "noise_first"
+    ]
+   }
+  }
+ ]
+}

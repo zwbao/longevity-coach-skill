@@ -1,0 +1,285 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/zwbao/longevity-coach-skill/schema/pi-proactive.schema.json",
+  "title": "pi-proactive/1: trigger rules (PLAN WS-M.1, appendix A.14)",
+  "type": "object",
+  "required": [
+    "schema",
+    "triggers",
+    "critical_rules"
+  ],
+  "properties": {
+    "schema": {
+      "const": "pi-proactive/1"
+    },
+    "note": {
+      "type": "string"
+    },
+    "triggers": {
+      "type": "array",
+      "minItems": 16,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "category",
+          "enabled_by_default",
+          "user_can_disable",
+          "hosts",
+          "when",
+          "cooldown_days",
+          "drafts",
+          "deep_link"
+        ],
+        "properties": {
+          "id": {
+            "enum": [
+              "retest_due",
+              "experiment_checkpoint",
+              "commitment_review",
+              "milestone",
+              "checkin_gap",
+              "return_welcome",
+              "life_event_followup",
+              "new_data_ready",
+              "change_beyond_noise",
+              "trend_beyond_noise",
+              "prediction_ready",
+              "wearable_shift",
+              "concordance_transition",
+              "diagnosis_hit",
+              "medication_gene_conflict",
+              "critical_value"
+            ]
+          },
+          "category": {
+            "enum": [
+              "urgent",
+              "clinical",
+              "retest",
+              "data",
+              "coaching",
+              "care"
+            ]
+          },
+          "enabled_by_default": {
+            "type": "boolean"
+          },
+          "user_can_disable": {
+            "type": "boolean"
+          },
+          "hosts": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "enum": [
+                "standalone",
+                "longpi_site"
+              ]
+            }
+          },
+          "data_source_zh": {
+            "type": "string"
+          },
+          "when": {
+            "type": "object"
+          },
+          "cooldown_days": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              },
+              {
+                "const": "cadence"
+              }
+            ],
+            "description": "null = once per dedup key only"
+          },
+          "dedup": {
+            "type": "string"
+          },
+          "supersedes": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "retest_due",
+                "experiment_checkpoint",
+                "commitment_review",
+                "milestone",
+                "checkin_gap",
+                "return_welcome",
+                "life_event_followup",
+                "new_data_ready",
+                "change_beyond_noise",
+                "trend_beyond_noise",
+                "prediction_ready",
+                "wearable_shift",
+                "concordance_transition",
+                "diagnosis_hit",
+                "medication_gene_conflict",
+                "critical_value"
+              ]
+            }
+          },
+          "deep_link": {
+            "type": "string"
+          },
+          "drafts": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "title_zh",
+                "body_zh",
+                "actions"
+              ],
+              "properties": {
+                "when": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "title_zh": {
+                  "type": "string"
+                },
+                "body_zh": {
+                  "type": "string"
+                },
+                "actions": {
+                  "type": "array",
+                  "maxItems": 3,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "label_zh",
+                      "type"
+                    ],
+                    "properties": {
+                      "label_zh": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "enum": [
+                          "checkin",
+                          "snooze",
+                          "dismiss",
+                          "mute_trigger",
+                          "open_chat",
+                          "open_card",
+                          "schedule_retest",
+                          "start_experiment_phase",
+                          "prepare_doctor_brief",
+                          "call_emergency"
+                        ]
+                      },
+                      "params": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "critical_rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "kind_zh",
+          "any",
+          "source",
+          "source_short_zh"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "blood_pressure",
+              "glucose"
+            ]
+          },
+          "kind_zh": {
+            "type": "string"
+          },
+          "any": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "field",
+                "op",
+                "value",
+                "unit"
+              ],
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "op": {
+                  "enum": [
+                    ">",
+                    "<"
+                  ]
+                },
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "source_short_zh": {
+            "type": "string"
+          },
+          "source": {
+            "type": "object",
+            "required": [
+              "title",
+              "doi",
+              "quote",
+              "locator"
+            ],
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "doi": {
+                "type": "string"
+              },
+              "quote": {
+                "type": "string",
+                "minLength": 20
+              },
+              "locator": {
+                "type": "string"
+              }
+            }
+          },
+          "reading": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

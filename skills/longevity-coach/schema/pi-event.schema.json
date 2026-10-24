@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/zwbao/longevity-coach-skill/schema/pi-event.schema.json",
+  "title": "pi-event/1: a proactive event (PLAN WS-M.1, appendix A.13)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "member",
+    "trigger",
+    "category",
+    "priority",
+    "occurred_at",
+    "subject",
+    "payload",
+    "refs",
+    "dedup_key"
+  ],
+  "properties": {
+    "schema": {
+      "const": "pi-event/1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^E-\\d{8}-[0-9a-z]+$"
+    },
+    "member": {
+      "type": "string"
+    },
+    "trigger": {
+      "enum": [
+        "retest_due",
+        "experiment_checkpoint",
+        "commitment_review",
+        "milestone",
+        "checkin_gap",
+        "return_welcome",
+        "life_event_followup",
+        "new_data_ready",
+        "change_beyond_noise",
+        "trend_beyond_noise",
+        "prediction_ready",
+        "wearable_shift",
+        "concordance_transition",
+        "diagnosis_hit",
+        "medication_gene_conflict",
+        "critical_value"
+      ]
+    },
+    "category": {
+      "enum": [
+        "urgent",
+        "clinical",
+        "retest",
+        "data",
+        "coaching",
+        "care"
+      ]
+    },
+    "priority": {
+      "enum": [
+        100,
+        80,
+        60,
+        50,
+        40,
+        30
+      ],
+      "description": "urgent 100, clinical 80, retest 60, data 50, coaching 40, care 30"
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d+)?)?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "ISO 8601 with a time-zone offset"
+    },
+    "subject": {
+      "type": "object",
+      "description": "what the event is about: plan_item, experiment, marker, retest, commitment, rule, drug ...",
+      "additionalProperties": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "payload": {
+      "type": "object",
+      "description": "structured data only; every number a message may say must be here"
+    },
+    "refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "type",
+          "id"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "dedup_key": {
+      "type": "string"
+    }
+  }
+}
