@@ -1,0 +1,210 @@
+schema_version: "1.1"
+name: proactive-one-thing
+description: "同时有多件事时，只讲优先级最高的一件"
+tags: [coach, proactive]
+runs: 3
+expected_outcome: "同时有多件事时，只讲优先级最高的一件"
+execution:
+  timeout_seconds: 600
+  append_system_prompt: |
+    （评测说明，用户看不到）这是 longevity-coach 技能的主动关怀评测，独立运行模式，所有人物和数字都是合成的。
+    本次评测里后台脚本不能运行：`proactive.py scan` 已经在后台跑完，输出附在下面，当作你刚运行得到的结果。
+    会员档案 ~/.longevity-coach/老王.md 的内容也附在下面。按 references/proactive.md 的写法写消息；只输出要发给老王的消息本身。
+
+    === 会员档案 ===
+    # 老王
+
+    ## 基本
+
+    - 年龄 / 出生年月：52
+    - 性别：男
+    - 称呼方式：你　　风格：upbeat
+    - 在用的药和补剂：无
+    - 聊天节奏：大约每 7 天
+    - 主动提醒：教练 开　复测 开　数据 开　临床 开　关怀 开
+    - 免打扰：22:00–08:00　时区：Asia/Shanghai
+
+    ## 为什么 & 想要的画面
+
+    - 为什么在乎："我爸六十八岁中风，之后基本没出过门。"
+    - 七八十岁时想还能做的事：带孙子爬泰山
+
+    ## 小承诺
+
+    | 承诺 | 当…时 | 频率 | 开始 | 累计次数 | 状态 | 方案项 |
+    |---|---|---|---|---|---|---|
+    | 工作日晚饭用限盐勺 | 工作日做晚饭时 | 每周 5 次 | 2026-07-20 | 20 | 进行中 | I3 |
+
+    复盘记录：
+
+    - 2026-08-28：3/5，加班两天
+
+    ## 个人实验
+
+    - 减盐看收缩压（X1，开始 2026-07-20，最短 6 周，后测 14 次，已测 0 次，方案项 I3，预测 P1）
+
+    ## 上次对话
+
+    - 日期：2026-08-28
+    - 这周就这一件事：限盐勺
+
+    === proactive.py scan 的输出（节选） ===
+    {
+      "now": "2026-08-31T23:00:00+08:00",
+      "messages": [
+        {
+          "schema": "pi-message/1",
+          "id": "M-20260901-210f1f64",
+          "member": "pi-casec",
+          "event": "E-20260831-210f1f64",
+          "trigger": "retest_due",
+          "category": "retest",
+          "priority": 60,
+          "title_zh": "下周复查空腹血糖",
+          "body_zh": "这次复查能帮我们按指南的时间把这一项再看一看。",
+          "push_text_zh": "Pi 有一件事想和你说",
+          "numbers": [],
+          "actions": [
+            {
+              "id": "a1",
+              "label_zh": "已预约",
+              "type": "schedule_retest"
+            },
+            {
+              "id": "a2",
+              "label_zh": "下周再提醒",
+              "type": "snooze",
+              "params": {
+                "days": 7
+              }
+            },
+            {
+              "id": "a3",
+              "label_zh": "去聊聊",
+              "type": "open_chat"
+            }
+          ],
+          "deep_link": "longpi://retests/R-glucose",
+          "status": "scheduled",
+          "send_after": "2026-09-01T08:00:00+08:00",
+          "expires_at": "2026-09-08T08:00:00+08:00",
+          "deferred_reason": "quiet_hours"
+        }
+      ],
+      "events": [
+        {
+          "schema": "pi-event/1",
+          "id": "E-20260831-210f1f64",
+          "member": "pi-casec",
+          "trigger": "retest_due",
+          "category": "retest",
+          "priority": 60,
+          "occurred_at": "2026-08-31T23:00:00+08:00",
+          "subject": {
+            "retest": "R-glucose"
+          },
+          "payload": {
+            "retest": "R-glucose",
+            "marker": "空腹血糖",
+            "due_at": "2026-09-07T09:00:00+08:00",
+            "days_left": 7,
+            "reason": "guideline",
+            "reason_zh": "按指南的时间把这一项再看一看",
+            "phase_pre": true,
+            "phase": "pre"
+          },
+          "refs": [
+            {
+              "type": "retest",
+              "id": "R-glucose"
+            }
+          ],
+          "dedup_key": "retest_due:R-glucose:2026-09-07T09:00:00+08:00:pre"
+        }
+      ],
+      "agenda": [
+        {
+          "schema": "pi-event/1",
+          "id": "E-20260831-210f1f64",
+          "member": "pi-casec",
+          "trigger": "retest_due",
+          "category": "retest",
+          "priority": 60,
+          "occurred_at": "2026-08-31T23:00:00+08:00",
+          "subject": {
+            "retest": "R-glucose"
+          },
+          "payload": {
+            "retest": "R-glucose",
+            "marker": "空腹血糖",
+            "due_at": "2026-09-07T09:00:00+08:00",
+            "days_left": 7,
+            "reason": "guideline",
+            "reason_zh": "按指南的时间把这一项再看一看",
+            "phase_pre": true,
+            "phase": "pre"
+          },
+          "refs": [
+            {
+              "type": "retest",
+              "id": "R-glucose"
+            }
+          ],
+          "dedup_key": "retest_due:R-glucose:2026-09-07T09:00:00+08:00:pre"
+        },
+        {
+          "schema": "pi-event/1",
+          "id": "E-20260831-063ef02e",
+          "member": "pi-casec",
+          "trigger": "experiment_checkpoint",
+          "category": "coaching",
+          "priority": 40,
+          "occurred_at": "2026-08-31T23:00:00+08:00",
+          "subject": {
+            "experiment": "X1"
+          },
+          "payload": {
+            "experiment": "X1",
+            "plan_item": "I3",
+            "intervention_zh": "减盐",
+            "marker": "收缩压",
+            "repeats_needed": 14,
+            "phase": "post_start",
+            "weeks_done": 6,
+            "prediction_ref": "P1",
+            "p_pct": 49,
+            "p_detect_favorable": 0.49,
+            "label_zh": "统计模型估计"
+          },
+          "refs": [
+            {
+              "type": "prediction",
+              "id": "P1"
+            }
+          ],
+          "dedup_key": "experiment_checkpoint:X1:post_start"
+        },
+        {
+          "schema": "pi-event/1",
+          "id": "E-20260831-67c11e8a",
+          "member": "pi-casec",
+          "trigger": "milestone",
+          "category": "coaching",
+          "priority": 40,
+          "occurred_at": "2026-08-31T23:00:00+08:00",
+          "subject": {
+            "commitment": "C1"
+          },
+          "payload": {
+            "commitment": "C1",
+            "commitment_zh": "工作日晚饭用限盐勺",
+            "n": 20,
+            "cumulative": 20,
+            "plan_item": "I3",
+            "picture_zh": "带孙子爬泰山"
+          },
+          "refs": [],
+          "dedup_key": "milestone:C1:20"
+        }
+      ]
+    }

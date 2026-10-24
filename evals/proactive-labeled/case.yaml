@@ -1,0 +1,130 @@
+schema_version: "1.1"
+name: proactive-labeled
+description: "消息中的概率带标签（统计模型估计）"
+tags: [coach, proactive]
+runs: 3
+expected_outcome: "消息中的概率带标签（统计模型估计）"
+execution:
+  timeout_seconds: 600
+  append_system_prompt: |
+    （评测说明，用户看不到）这是 longevity-coach 技能的主动关怀评测，独立运行模式，所有人物和数字都是合成的。
+    本次评测里后台脚本不能运行：`proactive.py scan` 已经在后台跑完，输出附在下面，当作你刚运行得到的结果。
+    会员档案 ~/.longevity-coach/老王.md 的内容也附在下面。按 references/proactive.md 的写法写消息；只输出要发给老王的消息本身。
+
+    === 会员档案 ===
+    # 老王
+
+    ## 基本
+
+    - 年龄 / 出生年月：52
+    - 性别：男
+    - 称呼方式：你　　风格：upbeat
+    - 在用的药和补剂：无
+    - 聊天节奏：大约每 7 天
+    - 主动提醒：教练 开　复测 开　数据 开　临床 开　关怀 开
+    - 免打扰：22:00–08:00　时区：Asia/Shanghai
+
+    ## 为什么 & 想要的画面
+
+    - 为什么在乎："我爸六十八岁中风，之后基本没出过门。"
+    - 七八十岁时想还能做的事：带孙子爬泰山
+
+    ## 小承诺
+
+    | 承诺 | 当…时 | 频率 | 开始 | 累计次数 | 状态 | 方案项 |
+    |---|---|---|---|---|---|---|
+    | 工作日晚饭用限盐勺 | 工作日做晚饭时 | 每周 5 次 | 2026-07-20 | 20 | 进行中 | I3 |
+
+    复盘记录：
+
+    - 2026-08-28：3/5，加班两天
+
+    ## 个人实验
+
+    - 减盐看收缩压（X1，开始 2026-07-20，最短 6 周，后测 14 次，已测 0 次，方案项 I3，预测 P1）
+
+    ## 上次对话
+
+    - 日期：2026-08-28
+    - 这周就这一件事：限盐勺
+
+    === proactive.py scan 的输出（节选） ===
+    {
+      "messages": [
+        {
+          "schema": "pi-message/1",
+          "id": "M-20260831-063ef02e",
+          "member": "pi-casec",
+          "event": "E-20260831-063ef02e",
+          "trigger": "experiment_checkpoint",
+          "category": "coaching",
+          "priority": 40,
+          "title_zh": "可以开始后测了",
+          "body_zh": "减盐已经坚持 6 周了。接下来量 14 天收缩压，每天一次，就能看出这次改变对你有没有用。按你的情况，能测出效果的概率约 49%（统计模型估计）。",
+          "push_text_zh": "Pi 有一件事想和你说",
+          "numbers": [
+            {
+              "ref": "P1.p_detect_favorable",
+              "value": 0.49,
+              "label": "统计模型估计"
+            }
+          ],
+          "actions": [
+            {
+              "id": "a1",
+              "label_zh": "开始后测",
+              "type": "start_experiment_phase"
+            },
+            {
+              "id": "a2",
+              "label_zh": "晚点提醒我",
+              "type": "snooze",
+              "params": {
+                "days": 1
+              }
+            }
+          ],
+          "deep_link": "longpi://experiment/X1",
+          "status": "scheduled",
+          "send_after": "2026-08-31T10:00:00+08:00",
+          "expires_at": "2026-09-03T10:00:00+08:00"
+        }
+      ],
+      "events": [
+        {
+          "schema": "pi-event/1",
+          "id": "E-20260831-063ef02e",
+          "member": "pi-casec",
+          "trigger": "experiment_checkpoint",
+          "category": "coaching",
+          "priority": 40,
+          "occurred_at": "2026-08-31T10:00:00+08:00",
+          "subject": {
+            "experiment": "X1"
+          },
+          "payload": {
+            "experiment": "X1",
+            "plan_item": "I3",
+            "intervention_zh": "减盐",
+            "marker": "收缩压",
+            "repeats_needed": 14,
+            "phase": "post_start",
+            "weeks_done": 6,
+            "prediction_ref": "P1",
+            "p_pct": 49,
+            "p_detect_favorable": 0.49,
+            "label_zh": "统计模型估计"
+          },
+          "refs": [
+            {
+              "type": "prediction",
+              "id": "P1"
+            }
+          ],
+          "dedup_key": "experiment_checkpoint:X1:post_start"
+        }
+      ],
+      "agenda": [
+        "experiment_checkpoint"
+      ]
+    }
