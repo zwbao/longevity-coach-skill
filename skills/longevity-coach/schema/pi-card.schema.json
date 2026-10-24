@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/zwbao/longevity-coach-skill/schema/pi-card.schema.json",
+  "title": "pi-card/1: one block of the health page (PLAN WS-M.5, appendix A.17)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "kind",
+    "title_zh",
+    "summary_zh",
+    "numbers",
+    "actions",
+    "updated_at",
+    "source"
+  ],
+  "properties": {
+    "schema": {
+      "const": "pi-card/1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^C-"
+    },
+    "kind": {
+      "enum": [
+        "trend",
+        "change",
+        "prediction",
+        "diagnosis",
+        "medication",
+        "pgx",
+        "concordance",
+        "retest_due",
+        "surveillance",
+        "commitment",
+        "milestone",
+        "experiment"
+      ]
+    },
+    "title_zh": {
+      "type": "string",
+      "minLength": 1
+    },
+    "summary_zh": {
+      "type": "string",
+      "minLength": 1
+    },
+    "numbers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ref",
+          "value",
+          "label"
+        ],
+        "properties": {
+          "ref": {
+            "type": "string"
+          },
+          "value": {
+            "type": [
+              "number",
+              "array"
+            ]
+          },
+          "unit": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "label": {
+      "type": "object",
+      "description": "la-label/1 (longevity-analyst schema/la-label-1.schema.json); required for prediction, diagnosis, medication and pgx cards",
+      "required": [
+        "schema",
+        "basis_kind"
+      ],
+      "properties": {
+        "schema": {
+          "const": "la-label/1"
+        },
+        "basis_kind": {
+          "type": "string"
+        },
+        "label_zh": {
+          "type": "string"
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "$ref": "pi-message.schema.json#/$defs/button"
+      }
+    },
+    "deep_link": {
+      "type": "string"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d+)?)?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "ISO 8601 with a time-zone offset"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "export",
+        "sha256"
+      ],
+      "properties": {
+        "export": {
+          "const": "la-export/2"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "prediction",
+              "diagnosis",
+              "medication",
+              "pgx"
+            ]
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "required": [
+          "label"
+        ]
+      }
+    }
+  ]
+}

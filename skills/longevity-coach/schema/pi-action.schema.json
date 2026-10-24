@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/zwbao/longevity-coach-skill/schema/pi-action.schema.json",
+  "title": "pi-action/1: what the member did with a message (PLAN WS-M.4, appendix A.16)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "message",
+    "action",
+    "type",
+    "at",
+    "idempotency_key"
+  ],
+  "properties": {
+    "schema": {
+      "const": "pi-action/1"
+    },
+    "message": {
+      "type": "string"
+    },
+    "action": {
+      "type": "string",
+      "description": "button id, or 'read' for the host reporting that the message was opened"
+    },
+    "type": {
+      "enum": [
+        "checkin",
+        "snooze",
+        "dismiss",
+        "mute_trigger",
+        "open_chat",
+        "open_card",
+        "schedule_retest",
+        "start_experiment_phase",
+        "prepare_doctor_brief",
+        "call_emergency",
+        "read"
+      ]
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d+)?)?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "ISO 8601 with a time-zone offset"
+    },
+    "params": {
+      "type": "object",
+      "properties": {
+        "days": {
+          "enum": [
+            1,
+            3,
+            7
+          ]
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "commitment": {
+          "type": "string"
+        },
+        "trigger": {
+          "enum": [
+            "retest_due",
+            "experiment_checkpoint",
+            "commitment_review",
+            "milestone",
+            "checkin_gap",
+            "return_welcome",
+            "life_event_followup",
+            "new_data_ready",
+            "change_beyond_noise",
+            "trend_beyond_noise",
+            "prediction_ready",
+            "wearable_shift",
+            "concordance_transition",
+            "diagnosis_hit",
+            "medication_gene_conflict",
+            "critical_value"
+          ]
+        },
+        "retest": {
+          "type": "string"
+        },
+        "experiment": {
+          "type": "string"
+        },
+        "intent": {
+          "type": "string"
+        }
+      }
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
