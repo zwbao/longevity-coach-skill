@@ -1,0 +1,454 @@
+openapi: 3.1.0
+info:
+  title: LongPi Member API
+  version: "1.0.0"
+  summary: The member-facing /v1 contract for the web and a future app (PLAN WS-M.5, appendix E).
+  description: |
+    Defined by longevity-coach, implemented by the LongPi gateway. Front ends depend only on this file and on the
+    pi-* schemas in ../schema/; they never see skills, scripts or workspaces.
+
+    Conventions
+    - Every time carries a time-zone offset (ISO 8601, e.g. 2026-10-12T08:00:00+08:00).
+    - List endpoints use cursor pagination: pass `cursor` from the previous page's `next_cursor`; a null
+      `next_cursor` means the last page.
+    - Write endpoints accept an `Idempotency-Key` header; repeating a request with the same key returns the first
+      result and changes nothing.
+    - Errors are `{code, message_zh}`; `message_zh` is plain Chinese for the member.
+    - A member token only reaches that member's own data. Family access is designed separately.
+    - Fields are only ever added. A breaking change goes to /v2.
+    - On the LongPi website there are no commitments or check-ins: /me/checkins answers 404 `feature_disabled`
+      and coaching triggers that need check-ins do not run (see data/proactive_rules.json `hosts`).
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+  - url: https://longpi.life/v1
+    description: LongPi website gateway (path prefix carries the version)
+security:
+  - memberToken: []
+tags:
+  - name: proactive
+  - name: health
+  - name: chat
+  - name: settings
+paths:
+  /me/agenda:
+    get:
+      tags: [proactive]
+      operationId: getAgenda
+      summary: 开场议程
+      description: What Pi should follow up when the member opens the app or a chat, highest priority first (the `agenda` of proactive.py scan).
+      responses:
+        "200":
+          description: Events, highest priority first.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items: {$ref: "#/components/schemas/PiEvent"}
+                  ask_consent:
+                    type: boolean
+                    description: Proactive reminders were never agreed to; Pi asks once.
+                  ask_about_frequency:
+                    type: boolean
+                    description: Auto-downshift is on (3 unopened in a row); Pi asks lightly how often is right.
+        "401": {$ref: "#/components/responses/Unauthorized"}
+  /me/inbox:
+    get:
+      tags: [proactive]
+      operationId: getInbox
+      summary: 收件箱
+      parameters:
+        - name: status
+          in: query
+          schema: {type: string, enum: [unread, read, acted, all], default: all}
+          description: unread = sent but not opened.
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Proactive messages, newest first.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessagePage"
+        "401": {$ref: "#/components/responses/Unauthorized"}
+  /me/messages/{id}/actions:
+    post:
+      tags: [proactive]
+      operationId: postMessageAction
+      summary: 回传消息上的操作
+      description: A button press (or `read` when the message was opened). Idempotent by `idempotency_key` in the body or the Idempotency-Key header.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: string}
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/PiAction"}
+      responses:
+        "200":
+          description: The updated state.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ActionResult"}
+        "400": {$ref: "#/components/responses/BadRequest"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "404": {$ref: "#/components/responses/NotFound"}
+  /me/cards:
+    get:
+      tags: [health]
+      operationId: getCards
+      summary: 健康页卡片
+      parameters:
+        - name: kind
+          in: query
+          schema:
+            type: string
+            enum: [trend, change, prediction, diagnosis, medication, pgx, concordance, retest_due, surveillance, commitment, milestone, experiment]
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Cards built from the latest la-export/2 (deliver/cards.json).
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items, next_cursor]
+                properties:
+                  items:
+                    type: array
+                    items: {$ref: "#/components/schemas/PiCard"}
+                  next_cursor: {type: [string, "null"]}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+  /me/timeline:
+    get:
+      tags: [health]
+      operationId: getTimeline
+      summary: 时间线
+      parameters:
+        - name: from
+          in: query
+          schema: {type: string, format: date-time}
+        - name: to
+          in: query
+          schema: {type: string, format: date-time}
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Observations, intervention exposures, messages and tests, in time order.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items, next_cursor]
+                properties:
+                  items:
+                    type: array
+                    items: {$ref: "#/components/schemas/TimelineItem"}
+                  next_cursor: {type: [string, "null"]}
+        "400": {$ref: "#/components/responses/BadRequest"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+  /me/checkins:
+    post:
+      tags: [proactive]
+      operationId: postCheckin
+      summary: 打卡
+      description: Same as checking in during a chat. Not available on the LongPi website (404 feature_disabled).
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [commitment, at]
+              properties:
+                commitment: {type: string}
+                at: {$ref: "#/components/schemas/DateTime"}
+                count: {type: integer, minimum: 1, default: 1}
+      responses:
+        "200":
+          description: The new cumulative count and a celebration line.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [cumulative, celebration_zh]
+                properties:
+                  cumulative: {type: integer}
+                  celebration_zh: {type: string}
+        "400": {$ref: "#/components/responses/BadRequest"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "404": {$ref: "#/components/responses/NotFound"}
+  /me/measurements:
+    post:
+      tags: [health]
+      operationId: postMeasurement
+      summary: 提交家庭测量
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/Measurement"}
+      responses:
+        "200":
+          description: Recorded. If it reaches a critical_value rule, the urgent message comes back in the same response.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [id, recorded]
+                properties:
+                  id: {type: string}
+                  recorded: {type: boolean}
+                  urgent_message:
+                    oneOf:
+                      - $ref: "#/components/schemas/PiMessage"
+                      - type: "null"
+        "400": {$ref: "#/components/responses/BadRequest"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+  /me/chat:
+    post:
+      tags: [chat]
+      operationId: postChat
+      summary: 与 Pi 对话（SSE 流式）
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [text]
+              properties:
+                text: {type: string, minLength: 1}
+                context_message:
+                  type: string
+                  description: A pi-message id; Pi opens with that message as context (the open_chat action).
+      responses:
+        "200":
+          description: "Server-sent events: `event: delta` with `{text}`, then `event: done`; `event: error` carries `{code, message_zh}`."
+          content:
+            text/event-stream:
+              schema: {type: string}
+        "400": {$ref: "#/components/responses/BadRequest"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "429": {$ref: "#/components/responses/TooMany"}
+  /me/proactive-preferences:
+    get:
+      tags: [settings]
+      operationId: getProactivePreferences
+      summary: 读取主动提醒偏好
+      responses:
+        "200":
+          description: Current preferences.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ProactivePreferences"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+    put:
+      tags: [settings]
+      operationId: putProactivePreferences
+      summary: 更新主动提醒偏好（类别开关、免打扰时段、频率上限、渠道）
+      description: Urgent cannot be switched off; a request that tries answers 400 urgent_always_on.
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/ProactivePreferences"}
+      responses:
+        "200":
+          description: Saved.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ProactivePreferences"}
+        "400": {$ref: "#/components/responses/BadRequest"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+  /me/devices:
+    post:
+      tags: [settings]
+      operationId: postDevice
+      summary: 注册推送设备令牌
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [platform, token]
+              properties:
+                platform: {type: string, enum: [apns, fcm, huawei, xiaomi, oppo, vivo, honor, wechat_service, wechat_miniprogram]}
+                token: {type: string, minLength: 1}
+                app_version: {type: string}
+      responses:
+        "201":
+          description: Registered.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [id]
+                properties:
+                  id: {type: string}
+        "400": {$ref: "#/components/responses/BadRequest"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+components:
+  securitySchemes:
+    memberToken:
+      type: http
+      scheme: bearer
+      description: Member token; a member reaches only their own data.
+  parameters:
+    Cursor:
+      name: cursor
+      in: query
+      schema: {type: string}
+    Limit:
+      name: limit
+      in: query
+      schema: {type: integer, minimum: 1, maximum: 100, default: 20}
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      schema: {type: string, minLength: 1, maxLength: 200}
+  responses:
+    BadRequest:
+      description: The request is malformed or breaks a rule.
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+    Unauthorized:
+      description: Missing or invalid member token.
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+    NotFound:
+      description: Not found, or the feature is not available on this host (code feature_disabled).
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+    TooMany:
+      description: Too many requests.
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+  schemas:
+    PiEvent: {$ref: "../schema/pi-event.schema.json"}
+    PiMessage: {$ref: "../schema/pi-message.schema.json"}
+    PiAction: {$ref: "../schema/pi-action.schema.json"}
+    PiCard: {$ref: "../schema/pi-card.schema.json"}
+    DateTime:
+      type: string
+      format: date-time
+      description: ISO 8601 with a time-zone offset.
+    Error:
+      type: object
+      additionalProperties: false
+      required: [code, message_zh]
+      properties:
+        code: {type: string, examples: [invalid_request, unauthorized, not_found, feature_disabled, urgent_always_on, rate_limited]}
+        message_zh: {type: string}
+    MessagePage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items:
+          type: array
+          items: {$ref: "#/components/schemas/PiMessage"}
+        next_cursor: {type: [string, "null"]}
+    ActionResult:
+      type: object
+      required: [ok, duplicate, type]
+      properties:
+        ok: {type: boolean}
+        duplicate: {type: boolean, description: The same idempotency key was seen before; nothing changed.}
+        type: {type: string}
+        message: {type: string}
+        message_status: {type: string, enum: [read, acted]}
+        commitment: {type: string}
+        cumulative: {type: integer, description: checkin - the new cumulative count}
+        celebration_zh: {type: string, description: checkin - one line of celebration}
+        until: {$ref: "#/components/schemas/DateTime"}
+        muted_trigger: {type: string}
+        retest: {type: string}
+        experiment: {type: string}
+        post_started_at: {$ref: "#/components/schemas/DateTime"}
+        next: {type: string, enum: [open_chat, open_card, prepare_doctor_brief, call_emergency]}
+        context_message: {type: string}
+    Measurement:
+      type: object
+      additionalProperties: false
+      required: [kind, at, unit, values]
+      properties:
+        kind: {type: string, enum: [blood_pressure, glucose, weight, waist, heart_rate]}
+        at: {$ref: "#/components/schemas/DateTime"}
+        unit: {type: string, examples: [mmHg, mmol/L, mg/dL, kg, cm, bpm]}
+        values:
+          type: object
+          description: blood_pressure {sbp, dbp}; glucose {glucose}; weight {weight}; waist {waist}; heart_rate {heart_rate}
+          additionalProperties: {type: number}
+        source: {type: string, description: "e.g. 家里血压计"}
+    TimelineItem:
+      type: object
+      required: [at, kind, title_zh]
+      properties:
+        at: {$ref: "#/components/schemas/DateTime"}
+        kind: {type: string, enum: [observation, exposure, message, test]}
+        title_zh: {type: string}
+        ref: {type: string, description: id of the observation, plan item, message or test}
+        value: {type: [number, "null"]}
+        unit: {type: string}
+    ProactivePreferences:
+      type: object
+      additionalProperties: false
+      properties:
+        consent:
+          type: [object, "null"]
+          description: Per category; null = not asked yet. Urgent is always on and not listed.
+          additionalProperties: false
+          properties:
+            coaching: {type: boolean}
+            retest: {type: boolean}
+            data: {type: boolean}
+            clinical: {type: boolean}
+            care: {type: boolean}
+        quiet_hours:
+          type: object
+          required: [start, end]
+          properties:
+            start: {type: string, pattern: "^\\d{2}:\\d{2}$", default: "22:00"}
+            end: {type: string, pattern: "^\\d{2}:\\d{2}$", default: "08:00"}
+        timezone: {type: string, examples: [Asia/Shanghai]}
+        caps:
+          type: object
+          properties:
+            per_day: {type: integer, minimum: 0, default: 1}
+            per_week: {type: integer, minimum: 0, default: 3}
+        muted_triggers:
+          type: array
+          items: {type: string}
+        channels:
+          type: array
+          items: {type: string, enum: [inbox, push, wechat]}
+          default: [inbox]

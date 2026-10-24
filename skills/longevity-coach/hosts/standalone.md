@@ -6,6 +6,8 @@
 
 每个人一份 markdown 文件：`~/.longevity-coach/<称呼>.md`。第一次见面时按 [../templates/member.md](../templates/member.md) 建档，之后直接读写这个文件。用户想看就告诉他文件位置。
 
+每次对话开始先运行 `scripts/proactive.py scan --member <档案> --opening --write`，输出的议程就是开场要跟进的事；用法见 [../references/proactive.md](../references/proactive.md)「独立运行时怎么用」。
+
 ## 后台在哪
 
 - **longevity-skills**（方法库，有 `catalog.json` 和 `intents.json`）：先看 `$LONGEVITY_SKILLS_HOME`。没有的话，这个技能目录通常是软链接，用 `realpath` 找到真实位置，在它上几层的旁边找 `longevity-skills` 文件夹。

@@ -2010,6 +2010,118 @@
    ]
   },
   {
+   "id": "retest-with-trend",
+   "about": "The retest of a marker that drifts says what it will confirm; the trend itself waits in the agenda.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "retests": [
+      {
+       "id": "R-glucose",
+       "marker": "空腹血糖",
+       "due_at": "2026-10-19T09:00:00+08:00",
+       "reason": "guideline",
+       "judgeable": true
+      }
+     ],
+     "trends": [
+      {
+       "marker": "空腹血糖",
+       "unit": "mmol/L",
+       "points": [
+        {
+         "t": "2023-09-01",
+         "value": 4.6
+        },
+        {
+         "t": "2024-09-03",
+         "value": 5.0
+        },
+        {
+         "t": "2025-09-02",
+         "value": 5.3
+        },
+        {
+         "t": "2026-09-01",
+         "value": 5.6
+        }
+       ],
+       "pairs": [
+        {
+         "from": "2025-09-02",
+         "to": "2026-09-01",
+         "change_pct": 5.7,
+         "band_pct": [
+          -14.6,
+          14.6
+         ],
+         "verdict": "within_noise"
+        }
+       ],
+       "trend": {
+        "n": 4,
+        "annual_change_pct": 6.4,
+        "verdict": "rising_beyond_noise"
+       },
+       "summary_verdict": "trend_beyond_noise"
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events_triggers": [
+       "retest_due",
+       "trend_beyond_noise"
+      ],
+      "messages": [
+       {
+        "trigger": "retest_due",
+        "status": "scheduled",
+        "body_zh": "这次复查能帮我们确认之前看到的缓慢上升是不是真的。"
+       }
+      ],
+      "agenda": [
+       "retest_due",
+       "trend_beyond_noise"
+      ]
+     }
+    }
+   ]
+  },
+  {
    "id": "prediction-fires",
    "about": "A new statistical-model prediction.",
    "state": {

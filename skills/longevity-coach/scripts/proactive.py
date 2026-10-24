@@ -202,7 +202,7 @@ def evaluate(state: dict, export: dict, now: datetime, tz) -> List[dict]:
     scheduled = set(state.get("retests_scheduled") or [])
     pre, _ = TRIGGERS["retest_due"]["when"]["retest_due_in_days"]
     window = TRIGGERS["retest_due"]["when"]["due_window_days"]
-    trending = {t.get("marker") for t in export.get("trends") or []
+    trending = {t.get("marker"): DIRECTION_ZH[t["trend"]["verdict"].split("_")[0]] for t in export.get("trends") or []
                 if (t.get("trend") or {}).get("verdict") in ("rising_beyond_noise", "falling_beyond_noise")}
     for r in export.get("retests") or []:
         rid = r.get("id") or r.get("marker")
@@ -216,7 +216,7 @@ def evaluate(state: dict, export: dict, now: datetime, tz) -> List[dict]:
             phase = "due"
         else:
             continue
-        reason = "确认之前看到的缓慢变化是不是真的" if r.get("marker") in trending else \
+        reason = f"确认之前看到的缓慢{trending[r.get('marker')]}是不是真的" if r.get("marker") in trending else \
             REASON_ZH.get(r.get("reason"), "把这一项再看一看")
         payload = {"retest": rid, "marker": r.get("marker"), "due_at": r.get("due_at"), "days_left": left,
                    "reason": r.get("reason"), "reason_zh": reason, "phase_pre": phase == "pre", "phase": phase}
@@ -793,7 +793,7 @@ def iso_day(s: str) -> str:
 
 def member_state(md_path: Path) -> dict:
     """Read the fixed parts of a member file into pi-state/1, then overlay the sidecar <name>.proactive.json."""
-    md = md_path.read_text(encoding="utf-8")
+    md = re.sub(r"<!--.*?-->", "", md_path.read_text(encoding="utf-8"), flags=re.S)
     side_path = md_path.with_suffix(".proactive.json")
     side = json.loads(side_path.read_text(encoding="utf-8")) if side_path.is_file() else {}
     basic = section(md, "基本")
