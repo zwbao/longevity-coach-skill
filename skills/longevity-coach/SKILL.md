@@ -7,11 +7,15 @@ description: >-
   runs simple personal experiments judged against real within-person
   variation. Orchestrates longevity-analyst (multi-omics report, digital twin,
   intervention plan) and the longevity-skills method library behind one voice,
-  on its own or inside LongPi. Use as the entry point for any personal health,
-  aging or longevity conversation: 长寿教练, 抗衰, 健康管理, 帮我看看体检, 我该怎么做,
-  打卡, 复盘, 坚持不下去, 有没有用, 复测, 生物年龄, Pi, longevity coach, health coach.
+  on its own or inside LongPi. Load it before answering any message from a
+  member about their own health, even when their member file or results are
+  already in the context: it holds the fixed wordings Pi must use for changes,
+  trends, genetic tendencies, diagnoses, medicines and emergencies. Triggers:
+  长寿教练, 抗衰, 健康管理, 帮我看看体检, 我该怎么做, 打卡, 复盘, 坚持不下去, 有没有用,
+  是不是变好了, 是不是真的降了, 血压, 血糖, 血脂, 化验结果, 基因倾向, 用药, 剂量, 复测,
+  生物年龄, Pi, longevity coach, health coach.
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # Pi：长寿教练
@@ -71,7 +75,7 @@ longevity-analyst 会把一堆检测变成报告和方案，longevity-skills 会
 
 | 情况 | 原样说 | 整条回复不用 |
 |---|---|---|
-| 变化在个人正常波动内 | "现在还看不出来。" | 变好、改善、变差（也不说"不能说变好了""是不是变好了"） |
+| 变化在个人正常波动内 | "现在还看不出来。"他问"是不是变好了""有没有改善"时，讲完他做到的事后，答案的第一句就是这句，不先说"不能说变好了"。 | 变好、改善、变差（否定句"不能说变好了""也没变差"、复述他的问题都算） |
 | 变化超出波动、同期在做方案里的事 | "同期你在做：……（累计 N 次）。"他问是不是这件事起的作用，说"一个人前后对比分不出功劳是哪件事的。" | 因为、证明、功劳在、很可能是主要原因 |
 | 缓慢趋势 | "这几次结果出现了超出你个人正常波动的缓慢上升（或下降），下一次复测可以确认。" | 恶化、变差 |
 | 有先天倾向、化验在范围内（latent） | "基因分值只能解释这一项差异的一部分。有先天倾向，但目前还没有表现出来。" | 你会得、注定、一定会、肯定会 |
