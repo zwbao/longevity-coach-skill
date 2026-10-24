@@ -173,7 +173,8 @@ class NoiseTest(unittest.TestCase):
 
     def test_change_on_a_clock_uses_the_readout_noise_table_when_present(self) -> None:
         argv = ["change", "--marker", "Horvath", "--before", "50.0", "--after", "55.0"]
-        self.assertEqual(run(*argv)["verdict"], "no_noise_model")  # the current library has no readout table
+        with tempfile.TemporaryDirectory() as tmp:  # without a readout table clocks stay unjudged
+            self.assertEqual(run(*argv, lib=temp_library(tmp))["verdict"], "no_noise_model")
         table = {"schema": "longevity-readout-noise/1", "z": 1.96, "readouts": [
             {"key": "horvath", "match": ["epiage.horvath", "Horvath"], "unit": "岁", "noise_kind": "technical_replicate",
              "sd_abs": 1.5, "tissue": "whole_blood", "platform": ["450k", "EPIC"],
@@ -245,7 +246,7 @@ class NoiseTest(unittest.TestCase):
 
     def test_predict_edge_cases(self) -> None:
         self.assertEqual(run("predict", "--marker", "收缩压", "--intervention", "减盐")["predictions"][0]["verdict"], "needs_baseline")
-        self.assertEqual(run("predict", "--marker", "收缩压", "--intervention", "冥想", "--baseline", "138")["verdict"], "no_effect_row")
+        self.assertEqual(run("predict", "--marker", "收缩压", "--intervention", "倒着走路", "--baseline", "138")["verdict"], "no_effect_row")
         self.assertEqual(run("predict", "--marker", "DunedinPACE", "--intervention", "热量限制")["verdict"], "no_noise_model")
         hdl = run("predict", "--marker", "HDL-C", "--intervention", "戒烟", "--baseline", "1.2", "--unit", "mmol/L", "--repeats", "4")
         self.assertEqual(hdl["predictions"][0]["model"]["favorable"], "higher")
