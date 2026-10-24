@@ -1,0 +1,101 @@
+schema_version: "1.1"
+name: prediction-labeled
+description: "说有效的概率时同时说明是统计模型估计及依据"
+tags: [coach]
+runs: 3
+expected_outcome: "说有效的概率时同时说明是统计模型估计及依据"
+execution:
+  timeout_seconds: 600
+  append_system_prompt: |
+    （评测说明，用户看不到）这是 longevity-coach 技能的对话评测，独立运行模式，所有人物和数字都是合成的。
+    本次评测里后台脚本和分析师不能运行：需要的结果已经算好，附在下面，当作你刚运行得到的结果。
+    会员档案 ~/.longevity-coach/老王.md 的内容也附在下面。只回复用户这一条消息。
+
+    === 会员档案 ===
+    # 老王
+
+    ## 基本
+
+    - 年龄 / 出生年月：52
+    - 性别：男
+    - 称呼方式：你　　风格：upbeat
+    - 在用的药和补剂：无
+    - 聊天节奏：大约每 7 天
+
+    ## 为什么 & 想要的画面
+
+    - 为什么在乎："我爸六十八岁中风，之后基本没出过门。"
+    - 七八十岁时想还能做的事：带孙子爬泰山
+
+    ## 小承诺
+
+    | 承诺 | 当…时 | 频率 | 开始 | 累计次数 | 状态 | 方案项 |
+    |---|---|---|---|---|---|---|
+    | 限盐勺 | 工作日做晚饭时 | 每周 5 次 | 2026-07-20 | 0 | 进行中 | I3 |
+
+    ## 监测计划
+
+    | 指标 | 多久一次 | 为什么 | 上次 | 下次到期 | 来源 |
+    |---|---|---|---|---|---|
+
+
+    ## 检测和报告
+
+    - 2026-09-30 深度分析：报告在 ~/la-ws/pi-laowang-2026-09/deliver/report.md
+    - 遗传结果（APOE 等）想不想知道：想知道（2026-09-28 他说的）
+
+    ## 上次对话
+
+    - 日期：2026-10-17
+    - 这周就这一件事：限盐勺
+
+    === 已经算好的结果 ===
+    noise.py predict --marker 收缩压 --intervention 减盐 --baseline 138 --unit mmHg --repeats 14：
+    {
+     "id": "P1",
+     "plan_item": "I3",
+     "intervention_zh": "减盐",
+     "marker": "收缩压",
+     "design": {
+      "repeats_each_side": 14,
+      "weeks": 6,
+      "adherence": 1.0
+     },
+     "p_detect_favorable": 0.49,
+     "p_true_favorable": 0.84,
+     "expected_change_pct": -3.0,
+     "interval_80_pct": [
+      -7.4,
+      1.4
+     ],
+     "label": {
+      "schema": "la-label/1",
+      "basis_kind": "statistical_model",
+      "label_zh": "统计模型估计",
+      "sources": [
+       {
+        "type": "effects",
+        "ref": "salt-reduction-sbp"
+       },
+       {
+        "type": "biovar",
+        "ref": "sbp"
+       }
+      ],
+      "assumptions": [
+       "还没开始做，按完全做到计算",
+       "个人差异默认与平均效应同量级（效应表未给出）",
+       "试验效应和测量误差都按正态分布近似",
+       "下次实验按完全做到计算"
+      ],
+      "confidence": {
+       "interval_80": [
+        -7.4,
+        1.4
+       ],
+       "unit": "%"
+      },
+      "generated_at": "2026-10-20T09:00:00+08:00"
+     }
+    }
+    效应表条目 salt-reduction-sbp：He 等，BMJ 2013 荟萃分析，收缩压平均下降 4.18 mmHg（doi 10.1136/bmj.f1325）

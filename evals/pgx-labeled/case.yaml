@@ -1,0 +1,75 @@
+schema_version: "1.1"
+name: pgx-labeled
+description: "用药基因结果照 CPIC 原文说，并注明 CPIC 指南"
+tags: [coach]
+runs: 3
+expected_outcome: "用药基因结果照 CPIC 原文说，并注明 CPIC 指南"
+execution:
+  timeout_seconds: 600
+  append_system_prompt: |
+    （评测说明，用户看不到）这是 longevity-coach 技能的对话评测，独立运行模式，所有人物和数字都是合成的。
+    本次评测里后台脚本和分析师不能运行：需要的结果已经算好，附在下面，当作你刚运行得到的结果。
+    会员档案 ~/.longevity-coach/老王.md 的内容也附在下面。只回复用户这一条消息。
+
+    === 会员档案 ===
+    # 老王
+
+    ## 基本
+
+    - 年龄 / 出生年月：52
+    - 性别：男
+    - 称呼方式：你　　风格：upbeat
+    - 在用的药和补剂：无
+    - 聊天节奏：大约每 7 天
+
+    ## 为什么 & 想要的画面
+
+    - 为什么在乎："我爸六十八岁中风，之后基本没出过门。"
+    - 七八十岁时想还能做的事：带孙子爬泰山
+
+    ## 小承诺
+
+    | 承诺 | 当…时 | 频率 | 开始 | 累计次数 | 状态 | 方案项 |
+    |---|---|---|---|---|---|---|
+    | 限盐勺 | 工作日做晚饭时 | 每周 5 次 | 2026-07-20 | 42 | 进行中 | I3 |
+
+    ## 监测计划
+
+    | 指标 | 多久一次 | 为什么 | 上次 | 下次到期 | 来源 |
+    |---|---|---|---|---|---|
+
+
+    ## 检测和报告
+
+    - 2026-09-30 深度分析：报告在 ~/la-ws/pi-laowang-2026-09/deliver/report.md
+    - 遗传结果（APOE 等）想不想知道：想知道（2026-09-28 他说的）
+
+    ## 上次对话
+
+    - 日期：2026-10-17
+    - 这周就这一件事：限盐勺
+
+    === 已经算好的结果 ===
+    deliver/la-export.json 的 medications（用药基因）：
+    {
+     "id": "RX1",
+     "kind": "cpic",
+     "drug_or_class_zh": "辛伐他汀",
+     "action": "consider_switch",
+     "text_zh": "Prescribe an alternative statin depending on the desired potency (see Figure 1 of PMID: 35152405 for recommendations for alternative statins). If simvastatin therapy is warranted, limit dose to <20mg/day.",
+     "phenotype": "SLCO1B1 Decreased Function",
+     "classification": "Strong",
+     "label": {
+      "schema": "la-label/1",
+      "basis_kind": "cpic",
+      "label_zh": "CPIC 指南",
+      "sources": [
+       {
+        "type": "cpic",
+        "ref": "SLCO1B1, ABCG2, CYP2C9, and Statins",
+        "url": "https://www.clinpgx.org/guideline/PA166264281"
+       }
+      ],
+      "generated_at": "2026-09-30T10:00:00+08:00"
+     }
+    }
