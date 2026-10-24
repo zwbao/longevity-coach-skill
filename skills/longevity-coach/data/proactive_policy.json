@@ -18,7 +18,7 @@
   "push_text_zh": {"default": "Pi 有一件事想和你说", "urgent": "Pi 有一件要紧的事，请尽快打开看看"},
   "limits": {"title_chars": 20, "body_chars": 120, "max_actions": 3},
   "forbidden_zh": ["你又没做到", "又没做到", "失败", "再不", "就晚了", "后悔", "你应该感到", "太差", "偷懒", "放弃了", "注定", "你会得"],
-  "label_words_zh": ["测量", "已发表模型", "指南标准", "指南推荐", "CPIC", "统计模型估计", "AI 判断"],
+  "label_words_zh": ["测量", "已发表模型", "指南标准", "指南推荐", "》的标准", "》推荐", "CPIC", "统计模型估计", "AI 判断"],
   "noise_words_zh": ["个人正常波动", "正常波动"],
   "urgent_first_sentence_zh": "建议你现在就拨打 120 或尽快就医"
 }
