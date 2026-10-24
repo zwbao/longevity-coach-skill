@@ -19,12 +19,33 @@
 1. 按 SKILL.md「深度分析」先说清楚成本，用人话讲会发生什么："我先看看这台电脑跑不跑得动、大概要多久，你同意了我就开始分析。"
 2. 读分析师的 `SKILL.md`，按它的流程走。`la.py init` 的 `--member-id` 用档案「后台」里的分析师会员编号；第一次就定一个（字母、数字、`-`，例如 `pi-laowang`）记进档案，以后每次都用它，复测才能对比。它中途需要用户回答的问题（比如样本是血液还是唾液、哪一列是本人），用 Pi 的口吻问；它要求用户亲口同意的地方，引用用户的原话。
 3. 跑完读这几个文件，不改它们：
-   - `deliver/la-export.json`（格式 `la-export/1`）：标准结果。`readouts` 是每个读数；`organs` 是器官体检表，AI 估计带区间；`board` 是问题看板和每个问题的结论；`plan.items` 是方案，每项有 `executor`（member、nutritionist、physician）和 `kind`（diet、supplement、test、referral 等）；`retests` 是复测计划。
+   - `deliver/la-export.json`：标准结果。`readouts` 是每个读数；`organs` 是器官体检表，AI 估计带区间；`board` 是问题看板和每个问题的结论；`plan.items` 是方案，每项有 `executor`（member、nutritionist、physician）和 `kind`（diet、supplement、test、referral 等）；`retests` 是复测计划。
+   - 格式是 `la-export/2` 时还有（`/1` 没有这些，缺了就不讲）：
+     - `trends`：多次复测的判断，文字已是固定说法，照着讲（见 coaching.md「多次复测」）。
+     - `concordance`：基因倾向和化验的分类，附固定说法，照着讲（见 coaching.md「基因倾向和化验放在一起」）。
+     - `surveillance`：监测计划，写进档案「监测计划」；`once` 的项写"一次即可"。
+     - `predictions`、`diagnoses`、`medications`：有用的概率、诊断性结论、用药建议，每条带 `label`（`label_zh` 是类别，`sources` 是来源）。讲的时候带上类别和来源，AI 判断单独说（见 coaching.md「带标签的判断」）。用药建议同时列进问医生的单子。
+     - `retests[]` 的 `reason`（intervention、genetic、guideline）和 `judgeable`：`judgeable` 是 false 的项，告诉他"这一项复测时只能并排看两次结果，不能判断是不是真的变化。"
    - `deliver/report.md`：给人看的完整报告，用户想看原文时给他位置。
    - `deliver/twin.json`：这次的快照，路径记进档案，下次复测对比用。
-4. 方案按 SKILL.md「深度分析」分：本人和营养师的项给他挑；医生的项和补剂、检查、转诊进问医生的单子。每项的复测写进档案。
-5. 复测后又做了一次：`python3 <分析师目录>/scripts/la.py twin compare --prev <上次 twin.json> --cur <这次 twin.json>`。只有 `verdict` 是 `increase_beyond_noise` 或 `decrease_beyond_noise` 的才说是变化；`within_noise` 说"还看不出来"；`not_judged` 两次并排看。`alerts` 先说（比如基因型变了，可能拿错了样本）。
-6. 把要点、报告位置、快照路径和复测时间记进档案的「检测和报告」。器官的 AI 估计要说成"AI 估计"，带上区间。
+4. 方案按 SKILL.md「深度分析」分：本人和营养师的项给他挑；医生的项和补剂、检查、转诊进问医生的单子。选中的项变成小承诺时，在小承诺表的「方案项」一栏写上方案项编号（如 I3），复测时才能对上。每项的复测写进档案。
+5. 把要点、报告位置、快照路径和复测时间记进档案的「检测和报告」。器官的 AI 估计要说成"AI 估计"，带上区间。
+
+## 复测：再做一次深度分析
+
+1. **先生成暴露文件**：发起分析前，从档案的小承诺表和复盘记录生成这段时间做了什么（不要自己手写这个文件）：
+
+   ```bash
+   python3 <本技能目录>/scripts/exposures.py --member ~/.longevity-coach/<称呼>.md --export <上次的 la-export.json> --out <分析师工作区>/exposures.json
+   ```
+
+   累计次数取档案里的值；每周次数从复盘记录汇总，汇总不出来的周不写，不估。退出码 2 说明档案的表格有一行读不了，输出里写了是第几行：改好档案再跑。没有对应方案项的承诺不进这个文件。
+2. **建快照时带上它**：按分析师的流程走，建孪生快照时用 `la.py twin build <工作区> --exposures <工作区>/exposures.json`。
+3. **对比**：快照路径从档案「检测和报告」里读。
+   - 有三份及以上快照：`python3 <分析师目录>/scripts/la.py twin series --snapshots <最早的 twin.json> ... <这次的 twin.json>`。每个指标给出相邻两次对比（`pairs`）、首末对比（`baseline_vs_latest`）、趋势（`trend`）和汇总（`summary_verdict`：`trend_beyond_noise`、`change_beyond_noise`、`within_noise`、`not_judged`）。`concurrent_exposures` 是同期在做的事和累计次数，`transitions` 是基因倾向分类的变化，`identity_alerts` 是样本对不上。
+   - 只有两份：`python3 <分析师目录>/scripts/la.py twin compare --prev <上次 twin.json> --cur <这次 twin.json>`。
+   - 只有 `increase_beyond_noise`、`decrease_beyond_noise` 或趋势超出波动的才说是变化；`within_noise` 说"还看不出来"；`not_judged` 并排看。`alerts`、`identity_alerts` 先说（胚系基因型不一致，可能拿错了样本）。怎么讲见 coaching.md「多次复测」。
+4. 新快照路径、要点记进「检测和报告」，监测计划更新到「监测计划」。
 
 ## 方法库：一个具体问题加一点数据
 
@@ -62,6 +83,24 @@ python3 <本技能目录>/scripts/noise.py change --marker 收缩压 --before 13
 ```
 
 `--before`、`--after` 是不同日子测的值（同一天测几次只算一次），从档案的测量表里取。`--gap-days` 是两组之间隔的天数，指标要求更长间隔时会返回 `too_close`。结果是 `up_beyond_noise`、`down_beyond_noise` 或 `within_noise`。
+
+衰老时钟这类读数：方法库有读数噪声表（`data/readout_noise.json`）时，`change` 也能判断，结果带 `basis: readout_noise` 和 `wording_zh`，只能说"超出测量误差"，不等于身体真的变了；没有这张表时照旧返回 `no_noise_model`，并排看。
+
+**几次结果：有没有缓慢趋势？**
+
+```bash
+python3 <本技能目录>/scripts/noise.py trend --marker 空腹血糖 --series 2023-09-01:4.6 2024-09-03:5.0 2025-09-02:5.3 2026-09-01:5.6
+```
+
+`--series` 每项写 `日期:值`，单位和指标表不同时写 `日期:值:单位`（如 `2023-09-01:83:mg/dL`）；`<0.5` 这类删失值、来源没确认的值（末尾加 `?`）不计入，写在 `caveats` 里。同一窗口（指标要求的复测间隔，缺省 28 天）内的值合并成一个点。输出和分析师 `twin series` 的单个指标一致：`pairs`（相邻两次：`up_beyond_noise`、`down_beyond_noise`、`within_noise`、`too_close`）、`baseline_vs_latest`、`trend`（`rising_trend`、`falling_trend`、`no_trend_detected`，或 `not_judged`：不到 3 个点、首末不到 180 天）和 `summary_verdict`。怎么讲见 coaching.md「多次复测」。
+
+**对我有用的概率**
+
+```bash
+python3 <本技能目录>/scripts/noise.py predict --marker 收缩压 --intervention 减盐 --baseline 138 --unit mmHg --repeats 14 [--personal 138:131:14] [--adherence 0.8]
+```
+
+按试验平均效果、个人差异和他自己的波动算（统计模型估计）：`p_true_favorable` 是真实效果方向有利的概率，`p_detect_favorable` 是下次按 `--repeats` 次数做实验能测出来的概率，`interval_80_pct` 是预计变化的 80% 区间。`--personal` 是他做过的同类实验（前均值:后均值:每边次数），`--adherence` 是到目前为止做到计划的比例（还没开始就不写）。每条结果带 `label`（统计模型估计、来源、假设）和一句 `say_zh`，讲的时候带上类别和依据。效应表没有这项时返回 `no_effect_row`：只能给 AI 判断，并明确说是 AI 判断。
 
 ## 问医生的单子
 

@@ -57,7 +57,9 @@ All files are under `skills/longevity-coach/`.
 | `templates/member.md` | What the member file holds |
 | `hosts/standalone.md` | Running on its own: the member file on disk, calling the analyst and the method library, `noise.py` |
 | `hosts/longpi.md` | Running inside LongPi: LongPi's memory and tools; deep analysis only through `run_deep_analysis` |
-| `scripts/noise.py` | Whether a change exceeds normal variation, and whether one person could see an intervention's effect |
+| `scripts/noise.py` | Whether a change or a slow trend exceeds normal variation, whether one person could see an intervention's effect, and the probability that it works for them (statistical model) |
+| `scripts/exposures.py` | Turns the member file's commitments and review records into `la-exposures/1` for the analyst's twin |
+| `evals/` | Conversation evals for `claude plugin eval` |
 
 `noise.py` uses the reference change value from published within-person biological variation, the same calculation
 as the analyst's `twin compare`:
@@ -65,25 +67,36 @@ as the analyst's `twin compare`:
 ```bash
 python3 skills/longevity-coach/scripts/noise.py change --marker 收缩压 --before 138 141 135 --after 131 129 128 --gap-days 30
 python3 skills/longevity-coach/scripts/noise.py plan --marker 收缩压 --intervention 减盐 --baseline 138 --unit mmHg --repeats 14
+python3 skills/longevity-coach/scripts/noise.py trend --marker 空腹血糖 --series 2023-09-01:4.6 2024-09-03:5.0 2025-09-02:5.3 2026-09-01:5.6
+python3 skills/longevity-coach/scripts/noise.py predict --marker 收缩压 --intervention 减盐 --baseline 138 --unit mmHg --repeats 14
 python3 skills/longevity-coach/scripts/noise.py markers
+python3 skills/longevity-coach/scripts/exposures.py --member ~/.longevity-coach/老王.md --export la-export.json --out exposures.json
 ```
 
 ## Tests
 
 ```bash
-python3 tests/test_noise.py
-python3 tests/test_skill_files.py
+python3 -m pytest -q tests
 ```
 
 The noise tests need longevity-skills cloned beside this repository. With longevity-analyst-skill there too, they also
-check that both compute the same reference change value, and run the shared RCV cases in
-`longevity-analyst-skill/tests/fixtures/rcv_cases.json` (or the file `LONGEVITY_RCV_CASES` names).
+check that both compute the same reference change value, and run the shared cases in
+`longevity-analyst-skill/tests/fixtures/`: `rcv_cases.json`, `trend_cases.json` and `prediction_cases.json` (or the files
+`LONGEVITY_RCV_CASES`, `LONGEVITY_TREND_CASES`, `LONGEVITY_PREDICTION_CASES` name). The exposures test validates its
+output against the analyst's `la-exposures-1.schema.json` (needs `jsonschema`).
+
+Conversation evals live in `evals/` (one directory per case: `prompt.md`, `case.yaml`, `graders/`) and run with
+`claude plugin eval .` from the repository root (`.claude-plugin/plugin.json` makes the repository a plugin).
 
 ## Boundaries
 
-Pi is an AI coach, not a doctor. It does not diagnose, prescribe, set a dose or advise stopping a medicine; it helps
-the person prepare questions for their doctor instead. In an emergency it tells them to call 120 first. Biological
-ages and risks are model estimates, and Pi says so.
+Pi is an AI coach, not a doctor. Diagnostic conclusions, medication suggestions (including doses) and "will this work
+for me" probabilities reach the person only as labelled items: each says where it comes from and what kind of judgement
+it is (measurement, published model, a named guideline's criteria or recommendation, CPIC, statistical model estimate,
+or AI judgement). AI judgements are always called AI judgements, and a dose that no source prints is labelled as one.
+Starting, stopping, switching or adjusting a medicine is something to confirm with a doctor, and Pi puts it on the
+list of questions for the doctor. In an emergency the first thing Pi says is to call 120. Where a host has stricter
+rules (LongPi), the host's rules win.
 
 ## License
 
