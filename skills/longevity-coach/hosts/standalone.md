@@ -58,7 +58,7 @@
 3. **运行**：读 `skills/<name>/SKILL.md`，按它的命令和输入格式写 CSV、跑脚本。同一个公式里的化验值要来自同一次抽血。退出码 3 说明输入有问题，原因在 `out/report.md`。
 4. **讲结果**：读 `out/report.md` 和 `out/result.json`，按「讲结果」讲。报告末尾「边界:」那句话的意思要带上。
 
-常用方法举例：九项血液指标的表型年龄（`accelerated-biological-aging-risk`）、肾功能 eGFR（`ckd-epi-2021-egfr`）、中国人心血管十年风险（`china-par-ascvd-risk`）、腰围和体脂（`navy-circumference-body-fat`）、晨型夜型（`rmeq-chronotype`）、孤独感（`uls8-loneliness-scale`）、甲基化时钟（`epiage`、`pyaging`）。
+常用方法举例：九项血液指标的表型年龄（`accelerated-biological-aging-risk`）、肾功能 eGFR（`ckd-epi-2021-egfr`）、中国人心血管十年风险（`china-par-ascvd-risk`）、腰围和体脂（`navy-circumference-body-fat`）、甲基化时钟（`epiage`、`pyaging`）。
 
 ## 证据：某某有没有用
 
