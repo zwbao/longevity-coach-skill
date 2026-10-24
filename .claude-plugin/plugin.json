@@ -1,0 +1,9 @@
+{
+  "name": "longevity-coach",
+  "description": "Pi, a warm longevity coach that keeps a long-term relationship with one person (Chinese). The skill lives in skills/longevity-coach; this manifest makes the repository loadable as a plugin so `claude plugin eval` can run evals/.",
+  "author": {
+    "name": "zwbao"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/zwbao/longevity-coach-skill"
+}
