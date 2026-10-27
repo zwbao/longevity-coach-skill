@@ -396,6 +396,10 @@ components:
         post_started_at: {$ref: "#/components/schemas/DateTime"}
         next: {type: string, enum: [open_chat, open_card, prepare_doctor_brief, call_emergency]}
         context_message: {type: string}
+        question: {type: string, description: answer - the question answered}
+        answer: {type: string, description: answer - the answer id recorded (same resolved to the last answer)}
+        feedback_zh: {type: string, description: answer - what to show right after the answer; numbers come from the member's own state}
+        record: {type: object, description: "answer - profile fields the answer sets, keyed by dotted path (profile.smoking = never), for the host to store"}
     Measurement:
       type: object
       additionalProperties: false
@@ -433,6 +437,7 @@ components:
             data: {type: boolean}
             clinical: {type: boolean}
             care: {type: boolean}
+            question: {type: boolean, description: Pi may ask one short question at a time (question_due); also turn the trigger on in enabled_triggers}
         quiet_hours:
           type: object
           required: [start, end]

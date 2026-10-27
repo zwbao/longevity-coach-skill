@@ -30,7 +30,12 @@ TRIGGERS = {t["id"]: t for t in RULES["triggers"]}
 ORDER = {t["id"]: i for i, t in enumerate(RULES["triggers"])}
 CATEGORIES = POLICY["categories"]
 ACTION_TYPES = ["checkin", "snooze", "dismiss", "mute_trigger", "open_chat", "open_card", "schedule_retest",
-                "start_experiment_phase", "prepare_doctor_brief", "call_emergency", "read"]
+                "start_experiment_phase", "prepare_doctor_brief", "call_emergency", "answer", "read"]
+QUESTIONS = json.loads((SKILL / "data" / "questions.json").read_text(encoding="utf-8"))
+QBANK = {q["id"]: q for q in QUESTIONS["questions"]}
+QORDER = {q["id"]: i for i, q in enumerate(QUESTIONS["questions"])}
+QPURPOSE = {p: i for i, p in enumerate(QUESTIONS["purposes"])}
+QPOL = POLICY["questions"]
 MILESTONES = TRIGGERS["milestone"]["when"]["cumulative_reaches"]
 REASON_ZH = {"intervention": "确认你做的改变有没有真的起作用", "genetic": "看看基因提示的这一项有没有表现出来",
              "guideline": "按指南的时间把这一项再看一看"}
@@ -383,7 +388,174 @@ def evaluate(state: dict, export: dict, now: datetime, tz) -> List[dict]:
             out.append(make_event(state, "life_event_followup", {"life_event": eid},
                                   {"life_event": eid, "event_zh": ev.get("label_zh"), "date": ev.get("date")},
                                   f"life_event_followup:{eid}", now, tz))
+
+    # question_due: at most one, the most useful question that is due
+    q = next_question(state, now, tz)
+    if q:
+        qid, payload = q
+        out.append(make_event(state, "question_due", {"question": qid}, payload,
+                              f"question_due:{qid}:{today.isoformat()}", now, tz))
     return out
+
+
+# ---------- questions ----------
+
+def get_path(obj: Any, path: str) -> Any:
+    for part in path.split("."):
+        if not isinstance(obj, dict):
+            return None
+        obj = obj.get(part)
+    return obj
+
+
+def set_path(obj: dict, path: str, value: Any) -> None:
+    *head, last = path.split(".")
+    for part in head:
+        obj = obj.setdefault(part, {})
+    obj[last] = value
+
+
+def active_experiment(state: dict, xid: Optional[str] = None) -> Optional[dict]:
+    """The experiment whose post-test is running (or the named one)."""
+    for x in state.get("experiments") or []:
+        if xid and x.get("id") == xid:
+            return x
+        if not xid and x.get("post_started_at") and int(x.get("post_done") or 0) < int(x.get("repeats_needed") or 0):
+            return x
+    return None
+
+
+def question_fired(state: dict, qid: str) -> List[dict]:
+    return [f for f in (state.get("history") or {}).get("fired", [])
+            if f.get("trigger") == "question_due" and ((f.get("event") or {}).get("subject") or {}).get("question") == qid]
+
+
+def question_log(state: dict, qid: str, tz) -> Tuple[List[datetime], List[dict]]:
+    """When the member actually saw the question (a sent message, or the agenda shown at an opening) and the answers,
+    oldest first. A question that only waited unseen in the agenda was not asked."""
+    hist = state.get("history") or {}
+    asks = sorted(parse_time(f["at"], tz) for f in question_fired(state, qid) if f.get("via") == "message" or f.get("seen_at"))
+    answers = sorted((a for a in hist.get("answers", []) if a.get("question") == qid), key=lambda a: parse_time(a["at"], tz))
+    return asks, answers
+
+
+def question_retired(unanswered_days: List[date], today: date) -> bool:
+    """Seen retire_after_ignored times on earlier days without an answer."""
+    return len([d for d in unanswered_days if d < today]) >= QPOL["retire_after_ignored"]
+
+
+def question_still_open(state: dict, fired: dict, tz, today: date) -> bool:
+    """A fired question stays on the agenda only if it is the latest ask of that question, unanswered and not retired."""
+    qid = ((fired.get("event") or {}).get("subject") or {}).get("question")
+    if qid not in QBANK:
+        return False
+    at = parse_time(fired["at"], tz)
+    if any(parse_time(f["at"], tz) > at for f in question_fired(state, qid)):
+        return False
+    asks, answers = question_log(state, qid, tz)
+    if answers and parse_time(answers[-1]["at"], tz) >= at:
+        return False
+    last_answer = local_date(parse_time(answers[-1]["at"], tz), tz) if answers else None
+    return not question_retired([local_date(a, tz) for a in asks if last_answer is None or local_date(a, tz) > last_answer], today)
+
+
+def same_streak(answers: List[dict]) -> int:
+    n = 0
+    for a in reversed(answers):
+        if a["answer"] != answers[-1]["answer"]:
+            break
+        n += 1
+    return n
+
+
+def question_interval(q: dict, answers: List[dict]) -> int:
+    """Days to wait after the last answer: the base interval, doubled for each repeat of the same answer."""
+    base = q.get("interval_days") or 0
+    if not answers or not q.get("backoff", True):
+        return base
+    return min(QPOL["max_interval_days"], base * QPOL["backoff_factor"] ** (same_streak(answers) - 1))
+
+
+def question_payload(state: dict, q: dict, host: str, now: datetime, tz) -> Optional[dict]:
+    """The payload if the question applies to this member now, else None. Never asks what the state already knows."""
+    if host not in q["hosts"]:
+        return None
+    if q.get("known_if") and get_path(state, q["known_if"]) not in (None, "", []):
+        return None
+    req = q.get("requires") or {}
+    payload: Dict[str, Any] = {"question": q["id"], "purpose": q["purpose"]}
+    if req.get("experiment_post_active"):
+        x = active_experiment(state)
+        if x is None:
+            return None
+        payload.update(experiment=x.get("id"), marker=x.get("marker"), intervention_zh=x.get("intervention_zh"),
+                       post_done=int(x.get("post_done") or 0), repeats_needed=int(x.get("repeats_needed") or 0))
+    if "no_measurement" in req:
+        r = req["no_measurement"]
+        cutoff = now - timedelta(days=r["within_days"])
+        if any(m.get("kind") == r["kind"] and (parse_time(m.get("at"), tz) or cutoff) > cutoff
+               for m in state.get("measurements") or []):
+            return None
+    if "no_wearable" in req and (state.get("wearable") or {}).get(req["no_wearable"]):
+        return None
+    return payload
+
+
+def next_question(state: dict, now: datetime, tz) -> Optional[Tuple[str, dict]]:
+    """The one question to ask now, or None. Order: purpose, weight (state.gaps may override), asked longest ago, file order."""
+    host = state.get("host", "standalone")
+    today = local_date(now, tz)
+    gaps = state.get("gaps") or {}
+    due = []
+    for q in QUESTIONS["questions"]:
+        payload = question_payload(state, q, host, now, tz)
+        if payload is None:
+            continue
+        asks, answers = question_log(state, q["id"], tz)
+        last_answer = local_date(parse_time(answers[-1]["at"], tz), tz) if answers else None
+        if answers and not q.get("recurring"):
+            continue
+        unanswered = [local_date(a, tz) for a in asks if last_answer is None or local_date(a, tz) > last_answer]
+        if question_retired(unanswered, today):
+            continue
+        if unanswered:
+            wait = min(q.get("interval_days") or QPOL["unanswered_retry_days"], QPOL["unanswered_retry_days"])
+            if days_between(unanswered[-1], today) < wait:
+                continue
+        elif answers and days_between(last_answer, today) < question_interval(q, answers):
+            continue
+        if q.get("same_as_last") and answers:
+            payload["last_answer"] = answers[-1]["answer"]
+        weight = (gaps.get(q["id"]) or {}).get("weight", q.get("weight", 0))
+        last_ask = local_date(asks[-1], tz) if asks else date.min
+        due.append(((QPURPOSE[q["purpose"]], -weight, last_ask, QORDER[q["id"]]), q["id"], payload))
+    if not due:
+        return None
+    _, qid, payload = min(due)
+    return qid, payload
+
+
+def answer_feedback(state: dict, q: dict, ans: dict, before: List[dict], after: List[dict], xid: Optional[str]) -> str:
+    """What the member sees right after answering. Numbers come only from the state."""
+    spec = q["feedback"].get(ans["id"], q["feedback"].get("*", "记上了。"))
+    if spec == "experiment_progress":
+        x = active_experiment(state, xid) or {}
+        k, n = int(x.get("post_done") or 0), int(x.get("repeats_needed") or 0)
+        if n and k >= n:
+            return f"{n} 次都测够了！可以看看这次改变对你有没有用了。"
+        return f"记上了，第 {k} 次。再测 {n - k} 次，就能看出{x.get('intervention_zh') or '这次改变'}对你有没有用。"
+    if spec == "data_gap":
+        effect = ((state.get("gaps") or {}).get(q["id"]) or {}).get("effect_zh")
+        return "记上了。" + effect if effect else "记上了，这个以后不会再问你。"
+    if spec == "recurring":
+        nxt = question_interval(q, after)
+        if before and before[-1]["answer"] == ans["id"]:
+            return f"和上次一样，记上了。下次隔 {nxt} 天再问你。"
+        if before:
+            prev = next((a["label_zh"] for a in q["answers"] if a["id"] == before[-1]["answer"]), "")
+            return f"记上了，和上次（{prev}）不一样，我会留意。{nxt} 天后再问你。"
+        return f"记上了。{nxt} 天后再问你一次，答案没变的话就越问越少。"
+    return spec
 
 
 # ---------- drafting ----------
@@ -392,7 +564,28 @@ def render(template: str, payload: dict) -> str:
     return re.sub(r"\{(\w+)\}", lambda m: str(num(payload.get(m.group(1), ""))), template)
 
 
+def draft_question(event: dict) -> dict:
+    p = dict(event["subject"], **event["payload"])
+    q = QBANK[p["question"]]
+    answers = list(q["answers"])
+    last = p.get("last_answer")
+    buttons = []
+    if q.get("same_as_last") and last:
+        prev = next((a for a in answers if a["id"] == last), None)
+        if prev:
+            buttons.append({"label_zh": f"和上次一样：{prev['label_zh']}", "answer": prev["id"]})
+            answers = [a for a in answers if a["id"] != last]
+    buttons += [{"label_zh": a["label_zh"], "answer": a["id"]} for a in answers]
+    actions = [{"id": f"a{i + 1}", "label_zh": b["label_zh"], "type": "answer",
+                "params": {"question": q["id"], "answer": b["answer"]}} for i, b in enumerate(buttons[:POLICY["limits"]["max_actions"]])]
+    return {"title_zh": render(q["title_zh"], p), "body_zh": render(q["body_zh"], p),
+            "push_text_zh": POLICY["push_text_zh"]["default"], "numbers": [], "actions": actions,
+            "deep_link": render(TRIGGERS["question_due"]["deep_link"], p)}
+
+
 def draft(event: dict) -> dict:
+    if event["trigger"] == "question_due":
+        return draft_question(event)
     trig = TRIGGERS[event["trigger"]]
     p = dict(event["subject"], **event["payload"])
     d = next(d for d in trig["drafts"] if all(p.get(k) not in (None, False, "", 0) for k in d.get("when", [])))
@@ -562,8 +755,11 @@ def scan(state: dict, export: Optional[dict], now: datetime, opening: bool = Fal
     acted = {m.get("event") for m in hist.get("messages", []) if m.get("status") == "acted"}
     pending = [f["event"] for f in hist.get("fired", []) if f.get("via") in ("agenda", "message") and not f.get("seen_at")
                and f.get("event") and f["event_id"] not in acted and now - parse_time(f["at"], tz) <= keep
-               and f["event"]["trigger"] not in prefs["muted"]]
+               and f["event"]["trigger"] not in prefs["muted"]
+               and (f["event"]["trigger"] != "question_due" or question_still_open(state, f, tz, today))]
     sent_now = [e for e in fresh if any(m["event"] == e["id"] and m["status"] == "scheduled" for m in messages)]
+    asked_now = {e["subject"].get("question") for e in sent_now + agenda_new if e["trigger"] == "question_due"}
+    pending = [e for e in pending if e["trigger"] != "question_due" or e["subject"].get("question") not in asked_now]
     agenda = sorted({e["dedup_key"]: e for e in pending + sent_now + agenda_new}.values(), key=key)
 
     commit = {"fired": commit_fired, "messages": [m for m in messages], "remove_snoozes": snoozes_due,
@@ -681,6 +877,15 @@ def lint(message: dict, event: dict) -> List[dict]:
             err("forbidden_word", f"出现了禁用的说法“{w}”")
     if not push or len(push) > lim["title_chars"] or re.search(r"\d", push):
         err("push_text", "推送文字不能为空、不能超过 20 字、不能含数字")
+    if event.get("trigger") == "question_due":
+        q = QBANK.get((event.get("subject") or {}).get("question"))
+        answers = [a for a in acts if a.get("type") == "answer"]
+        if not answers:
+            err("question_no_answer", "提问消息至少要有一个回答按钮")
+        for a in answers:
+            prm = a.get("params") or {}
+            if q is None or prm.get("question") != q["id"] or prm.get("answer") not in {x["id"] for x in q["answers"]}:
+                err("bad_answer", f"回答按钮 {a.get('id')} 不是这个问题的答案")
     p = event.get("payload") or {}
     for k in ("marker", "metric", "drug_zh", "drug", "commitment_zh", "event_zh", "kind_zh", "intervention_zh", "conclusion_zh"):
         if isinstance(p.get(k), str) and p[k] and p[k] in push:
@@ -704,7 +909,7 @@ def ack(state: dict, action: dict, now: Optional[datetime] = None) -> Tuple[dict
         raise ValueError(f"unknown action type {typ!r}")
     at = parse_time(action.get("at"), tz) or now
     msg = next((m for m in hist.get("messages", []) if m.get("id") == action.get("message")), None)
-    if msg is None and typ != "checkin":
+    if msg is None and typ not in ("checkin", "answer"):
         raise ValueError(f"message {action.get('message')!r} not found in history")
     params = action.get("params") or {}
     result: Dict[str, Any] = {"ok": True, "type": typ, "message": action.get("message")}
@@ -759,6 +964,31 @@ def ack(state: dict, action: dict, now: Optional[datetime] = None) -> Tuple[dict
         x["post_started_at"] = x.get("post_started_at") or iso(at, tz)
         x["post_done"] = x.get("post_done") or 0
         result.update(experiment=xid, post_started_at=x["post_started_at"])
+    elif typ == "answer":
+        qid = params.get("question") or subject.get("question")
+        q = QBANK.get(qid)
+        if q is None:
+            raise ValueError(f"answer needs a known question, got {qid!r}")
+        _, before = question_log(st, qid, tz)
+        aid = before[-1]["answer"] if params.get("answer") == "same" and before else params.get("answer")
+        ans = next((a for a in q["answers"] if a["id"] == aid), None)
+        if ans is None:
+            raise ValueError(f"{aid!r} is not an answer to {qid}")
+        hist.setdefault("answers", []).append({"question": qid, "answer": aid, "at": iso(at, tz), "message": action.get("message")})
+        for path, value in (ans.get("sets") or {}).items():
+            set_path(st, path, value)
+        xid = params.get("experiment") or ((event or {}).get("payload") or {}).get("experiment")
+        if (ans.get("effect") or {}).get("experiment_post_done"):
+            x = active_experiment(st, xid) or active_experiment(st)
+            if x is None:
+                raise ValueError("no running post-test to count this answer for")
+            x["post_done"] = int(x.get("post_done") or 0) + ans["effect"]["experiment_post_done"]
+            xid = x.get("id")
+        _, after = question_log(st, qid, tz)
+        result.update(question=qid, answer=aid, record=ans.get("sets") or {},
+                      feedback_zh=answer_feedback(st, q, ans, before, after, xid))
+        if ans.get("then"):
+            result["next"] = ans["then"]
     elif typ in ("open_chat", "open_card", "prepare_doctor_brief", "call_emergency"):
         result["next"] = typ
         if typ == "open_chat":
@@ -807,10 +1037,21 @@ def member_state(md_path: Path) -> dict:
     prefs: Dict[str, Any] = {}
     m = re.search(r"主动提醒：([^\n]*)", basic)
     if m and m.group(1).strip():
-        names = {"教练": "coaching", "复测": "retest", "数据": "data", "临床": "clinical", "关怀": "care"}
-        found = dict(re.findall(r"(教练|复测|数据|临床|关怀)\s*(开|关)", m.group(1)))
+        names = {"教练": "coaching", "复测": "retest", "数据": "data", "临床": "clinical", "关怀": "care", "提问": "question"}
+        found = dict(re.findall(r"(教练|复测|数据|临床|关怀|提问)\s*(开|关)", m.group(1)))
         if found:
             prefs["consent"] = {names[k]: v == "开" for k, v in found.items()}
+        if "提问" in found:
+            prefs["enabled_triggers"] = {"question_due": found["提问"] == "开"}
+    life = section(md, "生活和偏好")
+    m = re.search(r"吸烟：\s*(从不|已戒|戒了|在吸|现在吸)", life)
+    profile: Dict[str, Any] = {}
+    if m:
+        profile["smoking"] = {"从不": "never", "已戒": "former", "戒了": "former"}.get(m.group(1), "current")
+    if re.search(r"家族病史：\s*[^\s<（(]", life):
+        profile["family_history_known"] = True
+    if profile:
+        st["profile"] = profile
     m = re.search(r"免打扰：\s*(\d{1,2}:\d{2})\s*[–\-~到至]\s*(\d{1,2}:\d{2})", basic)
     if m:
         prefs["quiet_hours"] = {"start": m.group(1).zfill(5), "end": m.group(2).zfill(5)}
@@ -850,6 +1091,8 @@ def member_state(md_path: Path) -> dict:
             entry = pending.setdefault(k, {"id": f"m{i + 1}", "at": day, "kind": "blood_pressure",
                                            "unit": unit or "mmHg", "values": {}})
             entry["values"]["sbp" if name == "收缩压" else "dbp"] = float(val)
+        elif name == "腰围" and re.fullmatch(r"\d+(?:\.\d+)?", val):
+            meas.append({"id": f"m{i + 1}", "at": day, "kind": "waist", "unit": unit or "cm", "values": {"waist": float(val)}})
         elif "血糖" in name and re.fullmatch(r"\d+(?:\.\d+)?", val):
             meas.append({"id": f"m{i + 1}", "at": day, "kind": "glucose", "unit": unit, "values": {"glucose": float(val)}})
     meas += [e for e in pending.values() if len(e["values"]) == 2]
@@ -877,12 +1120,14 @@ def member_state(md_path: Path) -> dict:
     st["last_interaction_at"] = iso_day(m.group(1)) if m else None
     # the sidecar holds what markdown does not: history, snoozes, mutes, overrides written by ack
     for k in ("history", "snoozes", "retests_scheduled", "data_batches", "medications_in_use", "plan_targets", "wearable",
-              "member"):
+              "member", "gaps"):
         if k in side:
             st[k] = side[k]
     p = dict(side.get("preferences") or {})
     p.update(prefs)
     st["preferences"] = p
+    if side.get("profile"):
+        st["profile"] = dict(side["profile"], **(st.get("profile") or {}))
     for c in st["commitments"]:
         o = (side.get("commitments") or {}).get(c["label_zh"]) or {}
         c.update({k: v for k, v in o.items() if k in ("last_checkin_at", "checkins")})
@@ -898,7 +1143,7 @@ def save_member(md_path: Path, before: dict, after: dict) -> None:
     """Write the sidecar, and the check-in count back into the member file's 小承诺 table."""
     side_path = md_path.with_suffix(".proactive.json")
     side = json.loads(side_path.read_text(encoding="utf-8")) if side_path.is_file() else {}
-    for k in ("history", "snoozes", "retests_scheduled"):
+    for k in ("history", "snoozes", "retests_scheduled", "profile"):
         if after.get(k) is not None:
             side[k] = after[k]
     side["preferences"] = {k: v for k, v in (after.get("preferences") or {}).items() if k == "muted_triggers"} | \

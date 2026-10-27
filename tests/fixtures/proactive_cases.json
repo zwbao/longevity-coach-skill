@@ -5777,6 +5777,1051 @@
      }
     }
    ]
+  },
+  {
+   "id": "question-default-off-no",
+   "about": "question_due is off until the member turns questions on.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true,
+      "question": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": [],
+      "agenda": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "question-asks-gap",
+   "about": "Smoking (the heaviest data gap) first; the answer is recorded, never asked again, and the next day the next gap is asked.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true,
+      "question": true
+     },
+     "enabled_triggers": {
+      "question_due": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [
+       "question_due:q_smoking:2026-10-12"
+      ],
+      "messages": [
+       {
+        "trigger": "question_due",
+        "status": "scheduled",
+        "title_zh": "你现在吸烟吗？",
+        "body_zh": "吸烟是影响长期健康最大的一项，知道了才能算得准。答一次就够，以后不再问。",
+        "actions": [
+         {
+          "id": "a1",
+          "label_zh": "从不吸",
+          "type": "answer",
+          "params": {
+           "question": "q_smoking",
+           "answer": "never"
+          }
+         },
+         {
+          "id": "a2",
+          "label_zh": "已经戒了",
+          "type": "answer",
+          "params": {
+           "question": "q_smoking",
+           "answer": "former"
+          }
+         },
+         {
+          "id": "a3",
+          "label_zh": "现在吸",
+          "type": "answer",
+          "params": {
+           "question": "q_smoking",
+           "answer": "current"
+          }
+         }
+        ]
+       }
+      ],
+      "agenda": [
+       "question_due"
+      ]
+     }
+    },
+    {
+     "op": "ack",
+     "now": "2026-10-12T10:05:00+08:00",
+     "action": {
+      "schema": "pi-action/1",
+      "message": "$messages[0].id",
+      "action": "a1",
+      "type": "answer",
+      "at": "2026-10-12T10:05:00+08:00",
+      "params": {
+       "question": "q_smoking",
+       "answer": "never"
+      },
+      "idempotency_key": "$messages[0].id:a1"
+     },
+     "expect": {
+      "result": {
+       "ok": true,
+       "question": "q_smoking",
+       "answer": "never",
+       "feedback_zh": "记上了，这个以后不会再问你。",
+       "duplicate": false
+      },
+      "state": {
+       "profile.smoking": "never",
+       "history.answers.length": 1
+      }
+     }
+    },
+    {
+     "op": "scan",
+     "now": "2026-10-13T10:00:00+08:00",
+     "expect": {
+      "events": [
+       "question_due:q_family_history:2026-10-13"
+      ],
+      "messages": [
+       {
+        "trigger": "question_due",
+        "status": "scheduled",
+        "title_zh": "家里有人得过心脑血管病吗？",
+        "body_zh": "父母、兄弟姐妹得过心脏病、中风或糖尿病，会改变哪些检查值得早做。答一次就够。",
+        "actions": [
+         {
+          "id": "a1",
+          "label_zh": "没有",
+          "type": "answer",
+          "params": {
+           "question": "q_family_history",
+           "answer": "no"
+          }
+         },
+         {
+          "id": "a2",
+          "label_zh": "有，去说说",
+          "type": "answer",
+          "params": {
+           "question": "q_family_history",
+           "answer": "yes"
+          }
+         },
+         {
+          "id": "a3",
+          "label_zh": "不清楚",
+          "type": "answer",
+          "params": {
+           "question": "q_family_history",
+           "answer": "unknown"
+          }
+         }
+        ]
+       }
+      ],
+      "agenda": [
+       "question_due"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "question-known-no",
+   "about": "Nothing is asked that the state already knows or that was answered within its interval.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true,
+      "question": true
+     },
+     "enabled_triggers": {
+      "question_due": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [
+     {
+      "id": "w1",
+      "at": "2026-10-01",
+      "kind": "waist",
+      "unit": "cm",
+      "values": {
+       "waist": 84
+      }
+     }
+    ],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": [],
+     "answers": [
+      {
+       "question": "q_alcohol",
+       "answer": "none",
+       "at": "2026-10-10T09:00:00+08:00",
+       "message": null
+      },
+      {
+       "question": "q_meds_change",
+       "answer": "no",
+       "at": "2026-10-10T09:00:00+08:00",
+       "message": null
+      },
+      {
+       "question": "q_life_changes",
+       "answer": "no",
+       "at": "2026-10-10T09:00:00+08:00",
+       "message": null
+      }
+     ]
+    },
+    "snoozes": [],
+    "profile": {
+     "smoking": "never",
+     "family_history_known": true
+    },
+    "wearable": {
+     "sleep_h": {
+      "metric_zh": "睡眠时长",
+      "baseline": 7.1,
+      "band_pct": 10,
+      "days": []
+     }
+    }
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": [],
+      "agenda": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "question-backoff",
+   "about": "Two identical answers double the 30-day interval to 60 days; when due, the first button repeats the last answer, and a third identical answer stretches the wait to 120 days.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true,
+      "question": true
+     },
+     "enabled_triggers": {
+      "question_due": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [
+     {
+      "id": "w1",
+      "at": "2026-10-01",
+      "kind": "waist",
+      "unit": "cm",
+      "values": {
+       "waist": 84
+      }
+     }
+    ],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": [],
+     "answers": [
+      {
+       "question": "q_alcohol",
+       "answer": "none",
+       "at": "2026-08-01T09:00:00+08:00",
+       "message": null
+      },
+      {
+       "question": "q_alcohol",
+       "answer": "none",
+       "at": "2026-09-01T09:00:00+08:00",
+       "message": null
+      },
+      {
+       "question": "q_meds_change",
+       "answer": "no",
+       "at": "2026-10-30T09:00:00+08:00",
+       "message": null
+      },
+      {
+       "question": "q_life_changes",
+       "answer": "no",
+       "at": "2026-10-30T09:00:00+08:00",
+       "message": null
+      }
+     ]
+    },
+    "snoozes": [],
+    "profile": {
+     "smoking": "never",
+     "family_history_known": true
+    },
+    "wearable": {
+     "sleep_h": {
+      "metric_zh": "睡眠时长",
+      "baseline": 7.1,
+      "band_pct": 10,
+      "days": []
+     }
+    }
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-30T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": [],
+      "agenda": []
+     }
+    },
+    {
+     "op": "scan",
+     "now": "2026-10-31T10:00:00+08:00",
+     "expect": {
+      "events": [
+       "question_due:q_alcohol:2026-10-31"
+      ],
+      "messages": [
+       {
+        "trigger": "question_due",
+        "status": "scheduled",
+        "title_zh": "最近一周喝了几次酒？",
+        "body_zh": "饮酒会影响肝脏、血压和睡眠的判断。答案一直没变的话，我会越问越少。",
+        "actions": [
+         {
+          "id": "a1",
+          "label_zh": "和上次一样：没喝",
+          "type": "answer",
+          "params": {
+           "question": "q_alcohol",
+           "answer": "none"
+          }
+         },
+         {
+          "id": "a2",
+          "label_zh": "一两次",
+          "type": "answer",
+          "params": {
+           "question": "q_alcohol",
+           "answer": "some"
+          }
+         },
+         {
+          "id": "a3",
+          "label_zh": "三次以上",
+          "type": "answer",
+          "params": {
+           "question": "q_alcohol",
+           "answer": "often"
+          }
+         }
+        ]
+       }
+      ],
+      "agenda": [
+       "question_due"
+      ]
+     }
+    },
+    {
+     "op": "ack",
+     "now": "2026-10-31T10:05:00+08:00",
+     "action": {
+      "schema": "pi-action/1",
+      "message": "$messages[0].id",
+      "action": "a1",
+      "type": "answer",
+      "at": "2026-10-31T10:05:00+08:00",
+      "params": {
+       "question": "q_alcohol",
+       "answer": "same"
+      },
+      "idempotency_key": "$messages[0].id:a1"
+     },
+     "expect": {
+      "result": {
+       "ok": true,
+       "question": "q_alcohol",
+       "answer": "none",
+       "feedback_zh": "和上次一样，记上了。下次隔 120 天再问你。",
+       "duplicate": false
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "question-retire",
+   "about": "A question sent three times without an answer is retired; the next most useful one is asked instead.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true,
+      "question": true
+     },
+     "enabled_triggers": {
+      "question_due": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [
+      {
+       "dedup_key": "question_due:q_smoking:2026-09-20",
+       "trigger": "question_due",
+       "subject_key": "question_due:question=q_smoking",
+       "event_id": "E-20260920-c9d01cfb",
+       "at": "2026-09-20T10:00:00+08:00",
+       "via": "message",
+       "event": {
+        "schema": "pi-event/1",
+        "id": "E-20260920-c9d01cfb",
+        "member": "pi-synth",
+        "trigger": "question_due",
+        "category": "question",
+        "priority": 35,
+        "occurred_at": "2026-09-20T10:00:00+08:00",
+        "subject": {
+         "question": "q_smoking"
+        },
+        "payload": {
+         "question": "q_smoking",
+         "purpose": "data_gap"
+        },
+        "refs": [],
+        "dedup_key": "question_due:q_smoking:2026-09-20"
+       }
+      },
+      {
+       "dedup_key": "question_due:q_smoking:2026-09-27",
+       "trigger": "question_due",
+       "subject_key": "question_due:question=q_smoking",
+       "event_id": "E-20260927-844ddc23",
+       "at": "2026-09-27T10:00:00+08:00",
+       "via": "message",
+       "event": {
+        "schema": "pi-event/1",
+        "id": "E-20260927-844ddc23",
+        "member": "pi-synth",
+        "trigger": "question_due",
+        "category": "question",
+        "priority": 35,
+        "occurred_at": "2026-09-27T10:00:00+08:00",
+        "subject": {
+         "question": "q_smoking"
+        },
+        "payload": {
+         "question": "q_smoking",
+         "purpose": "data_gap"
+        },
+        "refs": [],
+        "dedup_key": "question_due:q_smoking:2026-09-27"
+       }
+      },
+      {
+       "dedup_key": "question_due:q_smoking:2026-10-04",
+       "trigger": "question_due",
+       "subject_key": "question_due:question=q_smoking",
+       "event_id": "E-20261004-94908129",
+       "at": "2026-10-04T10:00:00+08:00",
+       "via": "message",
+       "event": {
+        "schema": "pi-event/1",
+        "id": "E-20261004-94908129",
+        "member": "pi-synth",
+        "trigger": "question_due",
+        "category": "question",
+        "priority": 35,
+        "occurred_at": "2026-10-04T10:00:00+08:00",
+        "subject": {
+         "question": "q_smoking"
+        },
+        "payload": {
+         "question": "q_smoking",
+         "purpose": "data_gap"
+        },
+        "refs": [],
+        "dedup_key": "question_due:q_smoking:2026-10-04"
+       }
+      }
+     ],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [
+       "question_due:q_family_history:2026-10-12"
+      ],
+      "messages": [
+       {
+        "trigger": "question_due",
+        "status": "scheduled",
+        "title_zh": "家里有人得过心脑血管病吗？",
+        "body_zh": "父母、兄弟姐妹得过心脏病、中风或糖尿病，会改变哪些检查值得早做。答一次就够。",
+        "actions": [
+         {
+          "id": "a1",
+          "label_zh": "没有",
+          "type": "answer",
+          "params": {
+           "question": "q_family_history",
+           "answer": "no"
+          }
+         },
+         {
+          "id": "a2",
+          "label_zh": "有，去说说",
+          "type": "answer",
+          "params": {
+           "question": "q_family_history",
+           "answer": "yes"
+          }
+         },
+         {
+          "id": "a3",
+          "label_zh": "不清楚",
+          "type": "answer",
+          "params": {
+           "question": "q_family_history",
+           "answer": "unknown"
+          }
+         }
+        ]
+       }
+      ],
+      "agenda": [
+       "question_due"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "question-experiment",
+   "about": "During a post-test the daily measurement question comes first; answering yes counts the measurement and says how many remain.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true,
+      "question": true
+     },
+     "enabled_triggers": {
+      "question_due": true
+     }
+    },
+    "commitments": [],
+    "experiments": [
+     {
+      "id": "X1",
+      "plan_item": "I3",
+      "intervention_zh": "减盐",
+      "marker": "收缩压",
+      "started_at": "2026-08-20",
+      "min_weeks": 6,
+      "repeats_needed": 14,
+      "post_started_at": "2026-10-08T08:00:00+08:00",
+      "post_done": 3
+     }
+    ],
+    "life_events": [],
+    "measurements": [
+     {
+      "id": "w1",
+      "at": "2026-10-01",
+      "kind": "waist",
+      "unit": "cm",
+      "values": {
+       "waist": 84
+      }
+     }
+    ],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": [],
+    "profile": {
+     "smoking": "never",
+     "family_history_known": true
+    },
+    "wearable": {
+     "sleep_h": {
+      "metric_zh": "睡眠时长",
+      "baseline": 7.1,
+      "band_pct": 10,
+      "days": []
+     }
+    }
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T08:30:00+08:00",
+     "expect": {
+      "events": [
+       "question_due:q_experiment_measure:2026-10-12"
+      ],
+      "messages": [
+       {
+        "trigger": "question_due",
+        "status": "scheduled",
+        "title_zh": "今天测收缩压了吗？",
+        "body_zh": "减盐的后测已经做了 3 次，一共要 14 次，测够了就能看出这次改变对你有没有用。",
+        "actions": [
+         {
+          "id": "a1",
+          "label_zh": "测了，记上",
+          "type": "answer",
+          "params": {
+           "question": "q_experiment_measure",
+           "answer": "yes"
+          }
+         },
+         {
+          "id": "a2",
+          "label_zh": "今天没测",
+          "type": "answer",
+          "params": {
+           "question": "q_experiment_measure",
+           "answer": "no"
+          }
+         }
+        ]
+       }
+      ],
+      "agenda": [
+       "question_due"
+      ]
+     }
+    },
+    {
+     "op": "ack",
+     "now": "2026-10-12T08:35:00+08:00",
+     "action": {
+      "schema": "pi-action/1",
+      "message": "$messages[0].id",
+      "action": "a1",
+      "type": "answer",
+      "at": "2026-10-12T08:35:00+08:00",
+      "params": {
+       "question": "q_experiment_measure",
+       "answer": "yes"
+      },
+      "idempotency_key": "$messages[0].id:a1"
+     },
+     "expect": {
+      "result": {
+       "ok": true,
+       "question": "q_experiment_measure",
+       "answer": "yes",
+       "feedback_zh": "记上了，第 4 次。再测 10 次，就能看出减盐对你有没有用。",
+       "duplicate": false
+      },
+      "state": {
+       "experiments.0.post_done": 4
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "question-site-host",
+   "about": "On the website (no experiments) the measurement question is skipped and a data gap is asked.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "longpi_site",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true,
+      "question": true
+     },
+     "enabled_triggers": {
+      "question_due": true
+     }
+    },
+    "commitments": [],
+    "experiments": [
+     {
+      "id": "X1",
+      "plan_item": "I3",
+      "intervention_zh": "减盐",
+      "marker": "收缩压",
+      "started_at": "2026-08-20",
+      "min_weeks": 6,
+      "repeats_needed": 14,
+      "post_started_at": "2026-10-08T08:00:00+08:00",
+      "post_done": 3
+     }
+    ],
+    "life_events": [],
+    "measurements": [
+     {
+      "id": "w1",
+      "at": "2026-10-01",
+      "kind": "waist",
+      "unit": "cm",
+      "values": {
+       "waist": 84
+      }
+     }
+    ],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": [],
+    "profile": {
+     "smoking": "never",
+     "family_history_known": true
+    }
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [
+       "question_due:q_alcohol:2026-10-12"
+      ],
+      "messages": [
+       {
+        "trigger": "question_due",
+        "status": "scheduled",
+        "title_zh": "最近一周喝了几次酒？",
+        "body_zh": "饮酒会影响肝脏、血压和睡眠的判断。答案一直没变的话，我会越问越少。",
+        "actions": [
+         {
+          "id": "a1",
+          "label_zh": "没喝",
+          "type": "answer",
+          "params": {
+           "question": "q_alcohol",
+           "answer": "none"
+          }
+         },
+         {
+          "id": "a2",
+          "label_zh": "一两次",
+          "type": "answer",
+          "params": {
+           "question": "q_alcohol",
+           "answer": "some"
+          }
+         },
+         {
+          "id": "a3",
+          "label_zh": "三次以上",
+          "type": "answer",
+          "params": {
+           "question": "q_alcohol",
+           "answer": "often"
+          }
+         }
+        ]
+       }
+      ],
+      "agenda": [
+       "question_due"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "question-yields",
+   "about": "A question never outranks a due retest: the retest gets the one message and the question waits in the agenda; the next day the question is sent, and only its latest ask stays on the agenda.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true,
+      "question": true
+     },
+     "enabled_triggers": {
+      "question_due": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {
+     "retests": [
+      {
+       "id": "R1",
+       "marker": "空腹血糖",
+       "due_at": "2026-10-15",
+       "reason": "guideline"
+      }
+     ]
+    },
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": []
+    },
+    "snoozes": []
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [
+       "retest_due:R1:2026-10-15:pre",
+       "question_due:q_smoking:2026-10-12"
+      ],
+      "messages": [
+       {
+        "trigger": "retest_due",
+        "status": "scheduled",
+        "title_zh": "下周复查空腹血糖",
+        "body_zh": "这次复查能帮我们按指南的时间把这一项再看一看。"
+       }
+      ],
+      "agenda": [
+       "retest_due",
+       "question_due"
+      ]
+     }
+    },
+    {
+     "op": "scan",
+     "now": "2026-10-13T10:00:00+08:00",
+     "expect": {
+      "events": [
+       "question_due:q_smoking:2026-10-13"
+      ],
+      "messages": [
+       {
+        "trigger": "question_due",
+        "status": "scheduled",
+        "title_zh": "你现在吸烟吗？",
+        "body_zh": "吸烟是影响长期健康最大的一项，知道了才能算得准。答一次就够，以后不再问。",
+        "actions": [
+         {
+          "id": "a1",
+          "label_zh": "从不吸",
+          "type": "answer",
+          "params": {
+           "question": "q_smoking",
+           "answer": "never"
+          }
+         },
+         {
+          "id": "a2",
+          "label_zh": "已经戒了",
+          "type": "answer",
+          "params": {
+           "question": "q_smoking",
+           "answer": "former"
+          }
+         },
+         {
+          "id": "a3",
+          "label_zh": "现在吸",
+          "type": "answer",
+          "params": {
+           "question": "q_smoking",
+           "answer": "current"
+          }
+         }
+        ]
+       }
+      ],
+      "agenda": [
+       "retest_due",
+       "question_due"
+      ]
+     }
+    }
+   ]
   }
  ],
  "lint_cases": [

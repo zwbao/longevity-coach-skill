@@ -35,6 +35,7 @@
         "start_experiment_phase",
         "prepare_doctor_brief",
         "call_emergency",
+        "answer",
         "read"
       ]
     },
@@ -78,7 +79,8 @@
             "concordance_transition",
             "diagnosis_hit",
             "medication_gene_conflict",
-            "critical_value"
+            "critical_value",
+            "question_due"
           ]
         },
         "retest": {
@@ -89,6 +91,14 @@
         },
         "intent": {
           "type": "string"
+        },
+        "question": {
+          "type": "string",
+          "description": "answer: the question id (data/questions.json); needed when answering in chat without a message"
+        },
+        "answer": {
+          "type": "string",
+          "description": "answer: the answer id, or \"same\" for the member's last answer"
         }
       }
     },
