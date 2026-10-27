@@ -221,7 +221,7 @@ python3 <本技能目录>/scripts/proactive.py lint --message <message.json> --e
 ### 3.7 提问（`question_due`）
 
 - **求值**：每次扫描最多产生一个 `question_due` 事件，主体 `{question}`，`dedup_key = question_due:<题目 id>:<本地日期>`。按提问库顺序逐题判断，留下"适用且到期"的，按（目的顺序 `experiment → data_gap → profile → follow_up`，`weight` 降序（`state.gaps[题目].weight` 可覆盖），最近一次被问的日期升序，库中顺序）取第一个。
-- **适用**：宿主在题目 `hosts` 里；`known_if` 指向的状态字段为空；`requires` 成立：`experiment_post_active`（有实验后测已开始且未测够，负载带上 `experiment`、`marker`、`intervention_zh`、`post_done`、`repeats_needed`）、`no_measurement`（`within_days` 天内没有这种测量）、`no_wearable`（`wearable` 里没有这个指标）。
+- **适用**：宿主在题目 `hosts` 里；`known_if` 指向的状态字段为空；`requires` 成立：`experiment_post_active`（有实验后测已开始且未测够，负载带上 `experiment`、`marker`、`intervention_zh`、`post_done`、`repeats_needed`）、`no_measurement`（`within_days` 天内没有这种测量）、`no_wearable`（`wearable` 里没有这个指标）、`state_equals`（这些状态字段等于给定值，例如问卷只说了"现在不吸烟"时 `profile.smoking` 为 `not_current`，只追问以前吸没吸过）。
 - **"问过"**：`history.fired` 里这道题的记录，`via` 为 `message`，或者是已经 `seen_at` 的议程项。只在议程里、没被看到的不算问过。
 - **到期**：不重复的题目答过就不再问。看到后没回答的，`min(interval_days, unanswered_retry_days)` 天后可再问。答过的周期题，距最后一次回答满 `interval_days × backoff_factor^(连续相同回答数 − 1)` 天（上限 `max_interval_days`；`backoff: false` 的题目不加倍）。最后一次回答之后、今天之前看到却没回答满 `retire_after_ignored` 次的，不再问（退休）。
 - **议程**：同一道题只保留最新的一次；已回答、已退休的不留；本次扫描又问了的，旧的去掉。

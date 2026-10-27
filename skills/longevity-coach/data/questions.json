@@ -42,6 +42,23 @@
       "feedback": {"*": "data_gap"}
     },
     {
+      "id": "q_smoking_past",
+      "purpose": "data_gap",
+      "hosts": ["standalone", "longpi_site"],
+      "requires": {"state_equals": {"profile.smoking": "not_current"}},
+      "recurring": false,
+      "weight": 9,
+      "title_zh": "以前吸过烟吗？",
+      "body_zh": "你说过现在不吸烟。以前吸过、戒了多久，风险差别不小，答一次就够。",
+      "answers": [
+        {"id": "never", "label_zh": "从没吸过", "sets": {"profile.smoking": "never"}},
+        {"id": "quit_recent", "label_zh": "戒了不到 5 年", "sets": {"profile.smoking": "former", "profile.quit_within_5y": true}},
+        {"id": "quit_long", "label_zh": "戒了 5 年以上", "sets": {"profile.smoking": "former", "profile.quit_within_5y": false}}
+      ],
+      "same_as_last": false,
+      "feedback": {"*": "data_gap"}
+    },
+    {
       "id": "q_family_history",
       "purpose": "data_gap",
       "hosts": ["standalone", "longpi_site"],

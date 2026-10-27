@@ -7,7 +7,7 @@ Pi asks one useful question at a time, and every answer gets an immediate reply.
 ### Added
 - `question_due` trigger and a `question` category (priority 35, off by default like `wearable_shift`): at most one
   question per scan, sharing the day and week caps with every other non-urgent message. Bank in `data/questions.json`
-  (`pi-questions/1`): nine questions across four purposes (running experiment, data gap, profile, follow-up), each with
+  (`pi-questions/1`): ten questions across four purposes (running experiment, data gap, profile, follow-up), each with
   why it is asked, skip conditions (`known_if`, `requires`), interval, at most three answer buttons and what each answer
   records (`sets`).
 - Repetition rules (`proactive_policy.json` `questions`): never ask what the state knows; an unchanged answer doubles the

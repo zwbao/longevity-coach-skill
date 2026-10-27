@@ -708,13 +708,14 @@
     },
     "profile": {
       "type": "object",
-      "description": "Facts the question bank fills or skips on (known_if / sets paths). The host may prefill them from its own records.",
+      "description": "Facts the question bank fills or skips on (known_if / sets / state_equals paths). The host may prefill them from its own records; not_current means a questionnaire said 'does not smoke now' without saying whether ever.",
       "properties": {
         "smoking": {
           "enum": [
             "never",
             "former",
-            "current"
+            "current",
+            "not_current"
           ]
         },
         "family_history_known": {
@@ -733,6 +734,9 @@
             "mid",
             "long"
           ]
+        },
+        "quit_within_5y": {
+          "type": "boolean"
         }
       }
     },

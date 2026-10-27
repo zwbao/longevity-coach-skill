@@ -498,6 +498,8 @@ def question_payload(state: dict, q: dict, host: str, now: datetime, tz) -> Opti
             return None
     if "no_wearable" in req and (state.get("wearable") or {}).get(req["no_wearable"]):
         return None
+    if any(get_path(state, k) != v for k, v in (req.get("state_equals") or {}).items()):
+        return None
     return payload
 
 

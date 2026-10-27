@@ -6822,6 +6822,176 @@
      }
     }
    ]
+  },
+  {
+   "id": "question-after-questionnaire",
+   "about": "The site's questionnaire said the member does not smoke now and answered alcohol and sleep: Pi asks only whether they ever smoked, and nothing the questionnaire answered within its interval.",
+   "state": {
+    "schema": "pi-state/1",
+    "member": "pi-synth",
+    "host": "standalone",
+    "timezone": "Asia/Shanghai",
+    "picture_zh": "带孙子爬泰山",
+    "last_interaction_at": "2026-10-11",
+    "chat_cadence_days": null,
+    "preferences": {
+     "consent": {
+      "coaching": true,
+      "retest": true,
+      "data": true,
+      "clinical": true,
+      "care": true,
+      "question": true
+     },
+     "enabled_triggers": {
+      "question_due": true
+     }
+    },
+    "commitments": [],
+    "experiments": [],
+    "life_events": [],
+    "measurements": [
+     {
+      "id": "w1",
+      "at": "2026-10-01",
+      "kind": "waist",
+      "unit": "cm",
+      "values": {
+       "waist": 84
+      }
+     }
+    ],
+    "medications_in_use": [],
+    "plan_targets": [],
+    "data_batches": [],
+    "retests_scheduled": [],
+    "export": {},
+    "history": {
+     "fired": [],
+     "messages": [],
+     "actions": [],
+     "answers": [
+      {
+       "question": "q_alcohol",
+       "answer": "some",
+       "at": "2026-10-01T09:00:00+08:00",
+       "message": "questionnaire"
+      },
+      {
+       "question": "q_sleep",
+       "answer": "mid",
+       "at": "2026-10-01T09:00:00+08:00",
+       "message": "questionnaire"
+      },
+      {
+       "question": "q_meds_change",
+       "answer": "no",
+       "at": "2026-10-01T09:00:00+08:00",
+       "message": "questionnaire"
+      },
+      {
+       "question": "q_life_changes",
+       "answer": "no",
+       "at": "2026-10-01T09:00:00+08:00",
+       "message": "questionnaire"
+      }
+     ]
+    },
+    "snoozes": [],
+    "profile": {
+     "smoking": "not_current",
+     "family_history_known": true
+    }
+   },
+   "steps": [
+    {
+     "op": "scan",
+     "now": "2026-10-12T10:00:00+08:00",
+     "expect": {
+      "events": [
+       "question_due:q_smoking_past:2026-10-12"
+      ],
+      "messages": [
+       {
+        "trigger": "question_due",
+        "status": "scheduled",
+        "title_zh": "以前吸过烟吗？",
+        "body_zh": "你说过现在不吸烟。以前吸过、戒了多久，风险差别不小，答一次就够。",
+        "actions": [
+         {
+          "id": "a1",
+          "label_zh": "从没吸过",
+          "type": "answer",
+          "params": {
+           "question": "q_smoking_past",
+           "answer": "never"
+          }
+         },
+         {
+          "id": "a2",
+          "label_zh": "戒了不到 5 年",
+          "type": "answer",
+          "params": {
+           "question": "q_smoking_past",
+           "answer": "quit_recent"
+          }
+         },
+         {
+          "id": "a3",
+          "label_zh": "戒了 5 年以上",
+          "type": "answer",
+          "params": {
+           "question": "q_smoking_past",
+           "answer": "quit_long"
+          }
+         }
+        ]
+       }
+      ],
+      "agenda": [
+       "question_due"
+      ]
+     }
+    },
+    {
+     "op": "ack",
+     "now": "2026-10-12T10:05:00+08:00",
+     "action": {
+      "schema": "pi-action/1",
+      "message": "$messages[0].id",
+      "action": "a1",
+      "type": "answer",
+      "at": "2026-10-12T10:05:00+08:00",
+      "params": {
+       "question": "q_smoking_past",
+       "answer": "quit_recent"
+      },
+      "idempotency_key": "$messages[0].id:a1"
+     },
+     "expect": {
+      "result": {
+       "ok": true,
+       "question": "q_smoking_past",
+       "answer": "quit_recent",
+       "feedback_zh": "记上了，这个以后不会再问你。",
+       "duplicate": false
+      },
+      "state": {
+       "profile.smoking": "former",
+       "profile.quit_within_5y": true
+      }
+     }
+    },
+    {
+     "op": "scan",
+     "now": "2026-10-13T10:00:00+08:00",
+     "expect": {
+      "events": [],
+      "messages": [],
+      "agenda": []
+     }
+    }
+   ]
   }
  ],
  "lint_cases": [
