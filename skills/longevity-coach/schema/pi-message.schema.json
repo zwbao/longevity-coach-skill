@@ -1,0 +1,255 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/zwbao/longevity-coach-skill/schema/pi-message.schema.json",
+  "title": "pi-message/1: a proactive message (PLAN WS-M.2, appendix A.15)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "member",
+    "event",
+    "category",
+    "title_zh",
+    "body_zh",
+    "push_text_zh",
+    "numbers",
+    "actions",
+    "status",
+    "send_after",
+    "expires_at"
+  ],
+  "properties": {
+    "schema": {
+      "const": "pi-message/1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^M-\\d{8}-[0-9a-z]+$"
+    },
+    "member": {
+      "type": "string"
+    },
+    "event": {
+      "type": "string"
+    },
+    "trigger": {
+      "enum": [
+        "retest_due",
+        "experiment_checkpoint",
+        "commitment_review",
+        "milestone",
+        "checkin_gap",
+        "return_welcome",
+        "life_event_followup",
+        "new_data_ready",
+        "change_beyond_noise",
+        "trend_beyond_noise",
+        "prediction_ready",
+        "wearable_shift",
+        "concordance_transition",
+        "diagnosis_hit",
+        "medication_gene_conflict",
+        "critical_value"
+      ]
+    },
+    "category": {
+      "enum": [
+        "urgent",
+        "clinical",
+        "retest",
+        "data",
+        "coaching",
+        "care"
+      ]
+    },
+    "priority": {
+      "type": "integer"
+    },
+    "title_zh": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 20
+    },
+    "body_zh": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "push_text_zh": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 20,
+      "description": "lock-screen text: no health data, no numbers"
+    },
+    "numbers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ref",
+          "value",
+          "label"
+        ],
+        "properties": {
+          "ref": {
+            "type": "string"
+          },
+          "value": {
+            "type": [
+              "number",
+              "array"
+            ]
+          },
+          "unit": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "$ref": "#/$defs/button"
+      }
+    },
+    "deep_link": {
+      "type": "string"
+    },
+    "celebration_zh": {
+      "type": "string",
+      "description": "pre-generated line returned by a checkin action"
+    },
+    "status": {
+      "enum": [
+        "scheduled",
+        "sent",
+        "read",
+        "acted",
+        "expired",
+        "suppressed"
+      ]
+    },
+    "suppressed_reason": {
+      "enum": [
+        "cap",
+        "quiet_hours",
+        "cooldown",
+        "muted",
+        "no_consent"
+      ]
+    },
+    "deferred_reason": {
+      "enum": [
+        "quiet_hours"
+      ],
+      "description": "scheduled later than it was created"
+    },
+    "send_after": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d+)?)?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "ISO 8601 with a time-zone offset"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d+)?)?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "ISO 8601 with a time-zone offset"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "suppressed"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "suppressed_reason"
+        ]
+      }
+    }
+  ],
+  "$defs": {
+    "button": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label_zh",
+        "type"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label_zh": {
+          "type": "string",
+          "maxLength": 10
+        },
+        "type": {
+          "enum": [
+            "checkin",
+            "snooze",
+            "dismiss",
+            "mute_trigger",
+            "open_chat",
+            "open_card",
+            "schedule_retest",
+            "start_experiment_phase",
+            "prepare_doctor_brief",
+            "call_emergency"
+          ]
+        },
+        "params": {
+          "type": "object"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "snooze"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "params"
+            ],
+            "properties": {
+              "params": {
+                "type": "object",
+                "required": [
+                  "days"
+                ],
+                "properties": {
+                  "days": {
+                    "enum": [
+                      1,
+                      3,
+                      7
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

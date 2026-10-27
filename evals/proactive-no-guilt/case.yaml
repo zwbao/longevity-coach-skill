@@ -1,0 +1,117 @@
+schema_version: "1.1"
+name: proactive-no-guilt
+description: "checkin_gap 消息不出现愧疚措辞，并提出把动作缩小"
+tags: [coach, proactive]
+runs: 3
+expected_outcome: "checkin_gap 消息不出现愧疚措辞，并提出把动作缩小"
+execution:
+  timeout_seconds: 600
+  append_system_prompt: |
+    （评测说明，用户看不到）这是 longevity-coach 技能的主动关怀评测，独立运行模式，所有人物和数字都是合成的。
+    本次评测里后台脚本不能运行：`proactive.py scan` 已经在后台跑完，输出附在下面，当作你刚运行得到的结果。
+    会员档案 ~/.longevity-coach/老王.md 的内容也附在下面。按 references/proactive.md 的写法写消息；只输出要发给老王的消息本身。
+
+    === 会员档案 ===
+    # 老王
+
+    ## 基本
+
+    - 年龄 / 出生年月：52
+    - 性别：男
+    - 称呼方式：你　　风格：upbeat
+    - 在用的药和补剂：无
+    - 聊天节奏：大约每 7 天
+    - 主动提醒：教练 开　复测 开　数据 开　临床 开　关怀 开
+    - 免打扰：22:00–08:00　时区：Asia/Shanghai
+
+    ## 为什么 & 想要的画面
+
+    - 为什么在乎："我爸六十八岁中风，之后基本没出过门。"
+    - 七八十岁时想还能做的事：带孙子爬泰山
+
+    ## 小承诺
+
+    | 承诺 | 当…时 | 频率 | 开始 | 累计次数 | 状态 | 方案项 |
+    |---|---|---|---|---|---|---|
+    | 工作日晚饭用限盐勺 | 工作日做晚饭时 | 每周 5 次 | 2026-08-01 | 8 | 进行中 | I3 |
+
+    复盘记录：
+
+    - 2026-09-28：3/5，加班两天
+
+    ## 个人实验
+
+    - 减盐看收缩压（X1，开始 2026-07-20，最短 6 周，后测 14 次，已测 0 次，方案项 I3，预测 P1）
+
+    ## 上次对话
+
+    - 日期：2026-09-28
+    - 这周就这一件事：限盐勺
+
+    === proactive.py scan 的输出（节选） ===
+    {
+      "messages": [
+        {
+          "schema": "pi-message/1",
+          "id": "M-20261012-9fc96998",
+          "member": "pi-synth",
+          "event": "E-20261012-9fc96998",
+          "trigger": "checkin_gap",
+          "category": "coaching",
+          "priority": 40,
+          "title_zh": "最近怎么样？",
+          "body_zh": "有两周没听你说工作日晚饭用限盐勺的事了，最近是不是特别忙？要不要把它缩小一点，小到最累的一天也能做到？",
+          "push_text_zh": "Pi 有一件事想和你说",
+          "numbers": [],
+          "actions": [
+            {
+              "id": "a1",
+              "label_zh": "缩小一点",
+              "type": "open_chat",
+              "params": {
+                "intent": "shrink"
+              }
+            },
+            {
+              "id": "a2",
+              "label_zh": "去聊聊",
+              "type": "open_chat"
+            },
+            {
+              "id": "a3",
+              "label_zh": "先不了",
+              "type": "dismiss"
+            }
+          ],
+          "deep_link": "longpi://chat",
+          "status": "scheduled",
+          "send_after": "2026-10-12T10:00:00+08:00",
+          "expires_at": "2026-10-15T10:00:00+08:00"
+        }
+      ],
+      "events": [
+        {
+          "schema": "pi-event/1",
+          "id": "E-20261012-9fc96998",
+          "member": "pi-synth",
+          "trigger": "checkin_gap",
+          "category": "coaching",
+          "priority": 40,
+          "occurred_at": "2026-10-12T10:00:00+08:00",
+          "subject": {
+            "commitment": "C1"
+          },
+          "payload": {
+            "commitment": "C1",
+            "commitment_zh": "工作日晚饭用限盐勺",
+            "days_without_checkin": 14,
+            "plan_item": "I3"
+          },
+          "refs": [],
+          "dedup_key": "checkin_gap:C1:2026-09-28"
+        }
+      ],
+      "agenda": [
+        "checkin_gap"
+      ]
+    }

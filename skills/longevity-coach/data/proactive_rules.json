@@ -1,0 +1,258 @@
+{
+  "schema": "pi-proactive/1",
+  "note": "Trigger rules for proactive care (PLAN WS-M.1, appendix A.14). The evaluator is scripts/proactive.py; the algorithm is spelled out in references/proactive.md. Drafts are the default wording: Pi may rewrite coaching and care drafts, data and clinical drafts keep their first sentence, urgent drafts are sent as rendered. {name} is filled from the event payload.",
+  "triggers": [
+    {
+      "id": "critical_value", "category": "urgent", "enabled_by_default": true, "user_can_disable": false,
+      "hosts": ["standalone", "longpi_site"],
+      "data_source_zh": "家庭测量、化验",
+      "when": {"rule_ref": "critical_rules[*]", "measured_within_hours": 24},
+      "cooldown_days": 0, "dedup": "per measurement and rule",
+      "deep_link": "longpi://chat",
+      "drafts": [
+        {"title_zh": "请马上处理", "body_zh": "建议你现在就拨打 120 或尽快就医。你刚记录的{kind_zh}是 {value_text}，已经达到{source_short_zh}里的危急水平。",
+         "actions": [{"label_zh": "拨打 120", "type": "call_emergency"}, {"label_zh": "去聊聊", "type": "open_chat"}]}
+      ]
+    },
+    {
+      "id": "concordance_transition", "category": "clinical", "enabled_by_default": true, "user_can_disable": true,
+      "hosts": ["standalone", "longpi_site"],
+      "data_source_zh": "la-export/2 concordance（twin series 的迁移）",
+      "when": {"transition": ["latent", "concordant_adverse"]},
+      "cooldown_days": null, "dedup": "per analyte and transition date",
+      "deep_link": "longpi://cards/concordance",
+      "drafts": [
+        {"title_zh": "{marker}：倾向开始表现", "body_zh": "{marker}这次超出了参考范围，和你基因里的倾向一致（{label_zh}）。你的基因没有变，变的是这个倾向有没有表现出来。值得带去问问医生。",
+         "actions": [{"label_zh": "整理问医生的单子", "type": "prepare_doctor_brief"}, {"label_zh": "去聊聊", "type": "open_chat"}]}
+      ]
+    },
+    {
+      "id": "diagnosis_hit", "category": "clinical", "enabled_by_default": true, "user_can_disable": true,
+      "hosts": ["standalone", "longpi_site"],
+      "data_source_zh": "la-export/2 diagnoses（WS-L.3）",
+      "when": {"new_rule_hit": true},
+      "cooldown_days": null, "dedup": "per diagnostic rule",
+      "deep_link": "longpi://cards/diagnosis",
+      "drafts": [
+        {"title_zh": "有一项结论值得给医生看", "body_zh": "{conclusion_zh}（{source_zh}，{label_zh}）。这需要医生来确认，我可以帮你把要问的整理好。",
+         "actions": [{"label_zh": "整理问医生的单子", "type": "prepare_doctor_brief"}, {"label_zh": "去聊聊", "type": "open_chat"}]}
+      ]
+    },
+    {
+      "id": "medication_gene_conflict", "category": "clinical", "enabled_by_default": true, "user_can_disable": true,
+      "hosts": ["standalone", "longpi_site"],
+      "data_source_zh": "在用药物 + la-export/2 medications（CPIC，WS-F、WS-L.4）",
+      "when": {"cpic_not_routine": true, "drug_in_use": true},
+      "cooldown_days": null, "dedup": "per drug",
+      "deep_link": "longpi://cards/medication",
+      "drafts": [
+        {"title_zh": "关于你在用的{drug_zh}", "body_zh": "按 CPIC 指南和你的基因结果，{drug_zh}的用法建议和医生确认一下（{label_zh}）。在和医生谈之前，先照常用药，不要自己停。",
+         "actions": [{"label_zh": "整理问医生的单子", "type": "prepare_doctor_brief"}, {"label_zh": "去聊聊", "type": "open_chat"}]}
+      ]
+    },
+    {
+      "id": "retest_due", "category": "retest", "enabled_by_default": true, "user_can_disable": true,
+      "hosts": ["standalone", "longpi_site"],
+      "data_source_zh": "la-export/2 retests（含监测计划）",
+      "when": {"retest_due_in_days": [7, 0], "skip_if_scheduled": true, "due_window_days": 7},
+      "cooldown_days": 7, "dedup": "per retest and phase (pre7 / due)",
+      "deep_link": "longpi://retests/{retest}",
+      "drafts": [
+        {"when": ["phase_pre"], "title_zh": "下周复查{marker}", "body_zh": "这次复查能帮我们{reason_zh}。",
+         "actions": [{"label_zh": "已预约", "type": "schedule_retest"}, {"label_zh": "下周再提醒", "type": "snooze", "params": {"days": 7}}, {"label_zh": "去聊聊", "type": "open_chat"}]},
+        {"title_zh": "该复查{marker}了", "body_zh": "这次复查能帮我们{reason_zh}。",
+         "actions": [{"label_zh": "已预约", "type": "schedule_retest"}, {"label_zh": "过几天再提醒", "type": "snooze", "params": {"days": 3}}, {"label_zh": "去聊聊", "type": "open_chat"}]}
+      ]
+    },
+    {
+      "id": "new_data_ready", "category": "data", "enabled_by_default": true, "user_can_disable": true,
+      "hosts": ["standalone", "longpi_site"],
+      "data_source_zh": "新化验、可穿戴汇总、新的分析导出",
+      "when": {"new_batch": true},
+      "cooldown_days": null, "dedup": "per data batch",
+      "deep_link": "longpi://chat",
+      "drafts": [
+        {"title_zh": "你的新数据到了", "body_zh": "你的新{kind_zh}到了，我先看了一遍，想和你聊其中最要紧的一件事。",
+         "actions": [{"label_zh": "去聊聊", "type": "open_chat"}, {"label_zh": "晚点提醒我", "type": "snooze", "params": {"days": 1}}]}
+      ]
+    },
+    {
+      "id": "change_beyond_noise", "category": "data", "enabled_by_default": true, "user_can_disable": true,
+      "hosts": ["standalone", "longpi_site"],
+      "data_source_zh": "la-export/2 trends（twin series 相邻对比）",
+      "when": {"plan_target": true, "latest_pair_verdict": ["increase_beyond_noise", "decrease_beyond_noise"]},
+      "cooldown_days": null, "dedup": "per marker and comparison",
+      "deep_link": "longpi://cards/change",
+      "drafts": [
+        {"when": ["favorable"], "title_zh": "{marker}有了真实变化", "body_zh": "这次{marker}{direction_zh}了 {change_pct_abs}%，超出了你个人正常波动。方向正是我们想要的，你一直在坚持，值得好好庆祝！",
+         "actions": [{"label_zh": "去聊聊", "type": "open_chat"}, {"label_zh": "看详情", "type": "open_card"}]},
+        {"title_zh": "{marker}有了变化", "body_zh": "这次{marker}{direction_zh}了 {change_pct_abs}%，超出了你个人正常波动。我们一起看看可能的原因，再定下一步。",
+         "actions": [{"label_zh": "去聊聊", "type": "open_chat"}, {"label_zh": "看详情", "type": "open_card"}]}
+      ]
+    },
+    {
+      "id": "trend_beyond_noise", "category": "data", "enabled_by_default": true, "user_can_disable": true,
+      "hosts": ["standalone", "longpi_site"],
+      "data_source_zh": "la-export/2 trends（twin series 趋势检验）",
+      "when": {"trend_verdict": ["rising_beyond_noise", "falling_beyond_noise"]},
+      "cooldown_days": null, "dedup": "per marker and latest observation",
+      "deep_link": "longpi://cards/trend",
+      "drafts": [
+        {"title_zh": "{marker}：缓慢{direction_zh}", "body_zh": "{marker}出现了超出你个人正常波动的缓慢{direction_zh}。下一次复查可以确认，我们先聊聊可以做点什么。",
+         "actions": [{"label_zh": "去聊聊", "type": "open_chat"}, {"label_zh": "看详情", "type": "open_card"}]}
+      ]
+    },
+    {
+      "id": "prediction_ready", "category": "data", "enabled_by_default": true, "user_can_disable": true,
+      "hosts": ["standalone", "longpi_site"],
+      "data_source_zh": "la-export/2 predictions（WS-L.2）",
+      "when": {"new_or_updated_prediction": true},
+      "cooldown_days": null, "dedup": "per prediction version",
+      "deep_link": "longpi://cards/prediction",
+      "drafts": [
+        {"when": ["p_low_pct"], "title_zh": "有了一个新估计", "body_zh": "{intervention_zh}对你的{marker}能不能测出效果，我估计概率在 {p_low_pct}%–{p_high_pct}% 之间（{label_zh}）。",
+         "actions": [{"label_zh": "去聊聊", "type": "open_chat"}, {"label_zh": "看详情", "type": "open_card"}]},
+        {"title_zh": "有了一个新估计", "body_zh": "{intervention_zh}对你的{marker}，能测出效果的概率约 {p_pct}%（{label_zh}）。",
+         "actions": [{"label_zh": "去聊聊", "type": "open_chat"}, {"label_zh": "看详情", "type": "open_card"}]}
+      ]
+    },
+    {
+      "id": "wearable_shift", "category": "data", "enabled_by_default": false, "user_can_disable": true,
+      "hosts": ["standalone", "longpi_site"],
+      "data_source_zh": "可穿戴日汇总（需要可穿戴的个人波动数据，PLAN B.1 第二批）",
+      "when": {"window_days": 7, "min_days_outside": 3},
+      "cooldown_days": 7, "dedup": "per metric and window end",
+      "deep_link": "longpi://chat",
+      "drafts": [
+        {"title_zh": "{metric}最近有变化", "body_zh": "你最近 {window_days} 天的{metric}平均值超出了你个人正常波动，已经连续 {days_outside} 天了。想聊聊最近的作息吗？",
+         "actions": [{"label_zh": "去聊聊", "type": "open_chat"}, {"label_zh": "先不了", "type": "dismiss"}]}
+      ]
+    },
+    {
+      "id": "experiment_checkpoint", "category": "coaching", "enabled_by_default": true, "user_can_disable": true,
+      "hosts": ["standalone"],
+      "data_source_zh": "档案「个人实验」",
+      "when": {"post_start": "started_at + min_weeks", "results": "post_done >= repeats_needed"},
+      "cooldown_days": 3, "dedup": "per experiment and phase",
+      "deep_link": "longpi://experiment/{experiment}",
+      "drafts": [
+        {"when": ["phase_results"], "title_zh": "可以看结果了", "body_zh": "{marker}的后测已经量够 {post_done} 次了，你把整个实验做完了！我们一起看看这次改变对你有没有用。",
+         "actions": [{"label_zh": "去看结果", "type": "open_chat"}, {"label_zh": "晚点提醒我", "type": "snooze", "params": {"days": 1}}]},
+        {"when": ["p_pct"], "title_zh": "可以开始后测了", "body_zh": "{intervention_zh}已经坚持 {weeks_done} 周了。接下来量 {repeats_needed} 天{marker}，每天一次，就能看出这次改变对你有没有用。按你的情况，能测出效果的概率约 {p_pct}%（{label_zh}）。",
+         "actions": [{"label_zh": "开始后测", "type": "start_experiment_phase"}, {"label_zh": "晚点提醒我", "type": "snooze", "params": {"days": 1}}]},
+        {"title_zh": "可以开始后测了", "body_zh": "{intervention_zh}已经坚持 {weeks_done} 周了。接下来量 {repeats_needed} 天{marker}，每天一次，就能看出这次改变对你有没有用。",
+         "actions": [{"label_zh": "开始后测", "type": "start_experiment_phase"}, {"label_zh": "晚点提醒我", "type": "snooze", "params": {"days": 1}}]}
+      ]
+    },
+    {
+      "id": "return_welcome", "category": "coaching", "enabled_by_default": true, "user_can_disable": true,
+      "hosts": ["standalone"],
+      "data_source_zh": "最近互动时间",
+      "when": {"days_since_interaction": 30},
+      "cooldown_days": 30, "dedup": "per last interaction date",
+      "supersedes": ["checkin_gap", "commitment_review"],
+      "deep_link": "longpi://chat",
+      "drafts": [
+        {"when": ["total_cumulative"], "title_zh": "欢迎回来", "body_zh": "好久不见，想你了！你之前累计做到的 {total_cumulative} 次都还在，一次也没有清零。想从哪儿接着来，我们慢慢聊。",
+         "actions": [{"label_zh": "去聊聊", "type": "open_chat"}, {"label_zh": "先不了", "type": "dismiss"}]},
+        {"title_zh": "欢迎回来", "body_zh": "好久不见，想你了！最近过得怎么样？想从哪儿接着来，我们慢慢聊。",
+         "actions": [{"label_zh": "去聊聊", "type": "open_chat"}, {"label_zh": "先不了", "type": "dismiss"}]}
+      ]
+    },
+    {
+      "id": "checkin_gap", "category": "coaching", "enabled_by_default": true, "user_can_disable": true,
+      "hosts": ["standalone"],
+      "data_source_zh": "打卡记录",
+      "when": {"active_commitment": true, "days_without_checkin": 14},
+      "cooldown_days": 14, "dedup": "per commitment and last check-in date",
+      "deep_link": "longpi://chat",
+      "drafts": [
+        {"title_zh": "最近怎么样？", "body_zh": "有两周没听你说{commitment_zh}的事了，最近是不是特别忙？要不要把它缩小一点，小到最累的一天也能做到？",
+         "actions": [{"label_zh": "缩小一点", "type": "open_chat", "params": {"intent": "shrink"}}, {"label_zh": "去聊聊", "type": "open_chat"}, {"label_zh": "先不了", "type": "dismiss"}]}
+      ]
+    },
+    {
+      "id": "commitment_review", "category": "coaching", "enabled_by_default": true, "user_can_disable": true,
+      "hosts": ["standalone"],
+      "data_source_zh": "档案「聊天节奏」、小承诺",
+      "when": {"active_commitment": true, "days_since_interaction": "cadence_days"},
+      "cooldown_days": "cadence", "dedup": "per last interaction date",
+      "deep_link": "longpi://chat",
+      "drafts": [
+        {"title_zh": "聊聊这周吧", "body_zh": "又到我们约好聊一聊的时候了。{commitment_zh}，你已经累计做到 {cumulative} 次，这周感觉怎么样？",
+         "actions": [{"label_zh": "去聊聊", "type": "open_chat"}, {"label_zh": "晚点提醒我", "type": "snooze", "params": {"days": 1}}]}
+      ]
+    },
+    {
+      "id": "milestone", "category": "coaching", "enabled_by_default": true, "user_can_disable": true,
+      "hosts": ["standalone"],
+      "data_source_zh": "累计打卡次数",
+      "when": {"cumulative_reaches": [1, 5, 10, 20, 50, 100], "recent_within": 2},
+      "cooldown_days": null, "dedup": "per commitment and milestone",
+      "deep_link": "longpi://chat",
+      "drafts": [
+        {"when": ["picture_zh"], "title_zh": "第 {n} 次！", "body_zh": "{commitment_zh}，你已经做到第 {n} 次了。离{picture_zh}又近了一步。",
+         "actions": [{"label_zh": "今天也做到了", "type": "checkin"}, {"label_zh": "去聊聊", "type": "open_chat"}]},
+        {"title_zh": "第 {n} 次！", "body_zh": "{commitment_zh}，你已经做到第 {n} 次了。每一次都算数，一次也不会清零。",
+         "actions": [{"label_zh": "今天也做到了", "type": "checkin"}, {"label_zh": "去聊聊", "type": "open_chat"}]}
+      ]
+    },
+    {
+      "id": "life_event_followup", "category": "care", "enabled_by_default": true, "user_can_disable": true,
+      "hosts": ["standalone"],
+      "data_source_zh": "档案「近期大事」",
+      "when": {"days_after_event": [1, 3]},
+      "cooldown_days": null, "dedup": "per life event",
+      "deep_link": "longpi://chat",
+      "drafts": [
+        {"title_zh": "那件事怎么样了？", "body_zh": "{event_zh}过去了，一切都还顺利吗？想聊聊的话，我一直在。",
+         "actions": [{"label_zh": "去聊聊", "type": "open_chat"}, {"label_zh": "先不了", "type": "dismiss"}]}
+      ]
+    }
+  ],
+  "critical_rules": [
+    {
+      "id": "bp_hypertensive_emergency",
+      "kind": "blood_pressure",
+      "kind_zh": "血压",
+      "any": [
+        {"field": "sbp", "op": ">", "value": 180, "unit": "mmHg"},
+        {"field": "dbp", "op": ">", "value": 120, "unit": "mmHg"}
+      ],
+      "source_short_zh": "中国高血压防治指南（2018 年修订版）",
+      "source": {
+        "title": "2018 Chinese Guidelines for Prevention and Treatment of Hypertension—A report of the Revision Committee of Chinese Guidelines for Prevention and Treatment of Hypertension",
+        "journal": "J Geriatr Cardiol 2019;16(3):182",
+        "doi": "10.11909/j.issn.1671-5411.2019.03.014",
+        "pmid": "31080465",
+        "pmcid": "PMC6500570",
+        "locator": "Section 6.12.1 Definition and evaluation",
+        "quote": "Hypertensive emergencies are situations in which the BP suddenly and severely increases (generally over 180/120 mmHg) in patients with primary or secondary hypertension, with progressive target organ damage such as the heart, brain, and kidney.",
+        "quote_2": "The term ‘hypertensive urgencies’ is used to describe patients with severe hypertension in whom there is no acute target organ damage.",
+        "fetched": "2026-10-24, Europe PMC fullTextXML"
+      },
+      "reading": "A home reading over 180 systolic or over 120 diastolic is treated as critical: either number alone fires. The guideline separates emergency from urgency by organ damage, which a home reading cannot show, so the message says call 120 or see a doctor soon."
+    },
+    {
+      "id": "glucose_level2_hypoglycemia",
+      "kind": "glucose",
+      "kind_zh": "血糖",
+      "any": [
+        {"field": "glucose", "op": "<", "value": 3.0, "unit": "mmol/L"},
+        {"field": "glucose", "op": "<", "value": 54, "unit": "mg/dL"}
+      ],
+      "source_short_zh": "美国糖尿病学会 2025 年诊疗标准",
+      "source": {
+        "title": "6. Glycemic Goals and Hypoglycemia: Standards of Care in Diabetes—2025",
+        "journal": "Diabetes Care 2025;48(Suppl 1):S128–S145",
+        "doi": "10.2337/dc25-S006",
+        "pmid": "39651981",
+        "pmcid": "PMC11635034",
+        "locator": "Hypoglycemia Definitions and Event Rates; Table 6.4",
+        "quote": "Level 2 hypoglycemia (defined as a blood glucose concentration <54 mg/dL [<3.0 mmol/L]) is the threshold at which neuroglycopenic symptoms begin to occur and requires immediate action to resolve the hypoglycemic event.",
+        "fetched": "2026-10-24, pmc.ncbi.nlm.nih.gov article page"
+      },
+      "reading": "The classification is written for people with diabetes; a home glucose reading under the level 2 threshold is treated as critical for any member."
+    }
+  ]
+}

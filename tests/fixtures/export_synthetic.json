@@ -1,0 +1,5 @@
+{"schema": "la-export/1", "member": {"id": "pi-laowang", "sample_date": "2025-09-02"},
+ "plan": {"items": [
+  {"id": "la-i3", "source_item": "I3", "category": "nutrition", "kind": "diet", "title": "工作日晚饭用限盐勺", "markers": ["收缩压"], "executor": "member"},
+  {"id": "la-i5", "source_item": "I5", "category": "exercise", "kind": "exercise", "title": "晚饭后散步", "markers": ["空腹血糖"], "executor": "member"}]},
+ "retests": []}

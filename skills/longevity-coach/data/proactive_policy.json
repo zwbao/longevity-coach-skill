@@ -1,0 +1,24 @@
+{
+  "schema": "pi-proactive-policy/1",
+  "note": "Defaults for the policy layer (PLAN WS-M.3). A member's own preferences override these; urgent ignores consent, caps, quiet hours and mute.",
+  "categories": {
+    "urgent":   {"priority": 100, "consent_default": true,  "user_can_disable": false, "expires_days": 1},
+    "clinical": {"priority": 80,  "consent_default": false, "user_can_disable": true,  "expires_days": 14},
+    "retest":   {"priority": 60,  "consent_default": false, "user_can_disable": true,  "expires_days": 7},
+    "data":     {"priority": 50,  "consent_default": false, "user_can_disable": true,  "expires_days": 7},
+    "coaching": {"priority": 40,  "consent_default": false, "user_can_disable": true,  "expires_days": 3},
+    "care":     {"priority": 30,  "consent_default": false, "user_can_disable": true,  "expires_days": 2}
+  },
+  "caps": {"per_day": 1, "per_week": 3, "per_week_downshifted": 1},
+  "quiet_hours": {"start": "22:00", "end": "08:00"},
+  "snooze_days": [1, 3, 7],
+  "downshift_after_unopened": 3,
+  "agenda_keep_days": 14,
+  "critical_recent_hours": 24,
+  "push_text_zh": {"default": "Pi 有一件事想和你说", "urgent": "Pi 有一件要紧的事，请尽快打开看看"},
+  "limits": {"title_chars": 20, "body_chars": 120, "max_actions": 3},
+  "forbidden_zh": ["你又没做到", "又没做到", "失败", "再不", "就晚了", "后悔", "你应该感到", "太差", "偷懒", "放弃了", "注定", "你会得"],
+  "label_words_zh": ["测量", "已发表模型", "指南标准", "指南推荐", "》的标准", "》推荐", "CPIC", "统计模型估计", "AI 判断"],
+  "noise_words_zh": ["个人正常波动", "正常波动"],
+  "urgent_first_sentence_zh": "建议你现在就拨打 120 或尽快就医"
+}
