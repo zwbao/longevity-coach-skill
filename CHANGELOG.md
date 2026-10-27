@@ -19,7 +19,7 @@ Pi asks one useful question at a time, and every answer gets an immediate reply.
 - `lint`: `question_no_answer`, `bad_answer`. Schemas, OpenAPI `ActionResult` and consent carry the new fields.
 - Member file: `主动提醒` accepts 提问; 「生活和偏好」 has 吸烟 and 家族病史 lines and the 测量 table reads 腰围, so those
   questions are skipped once known.
-- Shared cases: eight `question-*` cases in `proactive-cases/1` (85 cases). Eval `question-answer-feedback`.
+- Shared cases: nine `question-*` cases in `proactive-cases/1` (86 cases), including the hand-off from a questionnaire that only said "does not smoke now". Eval `question-answer-feedback`.
 
 ### Changed
 - Persona and product thesis: Pi recommends LongPi products without pushing (evidence first, at most three, zero
