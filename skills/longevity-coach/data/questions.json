@@ -84,7 +84,7 @@
       "interval_days": 30,
       "weight": 6,
       "title_zh": "量一下腰围？",
-      "body_zh": "腰围最能反映肚子里的脂肪，体重和 BMI 都替代不了。拿软尺 2 分钟就能量好。",
+      "body_zh": "腰围最能反映肚子里的脂肪，体重和 BMI 都替代不了。拿软尺两分钟就能量好。",
       "answers": [
         {"id": "measure", "label_zh": "去记录", "then": "open_card"},
         {"id": "later", "label_zh": "过几天再说"}

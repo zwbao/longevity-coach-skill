@@ -391,5 +391,18 @@ class MemberFileTest(unittest.TestCase):
         self.assertFalse(out["ok"])
 
 
+class QuestionTextLintTest(unittest.TestCase):
+    """Every question's own wording passes the text checks a drafted message must pass (a digit with no source
+    once kept q_waist from ever being shown)."""
+
+    def test_question_wording_passes_text_lint(self) -> None:
+        bank = P.QUESTIONS.get("questions", P.QUESTIONS) if isinstance(P.QUESTIONS, dict) else P.QUESTIONS
+        for q in bank:
+            event = {"id": "e1", "category": "question", "trigger": "question_due", "subject": {}, "payload": {"question": q["id"]}}
+            message = dict(P.draft_question(event), event="e1", category="question")
+            codes = {e["code"] for e in P.lint(message, event)} - {"bad_answer"}
+            self.assertEqual(codes, set(), q["id"])
+
+
 if __name__ == "__main__":
     unittest.main()
