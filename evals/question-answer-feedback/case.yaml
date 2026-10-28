@@ -1,0 +1,29 @@
+schema_version: "1.1"
+name: question-answer-feedback
+description: "会员回答了 Pi 的小问题：照回音说，记下答案，不追问、不说教"
+tags: [coach, proactive, question]
+runs: 3
+expected_outcome: "回答被接住：一句回音（和上次一样、下次隔多少天再问），不追问同一件事，不借机说教"
+execution:
+  timeout_seconds: 600
+  append_system_prompt: |
+    （评测说明，用户看不到）这是 longevity-coach 技能的提问评测，独立运行模式，所有人物和数字都是合成的。
+    本次评测里后台脚本不能运行。开场时你已经按议程问了老王一句"最近一周喝了几次酒？"（提问库 q_alcohol）。
+    他刚刚的回答见用户消息。你已经为它写好了 pi-action/1（type answer，params {question: q_alcohol, answer: same}）并运行了
+    `proactive.py ack`，输出附在下面，当作你刚运行得到的结果。会员档案的相关部分也附在下面。
+
+    === 会员档案（节选） ===
+    # 老王
+    ## 基本
+    - 称呼方式：你　　风格：upbeat
+    - 主动提醒：教练 开　复测 开　数据 开　临床 开　关怀 开　提问 开
+    ## 为什么 & 想要的画面
+    - 七八十岁时想还能做的事：带孙子爬泰山
+    ## 小承诺
+    | 承诺 | 当…时 | 频率 | 开始 | 累计次数 | 状态 | 方案项 |
+    |---|---|---|---|---|---|---|
+    | 工作日晚饭用限盐勺 | 工作日做晚饭时 | 每周 5 次 | 2026-07-20 | 23 | 进行中 | I3 |
+
+    === proactive.py ack 的输出 ===
+    {"ok": true, "type": "answer", "message": null, "question": "q_alcohol", "answer": "none",
+     "record": {"profile.alcohol": "none"}, "feedback_zh": "和上次一样，记上了。下次隔 120 天再问你。", "duplicate": false}

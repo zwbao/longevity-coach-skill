@@ -208,6 +208,17 @@
         {"title_zh": "那件事怎么样了？", "body_zh": "{event_zh}过去了，一切都还顺利吗？想聊聊的话，我一直在。",
          "actions": [{"label_zh": "去聊聊", "type": "open_chat"}, {"label_zh": "先不了", "type": "dismiss"}]}
       ]
+    },
+    {
+      "id": "question_due", "category": "question", "enabled_by_default": false, "user_can_disable": true,
+      "hosts": ["standalone", "longpi_site"],
+      "data_source_zh": "提问库 data/questions.json 和会员的回答记录；标题、正文和回答按钮取自提问库",
+      "when": {"bank": "data/questions.json", "at_most_per_scan": 1},
+      "cooldown_days": null, "dedup": "per question and local day",
+      "deep_link": "longpi://chat",
+      "drafts": [
+        {"title_zh": "{title_zh}", "body_zh": "{body_zh}", "actions": []}
+      ]
     }
   ],
   "critical_rules": [

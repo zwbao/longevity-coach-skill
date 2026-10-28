@@ -45,7 +45,8 @@
         "concordance_transition",
         "diagnosis_hit",
         "medication_gene_conflict",
-        "critical_value"
+        "critical_value",
+        "question_due"
       ]
     },
     "category": {
@@ -55,6 +56,7 @@
         "retest",
         "data",
         "coaching",
+        "question",
         "care"
       ]
     },
@@ -65,6 +67,7 @@
         60,
         50,
         40,
+        35,
         30
       ],
       "description": "urgent 100, clinical 80, retest 60, data 50, coaching 40, care 30"

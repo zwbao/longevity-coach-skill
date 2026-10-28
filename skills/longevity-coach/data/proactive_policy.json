@@ -7,9 +7,14 @@
     "retest":   {"priority": 60,  "consent_default": false, "user_can_disable": true,  "expires_days": 7},
     "data":     {"priority": 50,  "consent_default": false, "user_can_disable": true,  "expires_days": 7},
     "coaching": {"priority": 40,  "consent_default": false, "user_can_disable": true,  "expires_days": 3},
+    "question": {"priority": 35,  "consent_default": false, "user_can_disable": true,  "expires_days": 1},
     "care":     {"priority": 30,  "consent_default": false, "user_can_disable": true,  "expires_days": 2}
   },
   "caps": {"per_day": 1, "per_week": 3, "per_week_downshifted": 1},
+  "questions": {
+    "note": "Repetition rules for question_due (references/proactive.md 一·提问). A recurring question whose last answers agree waits interval_days × backoff_factor^(same answers in a row − 1), at most max_interval_days. A question asked retire_after_ignored times in a row without an answer is not asked again until the member answers it in chat (an answer action with params.question). An unanswered ask is retried after unanswered_retry_days.",
+    "backoff_factor": 2, "max_interval_days": 180, "retire_after_ignored": 3, "unanswered_retry_days": 7
+  },
   "quiet_hours": {"start": "22:00", "end": "08:00"},
   "snooze_days": [1, 3, 7],
   "downshift_after_unopened": 3,

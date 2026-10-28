@@ -76,6 +76,9 @@
             },
             "care": {
               "type": "boolean"
+            },
+            "question": {
+              "type": "boolean"
             }
           },
           "additionalProperties": false
@@ -129,7 +132,8 @@
               "concordance_transition",
               "diagnosis_hit",
               "medication_gene_conflict",
-              "critical_value"
+              "critical_value",
+              "question_due"
             ]
           }
         },
@@ -337,7 +341,8 @@
           "kind": {
             "enum": [
               "blood_pressure",
-              "glucose"
+              "glucose",
+              "waist"
             ]
           },
           "unit": {
@@ -522,7 +527,8 @@
                   "concordance_transition",
                   "diagnosis_hit",
                   "medication_gene_conflict",
-                  "critical_value"
+                  "critical_value",
+                  "question_due"
                 ]
               },
               "subject_key": {
@@ -593,7 +599,8 @@
                   "concordance_transition",
                   "diagnosis_hit",
                   "medication_gene_conflict",
-                  "critical_value"
+                  "critical_value",
+                  "question_due"
                 ]
               },
               "category": {
@@ -603,6 +610,7 @@
                   "retest",
                   "data",
                   "coaching",
+                  "question",
                   "care"
                 ]
               },
@@ -645,6 +653,35 @@
         },
         "actions": {
           "type": "array"
+        },
+        "answers": {
+          "type": "array",
+          "description": "Answers to question_due questions, written by ack (type answer).",
+          "items": {
+            "type": "object",
+            "required": [
+              "question",
+              "answer",
+              "at"
+            ],
+            "properties": {
+              "question": {
+                "type": "string"
+              },
+              "answer": {
+                "type": "string"
+              },
+              "at": {
+                "type": "string"
+              },
+              "message": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
         }
       }
     },
@@ -667,6 +704,56 @@
             "description": "ISO 8601 with a time-zone offset"
           }
         }
+      }
+    },
+    "profile": {
+      "type": "object",
+      "description": "Facts the question bank fills or skips on (known_if / sets / state_equals paths). The host may prefill them from its own records; not_current means a questionnaire said 'does not smoke now' without saying whether ever.",
+      "properties": {
+        "smoking": {
+          "enum": [
+            "never",
+            "former",
+            "current",
+            "not_current"
+          ]
+        },
+        "family_history_known": {
+          "type": "boolean"
+        },
+        "alcohol": {
+          "enum": [
+            "none",
+            "some",
+            "often"
+          ]
+        },
+        "sleep": {
+          "enum": [
+            "short",
+            "mid",
+            "long"
+          ]
+        },
+        "quit_within_5y": {
+          "type": "boolean"
+        }
+      }
+    },
+    "gaps": {
+      "type": "object",
+      "description": "Host-supplied, per question id: weight overrides the bank's weight; effect_zh is what answering improves (for example the LongPi Age interval narrowing), shown as feedback. Numbers in it come from the host's own calculation.",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "weight": {
+            "type": "number"
+          },
+          "effect_zh": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
       }
     }
   }

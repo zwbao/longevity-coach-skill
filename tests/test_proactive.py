@@ -81,7 +81,7 @@ class SharedCasesTest(unittest.TestCase):
                     quiet.add(case["id"])
         self.assertEqual(fires, set(P.TRIGGERS))
         prefixes = {"critical", "concordance", "diagnosis", "medication", "retest", "new-data", "change", "trend", "prediction",
-                    "wearable", "experiment", "return", "checkin-gap", "review", "milestone", "life-event"}
+                    "wearable", "experiment", "return", "checkin-gap", "review", "milestone", "life-event", "question"}
         self.assertEqual({p for p in prefixes if any(q.startswith(p) for q in quiet)}, prefixes)
 
     def test_policy_cases_present(self) -> None:
@@ -165,14 +165,15 @@ class SharedCasesTest(unittest.TestCase):
 
 
 class RulesTest(unittest.TestCase):
-    def test_sixteen_triggers_with_plan_categories(self) -> None:
+    def test_seventeen_triggers_with_plan_categories(self) -> None:
         want = {"retest_due": "retest", "experiment_checkpoint": "coaching", "commitment_review": "coaching", "milestone": "coaching",
                 "checkin_gap": "coaching", "return_welcome": "coaching", "life_event_followup": "care", "new_data_ready": "data",
                 "change_beyond_noise": "data", "trend_beyond_noise": "data", "prediction_ready": "data", "wearable_shift": "data",
                 "concordance_transition": "clinical", "diagnosis_hit": "clinical", "medication_gene_conflict": "clinical",
-                "critical_value": "urgent"}
+                "critical_value": "urgent", "question_due": "question"}
         self.assertEqual({t: v["category"] for t, v in P.TRIGGERS.items()}, want)
         self.assertFalse(P.TRIGGERS["wearable_shift"]["enabled_by_default"])
+        self.assertFalse(P.TRIGGERS["question_due"]["enabled_by_default"])
         self.assertFalse(P.TRIGGERS["critical_value"]["user_can_disable"])
         for t in ("milestone", "checkin_gap", "experiment_checkpoint", "commitment_review"):
             self.assertEqual(P.TRIGGERS[t]["hosts"], ["standalone"], t)
@@ -328,6 +329,30 @@ class MemberFileTest(unittest.TestCase):
         self.assertEqual(st["experiments"][0]["marker"], "收缩压")
         self.assertEqual(st["life_events"][0]["label_zh"], "女儿的婚礼")
 
+    def test_member_file_questions(self) -> None:
+        md = self.dir / "小李.md"
+        md.write_text("# 小李\n\n## 基本\n\n- 主动提醒：提问 开　数据 开\n- 免打扰：22:00–08:00　时区：Asia/Shanghai\n\n"
+                      "## 为什么 & 想要的画面\n\n- 七八十岁时想还能做的事：自己开车去旅行\n\n"
+                      "## 生活和偏好\n\n- 吸烟：从不\n- 家族病史：没有\n\n"
+                      "## 测量\n\n| 日期 | 指标 | 数值 | 单位 | 来源 |\n|---|---|---|---|---|\n| 2026-10-01 | 腰围 | 84 | cm | 自测 |\n",
+                      encoding="utf-8")
+        st = P.member_state(md)
+        self.assertEqual(st["preferences"]["enabled_triggers"], {"question_due": True})
+        self.assertEqual(st["profile"], {"smoking": "never", "family_history_known": True})
+        self.assertEqual(st["measurements"][0]["kind"], "waist")
+        now = P.parse_time("2026-10-12T10:00:00+08:00", P.tzinfo("Asia/Shanghai"))
+        out = P.scan(st, None, now)
+        self.assertEqual([e["subject"]["question"] for e in out["events"]], ["q_alcohol"])  # known facts are not asked
+        st = P.apply_commit(st, out["commit"], now)
+        # answered in chat, without a message: recorded, and the next scan asks something else
+        st, res = P.ack(st, {"type": "answer", "params": {"question": "q_alcohol", "answer": "none"}, "at": "2026-10-12T10:30:00+08:00",
+                             "idempotency_key": "chat:q_alcohol:1"}, now)
+        self.assertEqual((res["answer"], res["record"]), ("none", {"profile.alcohol": "none"}))
+        later = P.parse_time("2026-10-13T10:00:00+08:00", P.tzinfo("Asia/Shanghai"))
+        self.assertEqual([e["subject"]["question"] for e in P.scan(st, None, later)["events"]], ["q_sleep"])
+        with self.assertRaises(ValueError):
+            P.ack(st, {"type": "answer", "params": {"question": "q_alcohol", "answer": "daily"}, "idempotency_key": "x"}, later)
+
     def test_scan_and_ack_round_trip(self) -> None:
         code, out = self.cli("scan", "--member", str(self.md), "--now", "2026-10-12T10:00:00+08:00", "--write",
                              "--inbox", str(self.dir / "老王.inbox.json"))
@@ -364,6 +389,19 @@ class MemberFileTest(unittest.TestCase):
         code, out = self.cli("lint", "--message", str(self.dir / "m.json"), "--event", str(self.dir / "e.json"))
         self.assertEqual(code, 1)
         self.assertFalse(out["ok"])
+
+
+class QuestionTextLintTest(unittest.TestCase):
+    """Every question's own wording passes the text checks a drafted message must pass (a digit with no source
+    once kept q_waist from ever being shown)."""
+
+    def test_question_wording_passes_text_lint(self) -> None:
+        bank = P.QUESTIONS.get("questions", P.QUESTIONS) if isinstance(P.QUESTIONS, dict) else P.QUESTIONS
+        for q in bank:
+            event = {"id": "e1", "category": "question", "trigger": "question_due", "subject": {}, "payload": {"question": q["id"]}}
+            message = dict(P.draft_question(event), event="e1", category="question")
+            codes = {e["code"] for e in P.lint(message, event)} - {"bad_answer"}
+            self.assertEqual(codes, set(), q["id"])
 
 
 if __name__ == "__main__":

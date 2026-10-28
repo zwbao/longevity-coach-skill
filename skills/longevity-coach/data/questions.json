@@ -1,0 +1,180 @@
+{
+  "schema": "pi-questions/1",
+  "note": "The question bank for the question_due trigger (references/proactive.md, 一·提问). A question is asked only when its answer changes something: it fills a gap a calculation needs, feeds a running experiment, or tells Pi something it will use. Never ask what pi-state already knows. Order of purposes when several are due: experiment, data_gap, profile, follow_up; then weight (a host may override it per member in state.gaps), then the one asked longest ago, then file order.",
+  "purposes": ["experiment", "data_gap", "profile", "follow_up"],
+  "questions": [
+    {
+      "id": "q_experiment_measure",
+      "purpose": "experiment",
+      "hosts": ["standalone"],
+      "requires": {"experiment_post_active": true},
+      "recurring": true,
+      "interval_days": 1,
+      "backoff": false,
+      "weight": 10,
+      "title_zh": "今天测{marker}了吗？",
+      "body_zh": "{intervention_zh}的后测已经做了 {post_done} 次，一共要 {repeats_needed} 次，测够了就能看出这次改变对你有没有用。",
+      "answers": [
+        {"id": "yes", "label_zh": "测了，记上", "effect": {"experiment_post_done": 1}},
+        {"id": "no", "label_zh": "今天没测"}
+      ],
+      "same_as_last": false,
+      "feedback": {
+        "yes": "experiment_progress",
+        "no": "记下了，明天再测也算数。"
+      }
+    },
+    {
+      "id": "q_smoking",
+      "purpose": "data_gap",
+      "hosts": ["standalone", "longpi_site"],
+      "known_if": "profile.smoking",
+      "recurring": false,
+      "weight": 10,
+      "title_zh": "你现在吸烟吗？",
+      "body_zh": "吸烟是影响长期健康最大的一项，知道了才能算得准。答一次就够，以后不再问。",
+      "answers": [
+        {"id": "never", "label_zh": "从不吸", "sets": {"profile.smoking": "never"}},
+        {"id": "former", "label_zh": "已经戒了", "sets": {"profile.smoking": "former"}},
+        {"id": "current", "label_zh": "现在吸", "sets": {"profile.smoking": "current"}}
+      ],
+      "same_as_last": false,
+      "feedback": {"*": "data_gap"}
+    },
+    {
+      "id": "q_smoking_past",
+      "purpose": "data_gap",
+      "hosts": ["standalone", "longpi_site"],
+      "requires": {"state_equals": {"profile.smoking": "not_current"}},
+      "recurring": false,
+      "weight": 9,
+      "title_zh": "以前吸过烟吗？",
+      "body_zh": "你说过现在不吸烟。以前吸过、戒了多久，风险差别不小，答一次就够。",
+      "answers": [
+        {"id": "never", "label_zh": "从没吸过", "sets": {"profile.smoking": "never"}},
+        {"id": "quit_recent", "label_zh": "戒了不到 5 年", "sets": {"profile.smoking": "former", "profile.quit_within_5y": true}},
+        {"id": "quit_long", "label_zh": "戒了 5 年以上", "sets": {"profile.smoking": "former", "profile.quit_within_5y": false}}
+      ],
+      "same_as_last": false,
+      "feedback": {"*": "data_gap"}
+    },
+    {
+      "id": "q_family_history",
+      "purpose": "data_gap",
+      "hosts": ["standalone", "longpi_site"],
+      "known_if": "profile.family_history_known",
+      "recurring": false,
+      "weight": 7,
+      "title_zh": "家里有人得过心脑血管病吗？",
+      "body_zh": "父母、兄弟姐妹得过心脏病、中风或糖尿病，会改变哪些检查值得早做。答一次就够。",
+      "answers": [
+        {"id": "no", "label_zh": "没有", "sets": {"profile.family_history_known": true}},
+        {"id": "yes", "label_zh": "有，去说说", "sets": {"profile.family_history_known": true}, "then": "open_chat"},
+        {"id": "unknown", "label_zh": "不清楚", "sets": {"profile.family_history_known": true}}
+      ],
+      "same_as_last": false,
+      "feedback": {"*": "data_gap"}
+    },
+    {
+      "id": "q_waist",
+      "purpose": "data_gap",
+      "hosts": ["standalone", "longpi_site"],
+      "requires": {"no_measurement": {"kind": "waist", "within_days": 90}},
+      "recurring": true,
+      "interval_days": 30,
+      "weight": 6,
+      "title_zh": "量一下腰围？",
+      "body_zh": "腰围最能反映肚子里的脂肪，体重和 BMI 都替代不了。拿软尺两分钟就能量好。",
+      "answers": [
+        {"id": "measure", "label_zh": "去记录", "then": "open_card"},
+        {"id": "later", "label_zh": "过几天再说"}
+      ],
+      "same_as_last": false,
+      "feedback": {"measure": "记录好腰围，我会放进你的健康页，以后量一次就能和这次比。", "later": "好，过一阵再提醒你。"}
+    },
+    {
+      "id": "q_alcohol",
+      "purpose": "data_gap",
+      "hosts": ["standalone", "longpi_site"],
+      "recurring": true,
+      "interval_days": 30,
+      "weight": 5,
+      "title_zh": "最近一周喝了几次酒？",
+      "body_zh": "饮酒会影响肝脏、血压和睡眠的判断。答案一直没变的话，我会越问越少。",
+      "answers": [
+        {"id": "none", "label_zh": "没喝", "sets": {"profile.alcohol": "none"}},
+        {"id": "some", "label_zh": "一两次", "sets": {"profile.alcohol": "some"}},
+        {"id": "often", "label_zh": "三次以上", "sets": {"profile.alcohol": "often"}}
+      ],
+      "same_as_last": true,
+      "feedback": {"*": "recurring"}
+    },
+    {
+      "id": "q_sleep",
+      "purpose": "data_gap",
+      "hosts": ["standalone", "longpi_site"],
+      "requires": {"no_wearable": "sleep_h"},
+      "recurring": true,
+      "interval_days": 30,
+      "weight": 4,
+      "title_zh": "最近平时一晚睡多久？",
+      "body_zh": "没有手表数据时，睡眠只能靠你告诉我。答案一直没变的话，我会越问越少。",
+      "answers": [
+        {"id": "short", "label_zh": "不到 6 小时", "sets": {"profile.sleep": "short"}},
+        {"id": "mid", "label_zh": "6 到 7 小时", "sets": {"profile.sleep": "mid"}},
+        {"id": "long", "label_zh": "7 小时以上", "sets": {"profile.sleep": "long"}}
+      ],
+      "same_as_last": true,
+      "feedback": {"*": "recurring"}
+    },
+    {
+      "id": "q_vision",
+      "purpose": "profile",
+      "hosts": ["standalone", "longpi_site"],
+      "known_if": "picture_zh",
+      "recurring": true,
+      "interval_days": 30,
+      "weight": 8,
+      "title_zh": "七八十岁时，你想还能做什么？",
+      "body_zh": "比如带孙子爬泰山、自己开车去旅行。这个画面会是我们之后每个小目标的方向。",
+      "answers": [
+        {"id": "talk", "label_zh": "去聊聊", "then": "open_chat"},
+        {"id": "later", "label_zh": "下次再说"}
+      ],
+      "same_as_last": false,
+      "feedback": {"talk": "好，我们聊聊。", "later": "好，等你想好了随时告诉我。"}
+    },
+    {
+      "id": "q_meds_change",
+      "purpose": "follow_up",
+      "hosts": ["standalone", "longpi_site"],
+      "recurring": true,
+      "interval_days": 60,
+      "weight": 3,
+      "title_zh": "最近有新开始或停掉的药吗？",
+      "body_zh": "用药变了，有些指标的变化要换个角度看，也要再核对一次和你基因的冲突。",
+      "answers": [
+        {"id": "no", "label_zh": "没有"},
+        {"id": "yes", "label_zh": "有，去说说", "then": "open_chat"}
+      ],
+      "same_as_last": false,
+      "feedback": {"no": "recurring", "yes": "好，告诉我是哪种药、什么时候开始或停的。"}
+    },
+    {
+      "id": "q_life_changes",
+      "purpose": "follow_up",
+      "hosts": ["standalone", "longpi_site"],
+      "recurring": true,
+      "interval_days": 14,
+      "weight": 2,
+      "title_zh": "这两周生活上有大变化吗？",
+      "body_zh": "出差、生病、换工作都会让指标波动。记下来，下次复查时才不会把波动当成变化。",
+      "answers": [
+        {"id": "no", "label_zh": "没有"},
+        {"id": "yes", "label_zh": "有，去说说", "then": "open_chat"}
+      ],
+      "same_as_last": false,
+      "feedback": {"no": "recurring", "yes": "好，说说发生了什么。"}
+    }
+  ]
+}

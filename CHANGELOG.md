@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.4.0 (2026-10)
+
+Pi asks one useful question at a time, and every answer gets an immediate reply.
+
+### Added
+- `question_due` trigger and a `question` category (priority 35, off by default like `wearable_shift`): at most one
+  question per scan, sharing the day and week caps with every other non-urgent message. Bank in `data/questions.json`
+  (`pi-questions/1`): ten questions across four purposes (running experiment, data gap, profile, follow-up), each with
+  why it is asked, skip conditions (`known_if`, `requires`), interval, at most three answer buttons and what each answer
+  records (`sets`).
+- Repetition rules (`proactive_policy.json` `questions`): never ask what the state knows; an unchanged answer doubles the
+  interval (30 → 60 → 120 days, at most 180) and offers "和上次一样" as the first button; a question seen three times
+  without an answer is retired; only a question's latest ask stays on the agenda.
+- `ack` type `answer` (from a button or, without a message, from chat): records `history.answers`, applies `sets` and
+  experiment counts, returns `feedback_zh` (experiment progress, data-gap effect from the host's `state.gaps`, or the
+  next interval) and `record` for the host to store.
+- `lint`: `question_no_answer`, `bad_answer`. Schemas, OpenAPI `ActionResult` and consent carry the new fields.
+- Member file: `主动提醒` accepts 提问; 「生活和偏好」 has 吸烟 and 家族病史 lines and the 测量 table reads 腰围, so those
+  questions are skipped once known.
+- Shared cases: nine `question-*` cases in `proactive-cases/1` (86 cases), including the hand-off from a questionnaire that only said "does not smoke now". Eval `question-answer-feedback`.
+
+### Changed
+- Persona and product thesis: Pi recommends LongPi products without pushing (evidence first, at most three, zero
+  allowed, disclosed as LongPi's own); published organ age estimates can be discussed as labelled ranges on the site.
+
 ## 0.3.0 (2026-10)
 
 Closes the retest loop on the coach side and adds labelled judgements and proactive care.
