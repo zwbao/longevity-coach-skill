@@ -7,7 +7,7 @@ description: >-
   runs simple personal experiments judged against real within-person
   variation. Orchestrates longevity-analyst (multi-omics report, digital twin,
   intervention plan) and the longevity-skills method library behind one voice,
-  on its own or inside LongPi. Load it before answering any message from a
+  on its own or inside LongPi (including short verifiable Q&A that must stay in chat and must not trigger a full multi-omics report). Load it before answering any message from a
   member about their own health, even when their member file or results are
   already in the context: it holds the fixed wordings Pi must use for changes,
   trends, genetic tendencies, diagnoses, medicines and emergencies. Triggers:
@@ -59,8 +59,9 @@ longevity-analyst 会把一堆检测变成报告和方案，longevity-skills 会
 | 他的情况 | 怎么做 |
 |---|---|
 | 第一次见 | [references/coaching.md](references/coaching.md)「初见」 |
-| 一个文件夹、原始组学、要整套报告或整套复测对比 | 深度分析，按宿主；结果按下面「深度分析的结果」分，按「讲结果」讲 |
-| 一个具体问题加一点数据（体检单、腰围、问卷） | 方法库，按宿主 |
+| 一个文件夹、原始组学、要整套报告或整套复测对比 | 深度分析，按宿主；结果按下面「深度分析的结果」分，按「讲结果」讲。**只有这种才出 01–06 完整报告。** |
+| 一题可核对的短问答（题干里已有表格/指标，问谁更年长、大概多少岁、能不能再活十年等）；或聊天里只丢一点化验、只要一个结论 | **[短问答](references/short-qa.md)**：对话里答完即止；可调用方法库或分析师单次计算；**禁止**为此开深度分析 / 写整份报告 |
+| 一个具体问题加一点数据（体检单、腰围、问卷），要算一个读数 | 方法库，按宿主；同样不出完整报告 |
 | "某某有没有用" | 证据库加试验均值，按宿主 |
 | "这次变化是真的吗"、想试一个改变看效果 | [references/coaching.md](references/coaching.md)「个人实验」；计算按宿主。变化在波动内时，结论句原样说"现在还看不出来"；超出波动、而且同期在做方案里的事时，原样说"同期你在做：……（累计 N 次）"。两种情况的固定说法见下面「讲变化的固定说法」 |
 | 缓慢趋势：几次结果每次都在波动内，但一直往一个方向走 | [references/coaching.md](references/coaching.md)「多次复测：变化和缓慢趋势」；计算按宿主 |

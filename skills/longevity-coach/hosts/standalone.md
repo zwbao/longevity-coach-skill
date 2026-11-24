@@ -49,6 +49,12 @@
    - 只有 `increase_beyond_noise`、`decrease_beyond_noise` 或趋势超出波动的才说是变化；`within_noise` 说"还看不出来"；`not_judged` 并排看。`alerts`、`identity_alerts` 先说（胚系基因型不一致，可能拿错了样本）。怎么讲见 coaching.md「多次复测」。
 4. 新快照路径、要点记进「检测和报告」，监测计划更新到「监测计划」。
 
+## 短问答：对话结论，不出报告
+
+见 [../references/short-qa.md](../references/short-qa.md)。  
+题干或聊天里已有结构化数据、只要一个可核对结论时走这里；**不要**走上面的「分析师：整套」。  
+可调用方法库，或在分析师目录里跑**单次**计算脚本；结果用 Pi 的口吻在对话里讲完即可。
+
 ## 方法库：一个具体问题加一点数据
 
 1. **找方法**：读方法库的 `intents.json`，看用户的话对上哪个意图，它的 `skills` 就是候选（前面的更对口）。`catalog.json` 很大，按技能名用 `rg` 查，或者直接读 `skills/<name>/skill.json`：
