@@ -44,6 +44,16 @@ asks why this matters now and what the person wants to still be able to do at 70
 file at `~/.longevity-coach/<name>.md`. Pi reads that file at the start of every conversation and updates it at the
 end. The person can open, edit or delete it at any time.
 
+### Short questions on pasted measurements (0.4.1, experimental branch `exp/short-qa-age-evidence`)
+
+When the person pastes values (a blood panel, methylation, plasma proteins, gene expression) and wants one conclusion
+(how old they look, who is older, how long they will last), Pi answers in the chat and does not start a full analysis:
+it first runs longevity-analyst's `la.py age-evidence` (analyst branch `exp/age-evidence`, 0.8.1) and then weighs that
+evidence with what the person said (history, medicines, symptoms). See `references/short-qa.md`. Built on PR #3. In
+the evaluation, going through Pi for these questions scored lower than letting the host call the analyst directly
+(17/39 vs 25/39 multiple-choice on the same 51 LongevityBench rows), so the trigger for such questions lives in the
+analyst's description; Pi routes there when it is already the entry point.
+
 ## What is inside
 
 All files are under `skills/longevity-coach/`.

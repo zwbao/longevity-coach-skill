@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.4.1 (2026-11-25, experimental branch `exp/short-qa-age-evidence`, not released)
+
+Built on PR #3 (`feat/short-qa-product-path`).
+
+### Changed
+- Routing row for short questions on pasted measurements: run longevity-analyst's `la.py age-evidence` first (analyst
+  branch `exp/age-evidence`, 0.8.1), answer in the chat, no deep analysis and no report.
+- `references/short-qa.md` rewritten: compute first, check how many values were read, weigh history and medicines
+  that the calculators do not see, say plainly when no calculator applies, give the most likely option when one choice
+  is required. The exam-specific wording (benchmark, masked gene names, rotating CpG sites, default "uncertain") is gone.
+- The skill description is back to the 0.4.0 wording (PR #3's parenthetical about short Q&A removed); the trigger for
+  these questions lives in the analyst's description.
+
 ## 0.4.0 (2026-10)
 
 Pi asks one useful question at a time, and every answer gets an immediate reply.
